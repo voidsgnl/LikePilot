@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Made empty Analytics history explicit with em-dash metric values, removed dormant hard-coded forecast data, tightened Analytics wording, and removed the duplicate Operations heading/tagline.
+
 - Removed the redundant header session summary and local clock; kept the live connection state and agent quick switch. Tightened Overview/Agents wording, corrected browser-profile fallback in the directory, and bumped the service-worker cache to v1.0.11.
 
 - Fixed the Overview refresh indicator target and simplified the Agent directory empty state so empty inventories and unmatched filters have distinct, non-duplicated messages. Bumped the service-worker cache to v1.0.10.
