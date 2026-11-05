@@ -3,7 +3,7 @@
 {% block body_class %}page-analytics{% endblock %}
 
 {% block title %}Analytics{% endblock %}
-{% block subtitle %}Explore one focused view of runtime credit activity and historical performance at a time.{% endblock %}
+{% block subtitle %}Review recorded credit balances, trends, and exports.{% endblock %}
 {% block head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='analytics.js') }}" defer></script>{% endblock %}
@@ -13,7 +13,7 @@
     <div class="collapsible-header">
         <div>
             <div class="section-kicker">Session overview</div>
-            <div class="section-subtle">Top-line metrics from the captured credit history.</div>
+            <div class="section-subtle">Summary of recorded credit snapshots.</div>
         </div>
         <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
             aria-expanded="true">
