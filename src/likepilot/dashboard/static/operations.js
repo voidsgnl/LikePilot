@@ -43,22 +43,11 @@
     }
 
     function updateSummaryCards() {
-        const dbCount = document.getElementById('ops-db-count');
-        const dbMeta = document.getElementById('ops-db-meta');
         const logCount = document.getElementById('ops-log-count');
         const logMeta = document.getElementById('ops-log-summary-meta');
         const diagnosticCount = document.getElementById('ops-diagnostic-count');
         const diagnosticMeta = document.getElementById('ops-diagnostic-summary-meta');
 
-        if (dbCount) {
-            dbCount.innerText = String((state.database.tables || []).length);
-        }
-        if (dbMeta) {
-            const relationshipCount = Number(state.database.info?.relationship_count || 0);
-            dbMeta.innerText = state.database.info
-                ? `${formatBytes(state.database.info.size_bytes)} SQLite file • ${relationshipCount} link${relationshipCount === 1 ? '' : 's'}`
-                : 'Database not loaded yet.';
-        }
         if (logCount) {
             logCount.innerText = String((state.logs.files || []).length);
         }
@@ -112,7 +101,7 @@
         host.innerHTML = state.database.tables.map((table) => {
             const columns = table.columns.map((column) => '<div class="ops-schema-column ' + (column.primary_key ? 'pk' : '') + '" data-column-key="' + escapeHtml(table.name + '.' + column.name) + '">' +
                 '<span class="ops-schema-column-icon">' + (column.primary_key ? 'PK' : '·') + '</span>' +
-                '<span class="ops-schema-column-name">' + escapeHtml(column.name) + (column.notnull ? ' <small>NOT NULL</small>' : '') + '</span>' +
+                '<span class="ops-schema-column-name">' + escapeHtml(column.name) + (column.notnull ? ' <small>NOT NULL</small>' : '') + (column.default !== null && column.default !== undefined ? ' <small>DEFAULT ' + escapeHtml(String(column.default)) + '</small>' : '') + '</span>' +
                 '<span class="ops-schema-column-type">' + escapeHtml(column.type || 'value') + '</span></div>').join('');
             const indexes = (table.indexes || []).map((index) => '<div class="ops-schema-index">' + (index.unique ? 'UNIQUE ' : '') + escapeHtml(index.name) + ': ' + escapeHtml(index.columns.join(', ')) + '</div>').join('');
             return '<button type="button" class="ops-schema-card ' + (table.name === state.database.selectedTable ? 'active' : '') + '" data-select-table="' + escapeHtml(table.name) + '" data-schema-table="' + escapeHtml(table.name) + '">' +
@@ -135,7 +124,7 @@
     function drawSchemaLines() {
         const stage = document.getElementById('ops-schema-stage');
         const svg = document.getElementById('ops-schema-lines');
-        if (!stage || !svg || state.database.view !== 'schema') {
+        if (!stage || !svg) {
             return;
         }
 
