@@ -37,3 +37,6 @@ input:not([type=checkbox]):not([type=radio]),select,textarea{min-height:34px;pad
 .dashboard-panels,.dashboard-lower{gap:10px}.dashboard-card{padding:13px}.card-toolbar{gap:10px;padding-bottom:10px;border-bottom:1px solid var(--border)}.chart-container{min-height:190px}.chart-controls select{min-width:120px}
 @media(max-width:1180px){.dashboard-hero,.dashboard-panels,.dashboard-lower{grid-template-columns:1fr}}
 @media(max-width:720px){.hero-panel,.hero-side,.dashboard-card,.metric-card{padding:12px;border-radius:6px}.dashboard-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* The mobile navigation backdrop must not participate in the desktop grid. */
+.sidebar-backdrop{display:none!important}
