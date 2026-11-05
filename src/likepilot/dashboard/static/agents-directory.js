@@ -35,6 +35,6 @@
     }
     search.addEventListener('input', render);
     filter.addEventListener('change', render);
-    refresh().catch((error) => { body.innerHTML = '<tr><td colspan="8" class="section-subtle">' + escape(error.message) + '</td></tr>'; });
+    refresh().catch((error) => { body.innerHTML = '<tr><td colspan="6" class="section-subtle">' + escape(error.message) + '</td></tr>'; });
     window.setInterval(() => refresh().catch(() => {}), 5000);
 })();
