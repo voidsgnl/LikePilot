@@ -5,7 +5,6 @@ from urllib.parse import urlsplit
 
 import undetected_chromedriver as uc
 from selenium import webdriver
-from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 from likepilot.core.config import get_config_value
@@ -97,7 +96,8 @@ def get_firefox_options(profile_name=None, proxy=None, startup_url=None, headles
     options.set_preference("toolkit.telemetry.enabled", False)
 
     profile_path = _profile_directory("firefox", profile_name)
-    options.profile = FirefoxProfile(profile_path)
+    options.add_argument("-profile")
+    options.add_argument(profile_path)
 
     if proxy:
         parsed = urlsplit(proxy if "://" in proxy else f"http://{proxy}")
