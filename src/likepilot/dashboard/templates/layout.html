@@ -88,9 +88,6 @@
                         <select id="theme-select" class="theme-select" aria-label="Select theme">
                             <option value="dark">Dark Grid</option>
                             <option value="light">Light Ops</option>
-                            <option value="cobalt">Cobalt</option>
-                            <option value="ember">Ember</option>
-                            <option value="forest">Forest</option>
                             <option value="high-contrast">High Contrast</option>
                         </select>
                     </div>
@@ -158,7 +155,9 @@
 
     <script>
         (function () {
-            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const storedTheme = localStorage.getItem('theme') || 'dark';
+            const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'dark';
+            localStorage.setItem('theme', savedTheme);
             document.documentElement.setAttribute('data-theme', savedTheme);
             const preview = document.getElementById('theme-preview');
             if (preview) {
