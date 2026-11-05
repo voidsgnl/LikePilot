@@ -65,3 +65,23 @@ def test_analytics_does_not_present_fabricated_telemetry():
     assert "45% higher success rate" not in analytics_template
     assert "87%" not in analytics_template
     assert "Math.random()" not in analytics_script
+
+def test_dashboard_navigation_omits_static_catalog_pages():
+    layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
+    assert 'href="/providers"' not in layout
+    assert 'href="/platforms"' not in layout
+
+
+def test_chart_library_is_loaded_only_on_analytics():
+    layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
+    analytics = (DASHBOARD / "templates" / "analytics.html").read_text(encoding="utf-8")
+    assert "cdn.jsdelivr.net/npm/chart.js" not in layout
+    assert "cdn.jsdelivr.net/npm/chart.js" in analytics
+
+
+def test_agent_directory_uses_compact_inventory_columns():
+    template = (DASHBOARD / "templates" / "agents.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "agents-directory.js").read_text(encoding="utf-8")
+    assert "Session gain" not in template
+    assert "Last heartbeat" not in template
+    assert "directory-total" not in script
