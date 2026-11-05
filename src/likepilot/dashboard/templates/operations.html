@@ -3,7 +3,7 @@
 {% block body_class %}page-operations{% endblock %}
 
 {% block title %}{{ {'database':'Database','logs':'Runtime logs','diagnostics':'Diagnostics'}.get(operation_view, 'Operations') }}{% endblock %}
-{% block subtitle %}{{ {'database':'Inspect persisted SQLite tables and relationships.','logs':'Browse and manage application runtime log files.','diagnostics':'Review and manage saved diagnostic captures.'}.get(operation_view, 'Operations workspace') }}{% endblock %}
+{% block subtitle %}{% endblock %}
 {% block head %}
 <script src="{{ url_for('static', filename='operations.js') }}" defer></script>{% endblock %}
 
@@ -15,45 +15,26 @@
         <a class="subnav-button {% if operation_view == 'diagnostics' %}active{% endif %}" href="{{ url_for('operations', operation_view='diagnostics') }}">Diagnostics</a>
     </div>
 
-    <div id="operations-feedback" class="section-subtle">Loading operations data.</div>
+    <div id="operations-feedback" class="section-subtle" aria-live="polite"></div>
 
     {% if operation_view == 'database' %}
 <div class="tab-panel {% if operation_view == 'database' %}active{% endif %}" data-tab-panel="database">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row">
-                    <div>
-                        <h3 class="section-heading">Tables</h3>
-                        <div class="section-subtle">Read-only SQLite browser.</div>
-                    </div>
+                    <div><h3 class="section-heading">Tables</h3><div class="section-subtle">Database structure</div></div>
                     <button type="button" class="btn-secondary btn-compact" id="ops-refresh-db">Refresh</button>
                 </div>
-                <div id="ops-db-summary" class="section-subtle">Loading database details.</div>
+                <div id="ops-db-summary" class="section-subtle">Loading schema.</div>
                 <div id="ops-db-list" class="ops-list"></div>
             </aside>
 
             <section class="panel inset-panel stack-sm">
-                <div class="inline-row-wrap">
-                    <div>
-                        <h3 class="section-heading">Database workspace</h3>
-                        <div class="section-subtle">Switch between row preview and a schema canvas that maps table relationships.</div>
-                    </div>
-                    <div class="subnav ops-inline-subnav">
-                        <button class="subnav-button active" type="button" id="ops-db-view-data">Data</button>
-                        <button class="subnav-button" type="button" id="ops-db-view-schema">Schema</button>
-                    </div>
-                </div>
-                <div id="ops-db-table-meta" class="section-subtle">Choose a table to inspect.</div>
-                <div id="ops-db-preview" class="ops-viewer empty-state">Choose a table to inspect.</div>
-                <div id="ops-db-schema" class="ops-schema-shell" hidden>
-                    <div class="ops-schema-header">
-                        <div class="section-subtle" id="ops-db-schema-meta">Loading schema map.</div>
-                        <div class="panel-note mono">Visual structure</div>
-                    </div>
-                    <div class="ops-schema-stage" id="ops-schema-stage">
-                        <svg class="ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg>
-                        <div class="ops-schema-grid" id="ops-schema-grid"></div>
-                    </div>
+                <div class="inline-row-wrap"><div><h3 class="section-heading">Schema</h3><div class="section-subtle">Columns, keys, indexes, and table relationships.</div></div></div>
+                <div id="ops-db-table-meta" class="section-subtle">Select a table or view the full schema.</div>
+                <div class="ops-schema-shell">
+                    <div class="ops-schema-header"><div class="section-subtle" id="ops-db-schema-meta">Loading schema map.</div><div class="panel-note mono">Read only</div></div>
+                    <div class="ops-schema-stage" id="ops-schema-stage"><svg class="ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg><div class="ops-schema-grid" id="ops-schema-grid"></div></div>
                 </div>
             </section>
         </div>
