@@ -5,29 +5,17 @@
 {% block head %}<script src="{{ url_for('static', filename='overview.js') }}" defer></script>{% endblock %}
 {% block content %}
 <div class="overview-page">
-    <section class="panel panel-pad overview-welcome">
-        <div><div class="section-kicker">Control grid / Overview</div><h2 class="section-heading">Runtime at a glance</h2><p class="section-subtle">Live agent state from the LikePilot runtime. Detailed controls and history live on their own pages.</p></div>
-        <div class="overview-actions"><a class="btn-primary" href="/agents">Open agent directory</a><a class="btn-secondary" href="/analytics">View analytics</a></div>
-    </section>
     <section class="workspace-metrics overview-metrics">
         <article class="stat-card"><div class="stat-label">Configured agents</div><div class="stat-value" id="overview-total">—</div></article>
         <article class="stat-card"><div class="stat-label">Running</div><div class="stat-value" id="overview-running">—</div></article>
         <article class="stat-card"><div class="stat-label">Waiting / attention</div><div class="stat-value" id="overview-waiting">—</div></article>
         <article class="stat-card"><div class="stat-label">Stopped</div><div class="stat-value" id="overview-stopped">—</div></article>
     </section>
-    <section class="overview-columns">
+    <section class="overview-columns overview-columns-single">
         <section class="panel panel-pad stack-sm">
             <div class="surface-header"><div><div class="section-kicker">Runtime inventory</div><h3 class="section-heading">Recent agent state</h3></div><a class="btn-secondary btn-compact" href="/agents">View all</a></div>
             <div class="table-wrap"><table class="data-table overview-table"><thead><tr><th>Agent</th><th>Status</th><th>Provider</th><th>Platform</th><th>Credits</th></tr></thead><tbody id="overview-agent-rows"><tr><td colspan="5" class="section-subtle">Loading runtime…</td></tr></tbody></table></div>
         </section>
-        <aside class="panel panel-pad stack-sm">
-            <div><div class="section-kicker">Workspace shortcuts</div><h3 class="section-heading">Go to a workspace</h3></div>
-            <a class="overview-shortcut" href="/settings/browser"><span>Browser settings</span><span>→</span></a>
-            <a class="overview-shortcut" href="/settings/agents/new"><span>Create an agent</span><span>→</span></a>
-            <a class="overview-shortcut" href="/operations/logs"><span>Runtime logs</span><span>→</span></a>
-            <a class="overview-shortcut" href="/operations/diagnostics"><span>Diagnostics</span><span>→</span></a>
-            <div class="section-subtle" id="overview-updated">Waiting for runtime status.</div>
-        </aside>
     </section>
     <div id="overview-error" class="notice notice-danger" hidden></div>
 </div>
