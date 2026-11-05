@@ -339,7 +339,7 @@ function renderAgentQuickSwitch(data) {
     const activeAgent = new URLSearchParams(window.location.search).get('agent') || localStorage.getItem('focusedAgentName') || '';
     host.innerHTML = agentEntries.map(([name]) => `
         <a
-            href="/?agent=${encodeURIComponent(name)}"
+            href="/agents?agent=${encodeURIComponent(name)}"
             class="quick-agent ${name === activeAgent ? 'active' : ''}"
             data-quick-agent="${escapeHtml(name)}"
             title="${escapeHtml(name)}"

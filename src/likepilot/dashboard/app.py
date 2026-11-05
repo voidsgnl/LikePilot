@@ -282,7 +282,7 @@ def brand_asset(filename):
 @app.route('/')
 @login_required
 def index():
-    return redirect(url_for('agents'))
+    return redirect(url_for('agents', **request.args))
 
 
 @app.route('/agents')
