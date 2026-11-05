@@ -34,3 +34,10 @@ package-dir = {"" = "src"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"likepilot.dashboard" = [
+    "templates/*.html",
+    "static/*",
+    "favicon/*",
+]
