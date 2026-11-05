@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body_class %}page-agents{% endblock %}
+{% block title %}Agents{% endblock %}
+{% block subtitle %}Browse every configured agent, inspect its current state, and open its dedicated workspace.{% endblock %}
+{% block head %}<script src="{{ url_for('static', filename='agents-directory.js') }}" defer></script>{% endblock %}
+{% block content %}
+<section class="directory-toolbar panel panel-pad">
+    <div><div class="section-kicker">Runtime inventory</div><h2 class="section-heading">Agent directory</h2><p class="section-subtle">Each agent has an independent detail page for controls, configuration, and runtime events.</p></div>
+    <a class="btn-primary" href="{{ url_for('settings') }}">Configure agents</a>
+</section>
+<section class="workspace-metrics">
+    <article class="stat-card"><div class="stat-label">Total agents</div><div class="stat-value" id="directory-total">—</div></article>
+    <article class="stat-card"><div class="stat-label">Running</div><div class="stat-value" id="directory-running">—</div></article>
+    <article class="stat-card"><div class="stat-label">Waiting</div><div class="stat-value" id="directory-waiting">—</div></article>
+    <article class="stat-card"><div class="stat-label">Stopped</div><div class="stat-value" id="directory-stopped">—</div></article>
+</section>
+<section class="panel panel-pad stack-sm">
+    <div class="directory-controls">
+        <input id="agent-search" type="search" placeholder="Search by agent, provider, or platform…" aria-label="Search agents">
+        <select id="agent-status-filter" aria-label="Filter by status"><option value="all">All statuses</option><option value="Running">Running</option><option value="Paused">Paused</option><option value="Stopped">Stopped</option><option value="waiting">Waiting / attention</option></select>
+        <span id="directory-updated" class="section-subtle">Connecting to runtime…</span>
+    </div>
+    <div class="table-wrap">
+        <table class="data-table directory-table">
+            <thead><tr><th>Agent</th><th>Status</th><th>Provider</th><th>Platform</th><th>Credits</th><th>Session gain</th><th>Last heartbeat</th><th></th></tr></thead>
+            <tbody id="agent-directory-body"><tr><td colspan="8" class="section-subtle">Loading configured agents…</td></tr></tbody>
+        </table>
+    </div>
+    <div id="directory-empty" class="empty-state" hidden>No agents match the current filters.</div>
+</section>
+{% endblock %}

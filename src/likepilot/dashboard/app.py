@@ -288,7 +288,7 @@ def index():
 @app.route('/agents')
 @login_required
 def agents():
-    return render_template('index.html', page="agents")
+    return render_template('agents.html', page="agents")
 
 
 @app.route('/agents/<path:agent_name>')

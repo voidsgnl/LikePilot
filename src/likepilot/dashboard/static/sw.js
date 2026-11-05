@@ -15,6 +15,7 @@ const STATIC_ASSETS = [
     '/static/settings.js',
     '/static/operations.js',
     '/static/agent-detail.js',
+    '/static/agents-directory.js',
     '/static/workspace-pages.css',
     'https://cdn.jsdelivr.net/npm/chart.js',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
