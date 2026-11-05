@@ -4,9 +4,7 @@
             info: null,
             tables: [],
             relationships: [],
-            selectedTable: '',
-            preview: null,
-            view: 'data'
+            selectedTable: ''
         },
         logs: {
             files: [],
@@ -40,46 +38,8 @@
         }
     }
 
-    function formatCellValue(value) {
-        if (value === null || value === undefined) {
-            return '<span class="section-subtle">NULL</span>';
-        }
-        if (typeof value === 'object') {
-            return `<span class="mono">${escapeHtml(JSON.stringify(value))}</span>`;
-        }
-        const text = String(value);
-        if (!text) {
-            return '<span class="section-subtle">(empty)</span>';
-        }
-        return `<span class="ops-cell">${escapeHtml(text)}</span>`;
-    }
-
     function selectedTableRecord() {
         return state.database.tables.find((table) => table.name === state.database.selectedTable) || null;
-    }
-
-    function setDatabaseView(view) {
-        state.database.view = view === 'schema' ? 'schema' : 'data';
-        const preview = document.getElementById('ops-db-preview');
-        const schema = document.getElementById('ops-db-schema');
-        const dataButton = document.getElementById('ops-db-view-data');
-        const schemaButton = document.getElementById('ops-db-view-schema');
-        if (preview) {
-            preview.hidden = state.database.view !== 'data';
-        }
-        if (schema) {
-            schema.hidden = state.database.view !== 'schema';
-        }
-        if (dataButton) {
-            dataButton.classList.toggle('active', state.database.view === 'data');
-        }
-        if (schemaButton) {
-            schemaButton.classList.toggle('active', state.database.view === 'schema');
-        }
-        updateDatabaseMeta();
-        if (state.database.view === 'schema') {
-            scheduleSchemaLineRender();
-        }
     }
 
     function updateSummaryCards() {
@@ -121,159 +81,47 @@
     function renderDatabaseList() {
         const host = document.getElementById('ops-db-list');
         const summary = document.getElementById('ops-db-summary');
-        if (!host || !summary) {
-            return;
-        }
-
-        const info = state.database.info;
-        if (info) {
-            summary.innerHTML = `
-                <span class="mono">${escapeHtml(info.path)}</span><br>
-                ${state.database.tables.length} table${state.database.tables.length === 1 ? '' : 's'} • ${Number(info.relationship_count || 0)} relationship${Number(info.relationship_count || 0) === 1 ? '' : 's'} • ${formatBytes(info.size_bytes)}
-            `;
-        } else {
-            summary.innerText = 'Loading database details.';
-        }
-
-        if (!state.database.tables.length) {
-            host.innerHTML = `<div class="empty-state">No SQLite tables found.</div>`;
-            return;
-        }
-
+        if (!host || !summary) return;
+        const relationshipCount = Number(state.database.info?.relationship_count || 0);
+        summary.innerText = state.database.info ? state.database.tables.length + ' tables • ' + relationshipCount + ' relationships' : 'Loading schema.';
+        if (!state.database.tables.length) { host.innerHTML = '<div class="empty-state">No SQLite tables found.</div>'; return; }
         host.innerHTML = state.database.tables.map((table) => {
-            const relationCount = (table.foreign_keys || []).length;
-            return `
-                <button
-                    type="button"
-                    class="ops-list-item ${table.name === state.database.selectedTable ? 'active' : ''}"
-                    data-select-table="${escapeHtml(table.name)}"
-                >
-                    <span class="ops-list-title">${escapeHtml(table.name)}</span>
-                    <span class="ops-list-meta">${table.row_count} row${table.row_count === 1 ? '' : 's'} • ${table.columns.length} col${table.columns.length === 1 ? '' : 's'}${relationCount ? ` • ${relationCount} link${relationCount === 1 ? '' : 's'}` : ''}</span>
-                </button>
-            `;
+            const links = (table.foreign_keys || []).length;
+            return '<button type="button" class="ops-list-item ' + (table.name === state.database.selectedTable ? 'active' : '') + '" data-select-table="' + escapeHtml(table.name) + '">' +
+                '<span class="ops-list-title">' + escapeHtml(table.name) + '</span>' +
+                '<span class="ops-list-meta">' + table.columns.length + ' columns' + (links ? ' • ' + links + ' relations' : '') + '</span></button>';
         }).join('');
     }
-
     function updateDatabaseMeta() {
         const meta = document.getElementById('ops-db-table-meta');
         const schemaMeta = document.getElementById('ops-db-schema-meta');
-        if (!meta || !schemaMeta) {
-            return;
-        }
-
+        if (!meta || !schemaMeta) return;
         const selected = selectedTableRecord();
-        if (state.database.view === 'schema') {
-            if (selected) {
-                const inbound = state.database.relationships.filter((item) => item.to_table === selected.name).length;
-                const outbound = state.database.relationships.filter((item) => item.from_table === selected.name).length;
-                meta.innerHTML = `
-                    <span class="mono">${escapeHtml(selected.name)}</span> • ${selected.columns.length} column${selected.columns.length === 1 ? '' : 's'} • ${selected.row_count} row${selected.row_count === 1 ? '' : 's'} • ${inbound} inbound • ${outbound} outbound
-                `;
-            } else {
-                meta.innerText = 'Schema view maps table structure and relationships.';
-            }
-        } else if (state.database.preview) {
-            const table = state.database.preview;
-            meta.innerHTML = `
-                <span class="mono">${escapeHtml(table.table)}</span> • ${table.row_count} row${table.row_count === 1 ? '' : 's'} • ${table.columns.length} column${table.columns.length === 1 ? '' : 's'}
-            `;
-        } else {
-            meta.innerText = 'Choose a table to inspect.';
-        }
-
-        const selectedLabel = selected ? selected.name : 'all tables';
-        schemaMeta.innerText = `${state.database.tables.length} tables • ${state.database.relationships.length} relationships • focus: ${selectedLabel}`;
-    }
-
-    function renderDatabasePreview() {
-        const preview = document.getElementById('ops-db-preview');
-        if (!preview) {
-            return;
-        }
-
-        const table = state.database.preview;
-        if (!table) {
-            preview.innerHTML = 'Choose a table to inspect.';
-            preview.classList.add('empty-state');
-            updateDatabaseMeta();
-            return;
-        }
-
-        if (!table.rows.length) {
-            preview.innerHTML = '<div class="empty-state">This table is empty.</div>';
-            preview.classList.add('empty-state');
-            updateDatabaseMeta();
-            return;
-        }
-
-        preview.classList.remove('empty-state');
-        preview.innerHTML = `
-            <div class="ops-chip-row">
-                ${table.columns.map((column) => `
-                    <span class="chip">${escapeHtml(column.name)}${column.type ? ` • ${escapeHtml(column.type)}` : ''}</span>
-                `).join('')}
-            </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
-                        <tr>${table.columns.map((column) => `<th>${escapeHtml(column.name)}</th>`).join('')}</tr>
-                    </thead>
-                    <tbody>
-                        ${table.rows.map((row) => `
-                            <tr>
-                                ${table.columns.map((column) => `<td>${formatCellValue(row[column.name])}</td>`).join('')}
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-        updateDatabaseMeta();
+        if (selected) {
+            const inbound = state.database.relationships.filter((item) => item.to_table === selected.name).length;
+            const outbound = state.database.relationships.filter((item) => item.from_table === selected.name).length;
+            meta.innerHTML = '<span class="mono">' + escapeHtml(selected.name) + '</span> • ' + selected.columns.length + ' columns • ' + inbound + ' inbound • ' + outbound + ' outbound';
+        } else { meta.innerText = 'Select a table to inspect its definition.'; }
+        schemaMeta.innerText = state.database.tables.length + ' tables • ' + state.database.relationships.length + ' relationships • focus: ' + (selected ? selected.name : 'all tables');
     }
 
     function renderSchemaView() {
         const host = document.getElementById('ops-schema-grid');
-        if (!host) {
-            return;
-        }
-
-        if (!state.database.tables.length) {
-            host.innerHTML = `<div class="empty-state">No schema data is available.</div>`;
-            updateDatabaseMeta();
-            return;
-        }
-
-        host.innerHTML = state.database.tables.map((table) => `
-            <button
-                type="button"
-                class="ops-schema-card ${table.name === state.database.selectedTable ? 'active' : ''}"
-                data-select-table="${escapeHtml(table.name)}"
-                data-schema-table="${escapeHtml(table.name)}"
-            >
-                <div class="ops-schema-card-header">
-                    <span class="ops-schema-card-title">${escapeHtml(table.name)}</span>
-                    <span class="ops-schema-card-count">${table.row_count}</span>
-                </div>
-                <div class="ops-schema-card-body">
-                    ${table.columns.map((column) => `
-                        <div
-                            class="ops-schema-column ${column.primary_key ? 'pk' : ''}"
-                            data-column-key="${escapeHtml(`${table.name}.${column.name}`)}"
-                        >
-                            <span class="ops-schema-column-icon">${column.primary_key ? '◆' : '◇'}</span>
-                            <span class="ops-schema-column-name">${escapeHtml(column.name)}</span>
-                            <span class="ops-schema-column-type">${escapeHtml(column.type || 'value')}</span>
-                        </div>
-                    `).join('')}
-                </div>
-            </button>
-        `).join('');
-
+        if (!host) return;
+        if (!state.database.tables.length) { host.innerHTML = '<div class="empty-state">No schema data is available.</div>'; updateDatabaseMeta(); return; }
+        host.innerHTML = state.database.tables.map((table) => {
+            const columns = table.columns.map((column) => '<div class="ops-schema-column ' + (column.primary_key ? 'pk' : '') + '" data-column-key="' + escapeHtml(table.name + '.' + column.name) + '">' +
+                '<span class="ops-schema-column-icon">' + (column.primary_key ? 'PK' : '·') + '</span>' +
+                '<span class="ops-schema-column-name">' + escapeHtml(column.name) + (column.notnull ? ' <small>NOT NULL</small>' : '') + '</span>' +
+                '<span class="ops-schema-column-type">' + escapeHtml(column.type || 'value') + '</span></div>').join('');
+            const indexes = (table.indexes || []).map((index) => '<div class="ops-schema-index">' + (index.unique ? 'UNIQUE ' : '') + escapeHtml(index.name) + ': ' + escapeHtml(index.columns.join(', ')) + '</div>').join('');
+            return '<button type="button" class="ops-schema-card ' + (table.name === state.database.selectedTable ? 'active' : '') + '" data-select-table="' + escapeHtml(table.name) + '" data-schema-table="' + escapeHtml(table.name) + '">' +
+                '<div class="ops-schema-card-header"><span class="ops-schema-card-title">' + escapeHtml(table.name) + '</span><span class="ops-schema-card-count">' + table.columns.length + ' cols</span></div>' +
+                '<div class="ops-schema-card-body">' + columns + '</div>' + (indexes ? '<div class="ops-schema-indexes"><span class="ops-schema-index-label">Indexes</span>' + indexes + '</div>' : '') + '</button>';
+        }).join('');
         updateDatabaseMeta();
         scheduleSchemaLineRender();
     }
-
     function scheduleSchemaLineRender() {
         if (schemaLineFrame) {
             cancelAnimationFrame(schemaLineFrame);
@@ -436,23 +284,7 @@
         renderDatabaseList();
         renderSchemaView();
         updateSummaryCards();
-        if (state.database.selectedTable) {
-            await loadDatabaseTable(state.database.selectedTable);
-        } else {
-            state.database.preview = null;
-            renderDatabasePreview();
-            updateDatabaseMeta();
-        }
     }
-
-    async function loadDatabaseTable(name) {
-        state.database.selectedTable = name;
-        renderDatabaseList();
-        renderSchemaView();
-        state.database.preview = await fetchJson(`/api/operations/database/table?name=${encodeURIComponent(name)}`);
-        renderDatabasePreview();
-    }
-
     async function loadLogs() {
         const payload = await fetchJson('/api/operations/logs');
         state.logs.files = payload.logs || [];
@@ -596,13 +428,12 @@
         try {
             if (view === 'database') {
                 await loadDatabase();
-                setDatabaseView(state.database.view);
-            } else if (view === 'logs') {
+                } else if (view === 'logs') {
                 await loadLogs();
             } else if (view === 'diagnostics') {
                 await loadDiagnostics();
             }
-            setFeedback('This operations workspace is ready.');
+            setFeedback('');
         } catch (error) {
             setFeedback(error.message || 'Unable to load this operations workspace right now.');
         }
@@ -611,16 +442,11 @@
     document.addEventListener('click', (event) => {
         const tableButton = event.target.closest('[data-select-table]');
         if (tableButton) {
-            void loadDatabaseTable(tableButton.getAttribute('data-select-table'))
-                .then(() => {
-                    if (state.database.view === 'schema') {
-                        scheduleSchemaLineRender();
-                    }
-                })
-                .catch((error) => setFeedback(error.message || 'Unable to load table preview.'));
+            state.database.selectedTable = tableButton.getAttribute('data-select-table');
+            renderDatabaseList();
+            renderSchemaView();
             return;
         }
-
         const logButton = event.target.closest('[data-select-log]');
         if (logButton) {
             void loadLogContent(logButton.getAttribute('data-select-log')).catch((error) => setFeedback(error.message || 'Unable to load log file.'));
@@ -658,8 +484,6 @@
         document.getElementById('ops-clear-diagnostics')?.addEventListener('click', () => {
             void clearAllDiagnostics().catch((error) => setFeedback(error.message || 'Unable to clear diagnostics.'));
         });
-        document.getElementById('ops-db-view-data')?.addEventListener('click', () => setDatabaseView('data'));
-        document.getElementById('ops-db-view-schema')?.addEventListener('click', () => setDatabaseView('schema'));
         window.addEventListener('resize', scheduleSchemaLineRender);
         void initializeOperationsPage();
     });
