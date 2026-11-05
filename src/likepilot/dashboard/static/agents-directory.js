@@ -20,7 +20,7 @@
             : 'No agents match these filters.';
         body.innerHTML = rows.length ? rows.map(([name, agent]) => `
             <tr>
-                <td><a class="directory-agent-link" href="/agents/${encodeURIComponent(name)}">${escape(name)}</a><div class="section-subtle mono">${escape(agent.chrome_profile || 'No browser profile')}</div></td>
+                <td><a class="directory-agent-link" href="/agents/${encodeURIComponent(name)}">${escape(name)}</a><div class="section-subtle mono">${escape(agent.browser_profile || agent.chrome_profile || 'No browser profile')}</div></td>
                 <td><span class="status-badge ${statusClass(agent.status)}">${escape(agent.status)}</span></td>
                 <td>${escape(agent.site)}</td><td>${escape(agent.platform)}</td>
                 <td class="mono">${escape(agent.credits)}</td>
