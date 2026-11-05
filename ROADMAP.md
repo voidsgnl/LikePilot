@@ -80,7 +80,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 ## Phase 3 — Browser dashboard
 
 - [~] **P3.1 — Restructure dashboard information architecture and page layout.**
-  - [x] Separate the agent directory from individual agent detail URLs.
+  - [x] Separate the searchable agent directory from individual agent detail URLs.
   - [x] Add dedicated provider and social-platform catalog pages.
   - [x] Add direct Operations destinations for database, logs, and diagnostics.
   - [ ] Split agent configuration and browser settings into focused settings pages.

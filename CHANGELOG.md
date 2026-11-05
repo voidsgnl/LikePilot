@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- Started the full dashboard information-architecture redesign: dedicated agent detail pages, provider and platform directories, and direct Operations subpages. Existing Flask APIs and runtime data remain the source of truth.
+- Started the full dashboard information-architecture redesign: a searchable agent directory, dedicated per-agent workspaces, provider and platform catalogs, and direct Operations subpages. Existing Flask APIs and runtime data remain the source of truth.
+- Added per-agent runtime controls for start, ready, initialize, pause, resume, stop, and pending platform selection; recent events use the existing runtime log format.
 
 - Introduced a shared dashboard theme inspired by msf-web-console: compact dark surfaces, restrained green accents, consistent controls, and responsive navigation.
 
