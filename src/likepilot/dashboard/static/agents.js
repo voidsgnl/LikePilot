@@ -225,6 +225,7 @@
                         <div class="focus-header-actions">
                             <div id="status-${escapeHtml(name)}" class="${statusChip(status.status)}">${escapeHtml(statusLabel(status.status))}</div>
                             <div class="actions focus-inline-actions" id="controls-${escapeHtml(name)}"></div>
+                            <a class="btn-secondary btn-compact" href="/agents/${encodeURIComponent(name)}">Open workspace ↗</a>
                         </div>
                     </div>
 

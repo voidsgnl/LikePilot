@@ -282,13 +282,40 @@ def brand_asset(filename):
 @app.route('/')
 @login_required
 def index():
-    return render_template('index.html', page="grid")
+    return redirect(url_for('agents'))
+
+
+@app.route('/agents')
+@login_required
+def agents():
+    return render_template('index.html', page="agents")
+
+
+@app.route('/agents/<path:agent_name>')
+@login_required
+def agent_detail(agent_name):
+    agent = get_agent(agent_name)
+    if not agent:
+        return render_template('agent_detail.html', page="agents", agent_name=agent_name), 404
+    return render_template('agent_detail.html', page="agents", agent_name=agent_name)
 
 
 @app.route('/dashboard')
 @login_required
 def dashboard():
     return render_template('dashboard.html', page="dashboard")
+
+@app.route('/providers')
+@login_required
+def providers():
+    return render_template('providers.html', page="providers")
+
+
+@app.route('/platforms')
+@login_required
+def platforms():
+    return render_template('platforms.html', page="platforms")
+
 
 @app.route('/analytics')
 @login_required
@@ -319,9 +346,12 @@ def api_browser_setting():
 
 
 @app.route('/operations')
+@app.route('/operations/<operation_view>')
 @login_required
-def operations():
-    return render_template('operations.html', page="operations")
+def operations(operation_view='database'):
+    if operation_view not in {'database', 'logs', 'diagnostics'}:
+        return redirect(url_for('operations', operation_view='database'))
+    return render_template('operations.html', page="operations", operation_view=operation_view)
 
 @app.route('/api/status')
 @login_required

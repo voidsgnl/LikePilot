@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block body_class %}page-agent-detail{% endblock %}
+{% block title %}Agent workspace{% endblock %}
+{% block subtitle %}A dedicated control and inspection workspace for one agent.{% endblock %}
+{% block head %}<script src="{{ url_for('static', filename='agent-detail.js') }}" defer></script>{% endblock %}
+{% block content %}
+<div class="workspace-page" id="agent-detail" data-agent-name="{{ agent_name }}">
+    <div class="workspace-toolbar">
+        <a class="btn-secondary btn-compact" href="{{ url_for('agents') }}">← All agents</a>
+        <span class="mono section-subtle">AGENT / {{ agent_name }}</span>
+    </div>
+    <section class="panel panel-pad workspace-hero">
+        <div class="workspace-title-row">
+            <div>
+                <div class="section-kicker">Agent identity</div>
+                <h2 class="workspace-title" id="agent-name">{{ agent_name }}</h2>
+                <p class="section-subtle" id="agent-summary">Loading agent state…</p>
+            </div>
+            <span class="status-badge" id="agent-status">Loading</span>
+        </div>
+        <div class="workspace-actions">
+            <button class="btn-primary" type="button" data-agent-action="start">Start</button>
+            <button class="btn-secondary" type="button" data-agent-action="pause">Pause</button>
+            <button class="btn-secondary" type="button" data-agent-action="resume">Resume</button>
+            <button class="btn-danger" type="button" data-agent-action="stop">Stop</button>
+        </div>
+    </section>
+    <section class="workspace-metrics">
+        <article class="stat-card"><div class="stat-label">Credits</div><div class="stat-value" id="agent-credits">—</div></article>
+        <article class="stat-card"><div class="stat-label">Session gain</div><div class="stat-value" id="agent-gain">—</div></article>
+        <article class="stat-card"><div class="stat-label">Session peak</div><div class="stat-value" id="agent-peak">—</div></article>
+        <article class="stat-card"><div class="stat-label">Samples</div><div class="stat-value" id="agent-samples">—</div></article>
+    </section>
+    <div class="workspace-columns">
+        <section class="panel panel-pad stack-sm">
+            <div class="surface-header"><div><div class="section-kicker">Configuration</div><h3 class="section-heading">Agent profile</h3></div></div>
+            <dl class="detail-list">
+                <div><dt>Provider</dt><dd id="agent-provider">—</dd></div>
+                <div><dt>Platform action</dt><dd id="agent-platform">—</dd></div>
+                <div><dt>Browser profile</dt><dd id="agent-profile">—</dd></div>
+                <div><dt>Proxy</dt><dd id="agent-proxy">—</dd></div>
+                <div><dt>Fallback</dt><dd id="agent-fallback">—</dd></div>
+                <div><dt>Heartbeat</dt><dd class="mono" id="agent-heartbeat">—</dd></div>
+                <div><dt>Session started</dt><dd class="mono" id="agent-session-start">—</dd></div>
+            </dl>
+            <a class="btn-secondary" href="{{ url_for('settings') }}">Manage agent configuration</a>
+        </section>
+        <section class="panel panel-pad stack-sm">
+            <div class="surface-header"><div><div class="section-kicker">Runtime trail</div><h3 class="section-heading">Recent agent events</h3></div><span class="panel-note mono">Latest 5</span></div>
+            <div id="agent-event-list" class="event-list"><div class="section-subtle">Loading events…</div></div>
+            <div id="agent-error" class="notice notice-danger" hidden></div>
+        </section>
+    </div>
+</div>
+{% endblock %}

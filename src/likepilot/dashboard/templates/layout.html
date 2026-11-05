@@ -16,6 +16,7 @@
         rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='console-theme.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='workspace-pages.css') }}">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
     <style>
@@ -55,76 +56,21 @@
                 </div>
 
                 <nav class="nav-group" aria-label="Primary">
-                    <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}">
-                        <span class="nav-icon" title="Dashboard" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
-                                <rect x="3" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="14" width="7" height="7"></rect>
-                                <rect x="3" y="14" width="7" height="7"></rect>
-                            </svg>
-                        </span>
-                        <span class="nav-copy">
-                            <span class="nav-title">Dashboard</span>
-                            <span class="nav-meta">Live overview</span>
-                        </span>
-                    </a>
-                    <a href="/" class="nav-link {% if page == 'grid' %}active{% endif %}">
-                        <span class="nav-icon" title="Agents" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
-                                <rect x="3.5" y="5" width="17" height="14" rx="3"></rect>
-                                <path d="M7.5 9.5h9m-9 4h5m-2.5-8v-2m5 2v-2"></path>
-                            </svg>
-                        </span>
-                        <span class="nav-copy">
-                            <span class="nav-title">Agents</span>
-                            <span class="nav-meta">Runtime surface</span>
-                        </span>
-                    </a>
-                    <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}">
-                        <span class="nav-icon" title="Analytics" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
-                                <path d="M4 18.5h16"></path>
-                                <path d="M7 18V11"></path>
-                                <path d="M12 18V7"></path>
-                                <path d="M17 18v-4"></path>
-                                <path d="M6 8.5 10 6l3 2.5 4-3"></path>
-                            </svg>
-                        </span>
-                        <span class="nav-copy">
-                            <span class="nav-title">Analytics</span>
-                            <span class="nav-meta">Credit telemetry</span>
-                        </span>
-                    </a>
-                    <a href="/settings" class="nav-link {% if page == 'settings' %}active{% endif %}">
-                        <span class="nav-icon" title="Settings" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
-                                <path d="M5 7h14"></path>
-                                <path d="M5 17h14"></path>
-                                <path d="M9 7a2 2 0 1 0 0 .01"></path>
-                                <path d="M15 17a2 2 0 1 0 0 .01"></path>
-                            </svg>
-                        </span>
-                        <span class="nav-copy">
-                            <span class="nav-title">Config</span>
-                            <span class="nav-meta">Provisioning</span>
-                        </span>
-                    </a>
-                    <a href="/operations" class="nav-link {% if page == 'operations' %}active{% endif %}">
-                        <span class="nav-icon" title="Operations" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
-                                <path d="M4.5 6.5h15"></path>
-                                <path d="M4.5 12h15"></path>
-                                <path d="M4.5 17.5h15"></path>
-                                <path d="M8 6.5v11"></path>
-                            </svg>
-                        </span>
-                        <span class="nav-copy">
-                            <span class="nav-title">Operations</span>
-                            <span class="nav-meta">Inspectors</span>
-                        </span>
-                    </a>
-                </nav>
+                    <div class="nav-section-label">Workspace</div>
+                    <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon">▦</span><span class="nav-copy"><span class="nav-title">Overview</span><span class="nav-meta">System summary</span></span></a>
+                    <a href="/agents" class="nav-link {% if page == 'agents' %}active{% endif %}"><span class="nav-icon">◉</span><span class="nav-copy"><span class="nav-title">Agents</span><span class="nav-meta">Directory and control</span></span></a>
+                    <a href="/providers" class="nav-link {% if page == 'providers' %}active{% endif %}"><span class="nav-icon">⇄</span><span class="nav-copy"><span class="nav-title">Providers</span><span class="nav-meta">Service integrations</span></span></a>
+                    <a href="/platforms" class="nav-link {% if page == 'platforms' %}active{% endif %}"><span class="nav-icon">◎</span><span class="nav-copy"><span class="nav-title">Platforms</span><span class="nav-meta">Network actions</span></span></a>
+                    <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span><span class="nav-meta">Credit telemetry</span></span></a>
+                    <div class="nav-section-label">Administration</div>
+                    <a href="/settings" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span><span class="nav-meta">Browser and agents</span></span></a>
+                    <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span><span class="nav-meta">Database, logs, diagnostics</span></span></a>
+                    <div class="nav-subgroup">
+                        <a href="/operations/database" class="nav-sublink">Database</a>
+                        <a href="/operations/logs" class="nav-sublink">Runtime logs</a>
+                        <a href="/operations/diagnostics" class="nav-sublink">Diagnostics</a>
+                    </div>
+                </nav>          </nav>
 
                 <div class="sidebar-footer">
                     <div class="theme-panel">

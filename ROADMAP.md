@@ -79,11 +79,19 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 ## Phase 3 — Browser dashboard
 
-- [ ] **P3.1 — Audit dashboard controls against backend behavior.**
+- [~] **P3.1 — Restructure dashboard information architecture and page layout.**
+  - [x] Separate the agent directory from individual agent detail URLs.
+  - [x] Add dedicated provider and social-platform catalog pages.
+  - [x] Add direct Operations destinations for database, logs, and diagnostics.
+  - [ ] Split agent configuration and browser settings into focused settings pages.
+  - [ ] Verify responsive navigation, page state, and all existing actions.
+- [ ] **P3.1a — Audit dashboard controls against backend behavior.**
 - [~] **P3.2 — Verify settings persistence and validation.**
   - [x] Add authenticated API endpoints and dashboard control for global browser selection.
   - [ ] Verify persistence and invalid-value rejection in the local dashboard.
-- [ ] **P3.3 — Improve agent status, activity, analytics, and error visibility.**
+- [~] **P3.3 — Improve agent status, activity, analytics, and error visibility.**
+  - [x] Add a dedicated per-agent detail workspace with status, controls, configuration summary, and recent events.
+  - [ ] Verify all controls and status refresh behavior locally.
 - [ ] **P3.4 — Verify the browser dashboard across supported browsers and screen sizes.**
 - **Acceptance:** visible controls map to working backend behavior with clear success, empty, loading, and error states.
 

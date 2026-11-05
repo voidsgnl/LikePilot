@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block body_class %}page-directory{% endblock %}
+{% block title %}Providers{% endblock %}
+{% block subtitle %}Engagement providers connected to LikePilot. Provider selection remains configured per agent.{% endblock %}
+{% block content %}
+<section class="directory-intro"><div><div class="section-kicker">Integration catalog</div><h2 class="section-heading">Provider connections</h2><p class="section-subtle">Choose a provider when configuring an agent. This page is an inventory; it does not change provider credentials or agent assignments.</p></div></section>
+<div class="directory-grid">
+{% for name, description, status in [
+('Like4Like', 'Engagement exchange provider used by existing agent configurations.', 'Available'),
+('KingdomLikes', 'Alternative engagement provider adapter.', 'Available'),
+('YouLikeHits', 'Alternative engagement provider adapter.', 'Available')
+] %}
+<article class="panel panel-pad directory-card"><div class="directory-card-top"><span class="integration-mark">{{ name[:1] }}</span><span class="status-badge status-available">{{ status }}</span></div><h3>{{ name }}</h3><p class="section-subtle">{{ description }}</p><a class="btn-secondary btn-compact" href="{{ url_for('settings') }}">Configure agents</a></article>
+{% endfor %}
+</div>
+{% endblock %}

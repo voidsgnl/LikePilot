@@ -1,7 +1,7 @@
 // Service Worker for LikePilot - Performance Optimization
-const CACHE_NAME = 'likepilot-v1.0.2';
-const STATIC_CACHE = 'likepilot-static-v1.0.2';
-const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.2';
+const CACHE_NAME = 'likepilot-v1.0.3';
+const STATIC_CACHE = 'likepilot-static-v1.0.3';
+const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.3';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
@@ -14,6 +14,8 @@ const STATIC_ASSETS = [
     '/static/agents.js',
     '/static/settings.js',
     '/static/operations.js',
+    '/static/agent-detail.js',
+    '/static/workspace-pages.css',
     'https://cdn.jsdelivr.net/npm/chart.js',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 ];

@@ -40,7 +40,7 @@
     </div>
 </section>
 
-<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-group-name="operations" data-tab-default="database">
+<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-group-name="operations" data-tab-default="{{ operation_view|default('database') }}">
     <div class="surface-header">
         <div>
             <div class="section-kicker">Operations console</div>
@@ -51,14 +51,14 @@
     </div>
 
     <div class="subnav">
-        <button class="subnav-button" type="button" data-tab-target="database">Database</button>
-        <button class="subnav-button" type="button" data-tab-target="logs">Logs</button>
-        <button class="subnav-button" type="button" data-tab-target="diagnostics">Diagnostics</button>
+        <a class="subnav-button {% if operation_view == 'database' %}active{% endif %}" href="{{ url_for('operations', operation_view='database') }}">Database</a>
+        <a class="subnav-button {% if operation_view == 'logs' %}active{% endif %}" href="{{ url_for('operations', operation_view='logs') }}">Logs</a>
+        <a class="subnav-button {% if operation_view == 'diagnostics' %}active{% endif %}" href="{{ url_for('operations', operation_view='diagnostics') }}">Diagnostics</a>
     </div>
 
     <div id="operations-feedback" class="section-subtle">Loading operations data.</div>
 
-    <div class="tab-panel active" data-tab-panel="database">
+    <div class="tab-panel {% if operation_view == 'database' %}active{% endif %}" data-tab-panel="database">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row">
@@ -99,7 +99,7 @@
         </div>
     </div>
 
-    <div class="tab-panel" data-tab-panel="logs">
+    <div class="tab-panel {% if operation_view == 'logs' %}active{% endif %}" data-tab-panel="logs">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row">
@@ -128,7 +128,7 @@
         </div>
     </div>
 
-    <div class="tab-panel" data-tab-panel="diagnostics">
+    <div class="tab-panel {% if operation_view == 'diagnostics' %}active{% endif %}" data-tab-panel="diagnostics">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row-wrap">
