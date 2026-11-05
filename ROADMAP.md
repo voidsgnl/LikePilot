@@ -136,7 +136,7 @@ The project is intended for educational, experimental, and software-development 
 - [ ] **P4.6 — Review dashboard authentication, session handling, and network exposure.**
 - **Acceptance:** User data can be backed up and restored; secrets are not exposed in logs; update and dashboard behavior has documented safeguards.
 
-## Phase 5 — Installation, portability, and packaging
+## Phase 5 — Web installation and portability
 
 **Goal:** Provide one reproducible source-based web installation and startup workflow.
 
@@ -177,7 +177,7 @@ The project is intended for educational, experimental, and software-development 
 
 - [ ] **P7.1 — Replace the current Windows-only README with accurate multi-platform project documentation.**
 - [ ] **P7.2 — Document provider vs. social-network integrations and verified feature status.**
-- [ ] **P7.3 — Add source installation, executable installation, configuration, troubleshooting, and backup/restore guides.**
+- [ ] **P7.3 — Document web source installation, configuration, troubleshooting, and backup/restore; remove executable installation guidance.**
 - [ ] **P7.4 — Document architecture and the final directory structure.**
 - [ ] **P7.5 — Maintain changelog and release notes.**
 - **Acceptance:** Documentation matches tested behavior and clearly distinguishes available, partial, planned, and unsupported features.
