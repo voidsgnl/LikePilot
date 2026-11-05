@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Simplified Analytics, Create Agent, Manage Agents, and Browser Settings by removing repeated headings, decorative labels, redundant descriptions, and initial loading copy; corrected the historical chart label and refreshed the service-worker cache to v1.0.14.
+
 - Restricted Operations → Database to schema metadata only (tables, columns, nullability, primary/foreign keys, and indexes); removed row previews and the table-data API. Bumped the service-worker cache to v1.0.13.
 
 - Centered and simplified the login screen; removed redundant navigation/page copy; disabled decorative dashboard motion and stabilized header/overview loading space. Updated service-worker cache to v1.0.12.
