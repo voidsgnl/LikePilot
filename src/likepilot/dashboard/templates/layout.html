@@ -49,24 +49,21 @@
                         <img src="{{ url_for('brand_asset', filename='192x192.png') }}" class="brand-mark-image" alt="">
                     </div>
                     <div class="brand-copy">
-                        <div class="brand-kicker">LikePilot</div>
-                        <div class="brand-title">Agent workspace</div>
+                            <div class="brand-title">LikePilot</div>
                     </div>
                 </div>
 
                 <nav class="nav-group" aria-label="Primary">
-                    <div class="nav-section-label">Workspace</div>
-                    <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon">▦</span><span class="nav-copy"><span class="nav-title">Overview</span><span class="nav-meta">System summary</span></span></a>
-                    <a href="/agents" class="nav-link {% if page == 'agents' %}active{% endif %}"><span class="nav-icon">◉</span><span class="nav-copy"><span class="nav-title">Agents</span><span class="nav-meta">Directory and control</span></span></a>
-                    <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span><span class="nav-meta">Credit telemetry</span></span></a>
-                    <div class="nav-section-label">Administration</div>
-                    <a href="/settings/browser" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span><span class="nav-meta">Browser and agents</span></span></a>
+                    <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon">▦</span><span class="nav-copy"><span class="nav-title">Overview</span></span></a>
+                    <a href="/agents" class="nav-link {% if page == 'agents' %}active{% endif %}"><span class="nav-icon">◉</span><span class="nav-copy"><span class="nav-title">Agents</span></span></a>
+                    <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span></span></a>
+                    <a href="/settings/browser" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span></span></a>
                     <div class="nav-subgroup {% if page == 'settings' %}nav-subgroup-active{% endif %}">
                         <a href="/settings/browser" class="nav-sublink {% if settings_view == 'browser' %}active{% endif %}">Browser</a>
                         <a href="/settings/agents/new" class="nav-sublink {% if settings_view == 'create' %}active{% endif %}">Create agent</a>
                         <a href="/settings/agents/manage" class="nav-sublink {% if settings_view == 'manage' %}active{% endif %}">Manage agents</a>
                     </div>
-                    <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span><span class="nav-meta">Database, logs, diagnostics</span></span></a>
+                    <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span></span></a>
                     <div class="nav-subgroup {% if page == 'operations' %}nav-subgroup-active{% endif %}">
                         <a href="/operations/database" class="nav-sublink {% if operation_view == 'database' %}active{% endif %}">Database</a>
                         <a href="/operations/logs" class="nav-sublink {% if operation_view == 'logs' %}active{% endif %}">Runtime logs</a>
@@ -109,12 +106,9 @@
         <main class="main-content" id="main-content" role="main">
             <header class="topbar" role="banner">
                 <div class="topbar-main">
-                    <div class="topbar-eyebrow">Agent management</div>
                     <div class="topbar-heading-row">
                         <h1 class="page-title">{% block title %}{% endblock %}</h1>
                     </div>
-                    <div class="page-subtitle">{% block subtitle %}Monitor agents, track credits, and manage activity
-                        from a single workspace.{% endblock %}</div>
                 </div>
                 <div class="topbar-meta">
                     <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
@@ -126,7 +120,6 @@
                         </div>
                     </div>
                     <div id="agent-quick-switch" class="agent-quick-switch" role="navigation" aria-label="Quick agent switch">
-                        <span class="section-subtle">Loading agents.</span>
                     </div>
                 </div>
             </header>

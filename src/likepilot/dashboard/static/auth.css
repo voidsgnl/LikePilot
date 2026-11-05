@@ -341,3 +341,21 @@ body {
         grid-column: auto;
     }
 }
+
+/* Compact, centered authentication surface. */
+.auth-body{display:grid;place-items:center;min-height:100dvh;padding:24px}
+.login-shell{width:min(400px,100%);min-height:0;display:block}
+.login-card{width:100%;padding:30px;gap:24px;border-radius:10px;background:#111820;box-shadow:0 16px 40px rgba(0,0,0,.28)}
+.auth-brand-lockup{justify-content:center;gap:10px}
+.auth-brand-mark{width:38px;height:38px;padding:3px;border-radius:7px}
+.auth-brand-title{margin:0;font-size:1.05rem}
+.login-card-header,.card-copy,.login-footnote,.login-copy,.feature-grid{display:none}
+.auth-form{gap:14px}
+.card-title{margin:0 0 4px;font-size:1.35rem;letter-spacing:-.02em}
+.auth-label{display:block;margin-bottom:6px}
+.auth-input,.auth-button{min-height:40px;border-radius:6px}
+.auth-input:hover,.auth-button:hover{transform:none}
+.auth-button{margin-top:4px;background:#238636;border-color:#2ea043;color:#fff}
+.auth-button:hover{background:#2ea043;border-color:#3fb950}
+.error-msg{margin:0;border-radius:6px}
+@media(max-width:640px){.auth-body{padding:16px}.login-card{padding:24px;border-radius:8px}}

@@ -3,83 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LikePilot Control</title>
+    <title>LikePilot · Sign in</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('brand_asset', filename='favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('brand_asset', filename='favicon-32x32.png') }}">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('brand_asset', filename='favicon-16x16.png') }}">
     <link rel="apple-touch-icon" href="{{ url_for('brand_asset', filename='apple-touch-icon.png') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
-        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='console-theme.css') }}">
 </head>
 <body class="auth-body">
-    <div class="login-shell">
-        <section class="login-copy">
-            <div class="login-copy-top">
-                <div class="auth-brand-lockup">
-                    <div class="auth-brand-mark" aria-hidden="true">
-                        <img src="{{ url_for('brand_asset', filename='192x192.png') }}" class="auth-brand-image" alt="">
-                    </div>
-                    <div>
-                        <div class="eyebrow">Operator Console</div>
-                        <div class="auth-brand-title">LikePilot</div>
-                    </div>
+    <main class="login-shell">
+        <section class="login-card" aria-labelledby="login-title">
+            <div class="auth-brand-lockup">
+                <div class="auth-brand-mark" aria-hidden="true">
+                    <img src="{{ url_for('brand_asset', filename='192x192.png') }}" class="auth-brand-image" alt="">
                 </div>
-                <h1 class="hero-title">Mission control for multi-account credit farming.</h1>
-                <div class="hero-copy">Authenticate once, then manage agents, switch exhausted platforms, inspect logs, and audit the SQLite runtime from the same surface.</div>
+                <div class="auth-brand-title">LikePilot</div>
             </div>
-
-            <div class="feature-grid">
-                <div class="feature-item">
-                    <div class="feature-kicker">Live ops</div>
-                    <div class="feature-title">Agent runtime grid</div>
-                    <div class="feature-copy">Start, pause, resume, and stop sessions without leaving the workspace.</div>
-                </div>
-                <div class="feature-item">
-                    <div class="feature-kicker">Diagnostics</div>
-                    <div class="feature-title">Logs and schema browser</div>
-                    <div class="feature-copy">Inspect tables, read logs, and review captured diagnostics from the same dashboard.</div>
-                </div>
-                <div class="feature-item feature-item-wide">
-                    <div class="feature-kicker">Browser access</div>
-                    <div class="feature-title">Local web dashboard</div>
-                    <div class="feature-copy mono">Python server • browser UI • local runtime data</div>
-                </div>
-            </div>
-        </section>
-
-        <section class="login-card">
-            <div class="login-card-header">
-                <div class="login-card-kicker">Secure access</div>
-                <h2 class="card-title">Sign in</h2>
-                <div class="card-copy">Use your dashboard credentials to open the LikePilot workspace.</div>
-            </div>
-
             <form method="POST" class="auth-form">
+                <h1 class="card-title" id="login-title">Sign in</h1>
                 <div>
                     <label class="auth-label" for="username">Username</label>
-                    <input class="auth-input" id="username" type="text" name="username" required autocomplete="off" autofocus>
+                    <input class="auth-input" id="username" type="text" name="username" required autocomplete="username" autofocus>
                 </div>
                 <div>
                     <label class="auth-label" for="password">Password</label>
-                    <input class="auth-input" id="password" type="password" name="password" required>
+                    <input class="auth-input" id="password" type="password" name="password" required autocomplete="current-password">
                 </div>
-                <button class="auth-button" type="submit">Enter dashboard</button>
+                <button class="auth-button" type="submit">Sign in</button>
             </form>
-
-                {% if error %}
-            <div class="error-msg">{{ error }}</div>
+            {% if error %}
+            <div class="error-msg" role="alert">{{ error }}</div>
             {% endif %}
-
-            <div class="login-footnote">
-                <span class="login-footnote-dot" aria-hidden="true"></span>
-                Session-based access is enabled for this local dashboard.
-            </div>
         </section>
-    </div>
+    </main>
 </body>
 </html>

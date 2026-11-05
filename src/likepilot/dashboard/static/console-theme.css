@@ -40,3 +40,13 @@ input:not([type=checkbox]):not([type=radio]),select,textarea{min-height:34px;pad
 
 /* The mobile navigation backdrop must not participate in the desktop grid. */
 .sidebar-backdrop{display:none!important}
+
+/* Keep page geometry steady: no entrance, pulse, glow, or hover movement. */
+*,*::before,*::after{animation:none!important;scroll-behavior:auto!important}
+.app-shell,.sidebar,.main-content,.content-wrapper,.panel,.stat-card,.focus-card,button,select,input,textarea,.nav-link,.quick-agent,.data-table tbody tr,.event-item,.settings-agent-card{transform:none!important}
+.app-shell,.nav-link,.quick-agent,button,select,input,textarea,.stat-card,.focus-card,.data-table tbody tr{transition:color .12s ease,background-color .12s ease,border-color .12s ease!important}
+.topbar-meta{width:min(38vw,360px);min-width:220px}
+.agent-quick-switch{width:100%;min-height:26px;max-height:26px;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+.status-cluster{min-height:24px}
+#overview-updated{display:inline-block;min-width:118px;text-align:right;white-space:nowrap}
+@media(max-width:700px){.topbar-meta{width:100%;min-width:0}.agent-quick-switch{justify-content:flex-start}#overview-updated{min-width:0}}
