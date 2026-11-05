@@ -59,7 +59,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [ ] Add non-destructive migration/compatibility handling for current root-level files.
   - [ ] Move runtime-generated logs, profiles, database, backups, and diagnostics only after backup/restore tests.
   - **Acceptance:** existing user data is discovered and preserved after upgrade.
-- [ ] **P1.5 — Resolve redundancy and legacy code.**
+- [~] **P1.5 — Resolve redundancy and legacy code.**
+  - [x] Remove obsolete `index.html` and `settings.html` templates after tracing active Flask routes to their dedicated replacements.
   - [ ] Compare `core/state.py` and `core/database.py` schema and callers.
   - [ ] Review agent/statistics facades and both supervisor implementations.
   - [ ] Review `legacy/advanced_bot.py`; retain or remove based on an explicit usage decision.

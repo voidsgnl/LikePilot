@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Removed superseded `index.html` and `settings.html` templates after confirming that no active Flask route renders them.
+
 - Started the full dashboard information-architecture redesign: a searchable agent directory, dedicated per-agent workspaces, provider and platform catalogs, and direct Operations subpages. Existing Flask APIs and runtime data remain the source of truth.
 - Added per-agent runtime controls for start, ready, initialize, pause, resume, stop, and pending platform selection; recent events use the existing runtime log format.
 - Split Analytics into dedicated routes for summary, trends, platforms, heatmap, insights, and export; split Settings into browser, create-agent, and manage-agent pages; Operations now loads only its selected workspace.
