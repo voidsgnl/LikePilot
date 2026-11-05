@@ -105,6 +105,24 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P3.4 — Verify the browser dashboard across supported browsers and screen sizes.**
 - **Acceptance:** visible controls map to working backend behavior with clear success, empty, loading, and error states.
 
+## Phase 3.5 — Dashboard content cleanup
+
+- [~] **P3.5.1 — Remove duplicate and low-value page content.**
+  - [x] Remove Overview shortcuts that duplicate primary navigation.
+  - [x] Remove repeated summary metrics and low-value columns from the agent directory.
+  - [x] Simplify Create Agent and Manage Agents panels by removing repeated headings, nested cards, and redundant links.
+  - [x] Remove static provider/platform catalogs from primary navigation without deleting their adapters or routes.
+  - [x] Keep unavailable Heatmap and Insights views out of the Analytics navigation until their telemetry exists.
+  - [x] Load Chart.js only on Analytics pages and refresh the service-worker cache.
+  - [x] Reduce theme choices to Dark, Light, and High Contrast while normalizing legacy saved theme values.
+  - [x] Render notification text as text content rather than interpolated HTML.
+  - [ ] Verify all affected pages and actions in Firefox and Chrome.
+  - [ ] Run the full test suite and fix any regressions.
+- [ ] **P3.5.2 — Refine agent workspace controls and information density.**
+  - [ ] Review state-aware availability of Start, Ready, Initialize, Pause, Resume, and Stop.
+  - [ ] Separate live runtime details from saved configuration without duplicating fields.
+  - [ ] Keep only metrics that support an operational decision.
+
 ## Phase 4 — Security and operations
 
 - [ ] **P4.1 — Document persistence schemas and migration strategy.**
