@@ -31,12 +31,12 @@ The project is intended for educational, experimental, and software-development 
 
 **Goal:** Establish what is actually present, what starts, and which code paths are authoritative before restructuring.
 
-- [~] **P0.1 — Resolve missing integration package**
-  - [ ] Confirm whether the `modules/` package exists in another local copy, ignored directory, release artifact, or earlier repository state.
-  - [ ] Trace every import from `core/runtime.py` and identify the required integration classes.
-  - [ ] Determine whether current `main` can import and start the application.
-  - [ ] Restore or implement missing integrations only after their intended behavior and source are established.
-  - **Acceptance:** A clean checkout can import the primary runtime; each advertised integration has an identifiable implementation or is clearly marked unavailable.
+- [~] **P0.1 — Resolve and verify integration package**
+  - [x] Confirm the `modules/` source exists in the remote `main` tree.
+  - [x] Trace the `core/runtime.py` imports and identify the required integration classes.
+  - [ ] Verify clean-checkout imports and primary application startup.
+  - [ ] Confirm runtime behavior for each registered provider/network/action combination.
+  - **Acceptance:** A clean checkout can import and start the primary runtime; each registered integration has an identifiable implementation and a verified execution path.
 
 - [ ] **P0.2 — Verify startup paths**
   - [ ] Trace `farm.py`, `likepilot_desktop.py`, `dashboard_desktop.py`, and `start_silent.py`.
@@ -188,7 +188,7 @@ The project is intended for educational, experimental, and software-development 
 
 | ID | Finding | Status | Resolution rule |
 |---|---|---|---|
-| A-001 | `core/runtime.py` imports a `modules/` package absent from the tracked `main` tree and its visible path history | [!] Blocked pending local check | Check ignored/untracked local files; no `modules/` path commits were found. Do not fabricate replacement integrations |
+| A-001 | `core/runtime.py` imports the `modules/` integration package | [~] Source restored and statically mapped | Remote `main` now contains eight module files; runtime imports are present in the source. Verify clean-checkout import/startup and execution behavior before marking complete |
 | A-002 | Root directory contains application entrypoints and other mixed-purpose files | [x] Inventory and mapping complete | Move only after package/import and runtime-path migration gates pass |
 | A-003 | Persistence responsibilities overlap between `core/state.py` and `core/database.py` | [~] Traced partially | `core.state` is primary app state; `core.database` has a separate schema and is imported by smart timing. Keep separate until schema and actual usage are fully reconciled |
 | A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [~] Traced partially | `core.agents` is imported by the dashboard and delegates to state; `core.stats` has no tracked internal caller found. Preserve both pending compatibility review |
@@ -208,9 +208,9 @@ Record significant changes here. Keep entries factual and include verification r
 |---|---|---|
 | 2026-11-05 | Initial roadmap created from the repository audit. No application files changed as part of this roadmap creation. | Initial tracked-tree and source inspection; implementation work remains pending. |
 | 2026-11-05 | Approved target directory direction and added the initial file-by-file migration map at `docs/architecture/directory-migration-map.md`. No application files moved or modified. | Static inspection of core, runtime, dashboard, launchers, configuration, and dependency declarations; full inventory and runtime verification remain pending. |
-| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
-| 2026-11-05 | Checked Git history for the missing `modules/` path; no path commits were found. Expanded the migration map with exact dashboard asset paths. | GitHub path-history query returned no commits for `modules/`; local ignored/untracked files remain unverified. |
-| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
+| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout import and startup verification remains pending; the integration source was subsequently added to remote `main`. |
+| 2026-11-05 | Checked Git history for the then-missing `modules/` path and expanded the migration map with exact dashboard asset paths. | GitHub path-history query returned no commits for `modules/` at that time; the integration source was later committed to `main`. |
+| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed the original tracked tree, core modules, launchers, config/state ownership, and runtime selector callers. Integration source was subsequently added; startup verification remains open. |
 
 ## Decision log
 
@@ -221,3 +221,5 @@ Record significant changes here. Keep entries factual and include verification r
 | 2026-11-05 | Treat executable distribution and source installation as separate supported workflows. | They have different dependencies, launch paths, and packaging requirements. |
 | 2026-11-05 | Describe LikePilot as multi-platform, with providers distinct from social networks. | Like4Like is one provider, not the product identity. |
 | 2026-11-05 | Use the approved `src/likepilot` package layout with separate integrations, dashboard, desktop/entrypoints, scripts, packaging, tests, docs, and runtime data areas as the target architecture. | Reduce root clutter while preserving distinct runtime responsibilities; validate import and data-path changes before migration. |
+
+| 2026-11-05 | Verified the remote `modules/` directory and reconciled it with `core/runtime.py`; updated A-001 and P0.1. No application files moved or modified. | Eight module files present; all runtime-imported class names are defined in the integration source. Static verification only; clean-checkout import, startup, and live execution remain untested. |
