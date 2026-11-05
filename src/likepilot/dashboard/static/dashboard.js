@@ -58,12 +58,14 @@ function showNotification(message, type = 'info', duration = 3000) {
     };
 
     notification.style.borderLeft = `4px solid ${colors[type] || colors.info}`;
-    notification.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="width: 8px; height: 8px; border-radius: 50%; background: ${colors[type] || colors.info}; flex-shrink: 0;"></div>
-            <span>${message}</span>
-        </div>
-    `;
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+    const dot = document.createElement('span');
+    dot.style.cssText = `width:8px;height:8px;border-radius:50%;background:${colors[type] || colors.info};flex-shrink:0;`;
+    const label = document.createElement('span');
+    label.textContent = String(message ?? '');
+    row.append(dot, label);
+    notification.appendChild(row);
 
     document.body.appendChild(notification);
 
@@ -119,7 +121,8 @@ function applyTheme(theme) {
 }
 
 function initializeTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'dark';
+    const storedTheme = localStorage.getItem('theme') || 'dark';
+    const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'dark';
     applyTheme(savedTheme);
 }
 
