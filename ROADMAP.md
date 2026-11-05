@@ -174,7 +174,9 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P6.2 — Add unit tests for configuration, paths, state, and persistence.**
 - [ ] **P6.3 — Add integration tests for server routes and agent lifecycle.**
 - [ ] **P6.4 — Add browser/provider integration tests with controlled fixtures.**
-- [ ] **P6.5 — Add linting, formatting, and dependency checks.**
+- [~] **P6.5 — Add automated quality checks.**
+  - [x] Add GitHub Actions to install the project and run compile checks plus the full pytest suite on pushes to `main`, pull requests, and manual dispatch.
+  - [ ] Add linting, formatting, and dependency checks.
 
 ## Phase 7 — Documentation
 
