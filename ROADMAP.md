@@ -81,6 +81,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
   - [x] Add separate Chrome and Firefox driver construction with browser-specific persistent profiles.
+  - [x] Detect the executable inside Ubuntu's Firefox Snap and support `LIKEPILOT_FIREFOX_BINARY` as an explicit override.
   - [ ] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
   - [ ] Verify Chrome regression and proxy behavior for both browsers.
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
@@ -197,7 +198,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-005 | Desktop wrappers and executable build path were unrelated to web operation. | [x] Removed from the supported architecture and repository migration | Keep the web install free of desktop-only dependencies |
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Preserved intentionally | Migrate only with compatibility and backup tests |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
-| A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection; local Firefox verification pending | Verify Firefox/geckodriver and Chrome regression locally |
+| A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection and Ubuntu Firefox Snap binary resolution; local startup verification pending | Verify Firefox/geckodriver and Chrome regression locally |
 
 ## Change tracking
 
