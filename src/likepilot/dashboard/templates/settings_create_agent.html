@@ -2,14 +2,13 @@
 {% block body_class %}page-settings{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 {% block title %}Create agent{% endblock %}
-{% block subtitle %}Provision one agent with its own profile, provider, proxy, and fallback configuration.{% endblock %}
+{% block subtitle %}{% endblock %}
 {% block content %}
-<section class="panel panel-pad stack-sm page-section console-shell"><div class="surface-header"><div><div class="section-kicker">Provisioning</div><h2 class="section-heading">New agent configuration</h2><div class="section-subtle">Configure an agent before it appears in the runtime directory.</div></div><div class="panel-note mono">Agent setup</div></div><div id="settings-feedback" class="section-subtle">Ready to provision.</div>
+<section class="panel panel-pad stack-sm page-section console-shell"><div class="surface-header"><div><h2 class="section-heading">New agent configuration</h2></div></div><div id="settings-feedback" class="section-subtle" aria-live="polite"></div>
 <div class="tab-panel active" data-tab-panel="add">
         <div class="settings-layout settings-layout-single section-scroll">
             <div class="agent-form">
-                <div class="section-subtle" style="margin-bottom:18px;">Each agent is mapped to a persistent browser profile
-                    folder and can be controlled independently.</div>
+                <div class="section-subtle" style="margin-bottom:18px;">Each agent has an independent browser profile and runtime.</div>
 
                 <div class="form-grid">
                     <div class="field-stack">
