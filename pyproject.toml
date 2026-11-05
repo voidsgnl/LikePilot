@@ -20,6 +20,12 @@ dependencies = [
     "eventlet",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.11",
+]
+
 [project.scripts]
 likepilot = "likepilot.entrypoints.server:main"
 

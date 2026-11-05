@@ -10,7 +10,7 @@ Use Python 3.10 or newer:
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e .
+python -m pip install -e ".[dev]"
 ```
 
 The editable install configures the `src/likepilot` package and installs the runtime dependencies declared in `pyproject.toml`.
