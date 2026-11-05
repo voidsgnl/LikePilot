@@ -2,9 +2,9 @@
 {% block body_class %}page-settings{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 {% block title %}Manage agents{% endblock %}
-{% block subtitle %}Edit saved configuration or remove an agent. Stop an agent before changing its profile or settings.{% endblock %}
+{% block subtitle %}{% endblock %}
 {% block content %}
-<section class="panel panel-pad stack-sm page-section console-shell"><div class="surface-header"><div><div class="section-kicker">Configuration inventory</div><h2 class="section-heading">Existing agents</h2><div class="section-subtle">Saved settings are separate from live runtime controls.</div></div><div class="panel-note mono">Saved profiles</div></div><div id="settings-feedback" class="section-subtle">Loading configured agents.</div>
+<section class="panel panel-pad stack-sm page-section console-shell"><div class="surface-header"><div><h2 class="section-heading">Existing agents</h2><div class="section-subtle">Stop an agent before editing or removing its configuration.</div></div></div><div id="settings-feedback" class="section-subtle" aria-live="polite"></div>
 <div class="tab-panel active" data-tab-panel="manage">
         <div class="section-scroll">
             <div id="active-agents-list" class="stack-sm"></div>
