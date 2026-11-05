@@ -149,3 +149,25 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "1250, 1280, 1320" not in script
     assert "initializePredictionChart" not in script
     assert "Summary of recorded credit snapshots." in template
+
+def test_login_screen_is_centered_and_minimal():
+    template = (DASHBOARD / "templates" / "login.html").read_text(encoding="utf-8")
+    styles = (DASHBOARD / "static" / "auth.css").read_text(encoding="utf-8")
+
+    assert 'class="login-card"' in template
+    assert "place-items:center" in styles
+    assert "Mission control for multi-account credit farming." not in template
+    assert "feature-grid" not in template
+    assert "login-footnote" not in template
+
+
+def test_dashboard_shell_avoids_redundant_copy_and_loading_motion():
+    template = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
+    styles = (DASHBOARD / "static" / "console-theme.css").read_text(encoding="utf-8")
+    overview = (DASHBOARD / "templates" / "dashboard.html").read_text(encoding="utf-8")
+
+    assert 'class="topbar-eyebrow"' not in template
+    assert 'class="page-subtitle"' not in template
+    assert "Loading agents." not in template
+    assert "animation:none!important" in styles
+    assert "Loading runtime…" not in overview

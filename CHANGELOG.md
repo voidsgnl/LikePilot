@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Centered and simplified the login screen; removed redundant navigation/page copy; disabled decorative dashboard motion and stabilized header/overview loading space. Updated service-worker cache to v1.0.12.
+
 - Made empty Analytics history explicit with em-dash metric values, removed dormant hard-coded forecast data, tightened Analytics wording, and removed the duplicate Operations heading/tagline.
 
 - Removed the redundant header session summary and local clock; kept the live connection state and agent quick switch. Tightened Overview/Agents wording, corrected browser-profile fallback in the directory, and bumped the service-worker cache to v1.0.11.

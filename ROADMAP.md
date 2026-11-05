@@ -43,6 +43,14 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [ ] Confirm supported Python/browser combinations.
   - **Acceptance:** clean install, imports, and server startup pass without desktop libraries.
 
+## UI refinement — Login and loading stability
+
+- [x] Center the login form and remove the promotional feature copy and redundant session footnote.
+- [x] Remove repeated navigation descriptions and page subtitles from the shared dashboard shell.
+- [x] Disable decorative entrance, pulse, glow, and hover movement that made page transitions feel unstable.
+- [x] Reserve header and quick-switch space; remove the initial loading label and dashboard table loading message to reduce layout shift.
+- [ ] Verify the centered login layout and stable page transitions in Firefox.
+
 ## Phase 1 — Source layout and redundancy
 
 - [x] **P1.1 — Inventory the original root-level files and runtime responsibilities.**
