@@ -87,6 +87,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Split Settings into browser, add-agent, and manage-agent pages.
   - [x] Make the dashboard overview the default landing page and remove duplicate shared script loading.
   - [ ] Verify all new page routes and browser rendering locally.
+  - [x] Remove random heatmap samples and hard-coded forecast/insight claims; show explicit unavailable states until real telemetry exists.
   - [x] Split browser settings, agent creation, and agent configuration management into dedicated pages.
   - [x] Make Operations render and load only the selected database, logs, or diagnostics workspace.
   - [x] Replace the placeholder-heavy overview with a compact live runtime summary.

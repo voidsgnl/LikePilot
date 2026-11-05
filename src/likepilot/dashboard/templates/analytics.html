@@ -153,6 +153,7 @@
             </div>
             <div class="heatmap-container">
                 <div class="heatmap-grid" id="activity-heatmap"></div>
+                <p class="section-subtle">Hourly activity is not currently recorded, so this view will remain empty until that telemetry is available.</p>
                 <div class="heatmap-legend">
                     <div class="legend-scale">
                         <span>Less</span>
@@ -174,56 +175,17 @@
         <div class="insights-grid">
             <section class="panel inset-panel">
                 <h2 class="section-heading">Performance Insights</h2>
-                <div class="insights-list" id="performance-insights">
-                    <div class="insight-item insight-positive">
-                        <div class="insight-icon">📈</div>
-                        <div class="insight-content">
-                            <div class="insight-title">Peak Performance Hours</div>
-                            <div class="insight-description">Your best earning hours are 2-4 PM with 45% higher success rate</div>
-                        </div>
-                    </div>
-                    <div class="insight-item insight-warning">
-                        <div class="insight-icon">⚠️</div>
-                        <div class="insight-content">
-                            <div class="insight-title">Platform Fatigue Detected</div>
-                            <div class="insight-description">Instagram success rate dropped 15% this week. Consider rotation.</div>
-                        </div>
-                    </div>
-                    <div class="insight-item insight-info">
-                        <div class="insight-icon">🎯</div>
-                        <div class="insight-content">
-                            <div class="insight-title">Optimal Agent Count</div>
-                            <div class="insight-description">Running 4-6 agents simultaneously maximizes efficiency without rate limits</div>
-                        </div>
-                    </div>
-                    <div class="insight-item insight-positive">
-                        <div class="insight-icon">💰</div>
-                        <div class="insight-content">
-                            <div class="insight-title">Revenue Trend</div>
-                            <div class="insight-description">Credits earned increased 23% compared to last month</div>
-                        </div>
-                    </div>
+                <div class="empty-state" id="performance-insights">
+                    Insights will appear here when LikePilot has enough recorded runtime history to calculate them.
+                    No performance estimates or platform comparisons are generated from placeholder data.
                 </div>
             </section>
 
             <section class="panel inset-panel">
-                <h2 class="section-heading">Predictive Analytics</h2>
-                <div class="prediction-chart">
-                    <canvas id="predictionChart" height="200"></canvas>
-                </div>
-                <div class="prediction-insights">
-                    <div class="prediction-item">
-                        <div class="prediction-label">Next 24h Projection</div>
-                        <div class="prediction-value positive">+127 credits</div>
-                    </div>
-                    <div class="prediction-item">
-                        <div class="prediction-label">Confidence Level</div>
-                        <div class="prediction-value">87%</div>
-                    </div>
-                    <div class="prediction-item">
-                        <div class="prediction-label">Best Platform Tomorrow</div>
-                        <div class="prediction-value">YouTube</div>
-                    </div>
+                <h2 class="section-heading">Forecasting</h2>
+                <div class="empty-state">
+                    Forecasting is not enabled yet. It will require a sufficiently large, representative history
+                    of actual credit samples before projections can be calculated.
                 </div>
             </section>
         </div>

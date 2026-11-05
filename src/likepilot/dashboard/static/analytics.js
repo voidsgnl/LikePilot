@@ -176,33 +176,11 @@
         updateStats
     );
 
-    // Initialize heatmap
+    // Hourly activity is not part of the current stats API. Do not fabricate samples.
     function initializeHeatmap() {
         const heatmapGrid = document.getElementById('activity-heatmap');
         if (!heatmapGrid) return;
-
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const hours = Array.from({length: 24}, (_, i) => i);
-
-        // Clear existing content
-        heatmapGrid.innerHTML = '';
-
-        // Create cells for each day and hour
-        days.forEach((day, dayIndex) => {
-            hours.forEach((hour, hourIndex) => {
-                const cell = document.createElement('div');
-                cell.className = 'heatmap-cell';
-                cell.title = `${day} ${hour}:00 - ${hour + 1}:00`;
-
-                // Generate random activity level (0-5)
-                const activityLevel = Math.floor(Math.random() * 6);
-                if (activityLevel > 0) {
-                    cell.classList.add(`level-${activityLevel}`);
-                }
-
-                heatmapGrid.appendChild(cell);
-            });
-        });
+        heatmapGrid.replaceChildren();
     }
 
     // Initialize prediction chart
@@ -284,6 +262,4 @@
     initializeHeatmap();
     initializePredictionChart();
 
-    // Update heatmap periodically
-    setInterval(initializeHeatmap, 300000); // Update every 5 minutes
 })();
