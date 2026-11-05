@@ -2,20 +2,20 @@
 {% block body_class %}page-settings{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 {% block title %}Browser settings{% endblock %}
-{% block subtitle %}Choose the browser used by all newly launched agent sessions.{% endblock %}
+{% block subtitle %}{% endblock %}
 {% block content %}
 <section class="panel panel-pad stack-sm page-section console-shell">
     <div class="surface-header">
         <div>
-            <div class="section-kicker">Runtime</div>
-            <h2 class="section-heading">Default browser</h2>
-            <div class="section-subtle">Applies to new sessions. Firefox must be installed locally; restart running agents to apply a browser change.</div>
+            
+            <h2 class="section-heading">Browser</h2>
+            <div class="section-subtle">Used for new sessions. Install Firefox locally if selected; restart running agents to apply changes.</div>
         </div>
-        <div class="panel-note mono">Global setting</div>
+        
     </div>
     <div class="form-grid">
         <div class="field-stack">
-            <label class="section-subtle field-label" for="default-browser">Browser used for new sessions</label>
+            <label class="section-subtle field-label" for="default-browser">New-session browser</label>
             <select id="default-browser">
                 <option value="chrome">Google Chrome</option>
                 <option value="firefox">Mozilla Firefox</option>
@@ -23,7 +23,7 @@
         </div>
         <div class="field-stack">
             <div class="section-subtle field-label">Browser status</div>
-            <div id="browser-setting-feedback" class="section-subtle">Loading browser setting.</div>
+            <div id="browser-setting-feedback" class="section-subtle" aria-live="polite"></div>
         </div>
     </div>
     <div class="actions">
