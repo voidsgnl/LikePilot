@@ -1,29 +1,55 @@
 # LikePilot
 
-LikePilot is a multi-platform automation and agent-management application built with Python. It integrates multiple engagement/task providers with supported social networks through configurable automation agents. The application is managed through a local web dashboard in a browser.
+LikePilot is a multi-platform automation and agent-management application built with Python. It connects engagement/task providers with supported social networks through configurable agents and a browser-based dashboard.
 
-LikePilot is actively developed and intended for educational, experimental, and software-development purposes. Integrations and workflows are evolving; not all functionality should be considered production-ready. Users are responsible for complying with connected services' terms and automating only accounts and environments they are authorized to use.
+**LikePilot has one delivery model: a web application.** It runs as a Python server and is accessed through a normal browser. There is no desktop application, native window wrapper, or executable distribution.
 
-## Getting started
+The project is actively developed for educational, experimental, and software-development purposes. Integrations and workflows are evolving; not all functionality should be considered production-ready. Users are responsible for complying with connected services' terms and automating only accounts and environments they are authorized to use.
 
-The intended workflow is:
+## Quick start
 
-1. Clone the repository.
-2. Create and activate a Python virtual environment.
-3. Install the project dependencies.
-4. Configure the application using the documented setup.
-5. Start the web server with the provided command.
-6. Open the local dashboard URL in your browser.
+Requirements: Python 3.10 or newer and a supported Chrome/Chromium browser for browser-driven agent workflows.
 
-The exact clean-install commands and supported Python versions will be documented after the dependency and startup audit is complete. Until then, use the existing development instructions and treat the setup workflow as evolving.
+```bash
+git clone https://github.com/voidsgnl/LikePilot.git
+cd LikePilot
 
-## Application model
+python3 -m venv .venv
+source .venv/bin/activate
 
-- **Web dashboard:** the sole user interface; accessed through a standard browser.
-- **Application server:** serves the dashboard and coordinates agent execution.
-- **Integrations:** provider-specific and social-network-specific adapters.
-- **Runtime data:** databases, profiles, logs, and backups are kept separate from application source.
+python -m pip install --upgrade pip
+python -m pip install -e .
+
+cp .env.example .env
+```
+
+Edit `.env` and set a private dashboard password and a persistent `FLASK_SECRET_KEY`. Then start the application:
+
+```bash
+python farm.py
+```
+
+Open the login URL printed by the server (normally `http://127.0.0.1:5001/login`). Stop the server with Ctrl+C.
+
+The `farm.py` command is a small compatibility launcher. The installed package also provides `python -m likepilot` and the `likepilot` command.
+
+## Application structure
+
+- `src/likepilot/core/` — runtime, configuration, persistence, browser lifecycle, and shared services.
+- `src/likepilot/integrations/adapters/` — current provider adapters. Their provider/network coupling is preserved during the initial move and will be refined after behavior tests.
+- `src/likepilot/dashboard/` — Flask application, templates, static assets, and favicon resources.
+- `src/likepilot/entrypoints/` — supported web-server entrypoint.
+- `config/` — sanitized configuration examples.
+- `data/` — reserved for runtime data as its migration is completed; existing user data is not moved automatically.
+- `docs/` — architecture, development, and user documentation.
+- `tests/` — automated checks.
+
+## Configuration and data
+
+The application currently reads `config.json`, `.env`, agent state, and other runtime files from the repository/runtime root. Existing files are intentionally preserved during the source-layout migration. A later data-path migration will move runtime-generated data into `data/` with compatibility handling; do not move or delete existing databases, profiles, logs, or configuration files manually as part of this code migration.
+
+Do not expose the development server to an untrusted network. Configure unique dashboard credentials and a stable secret key before use.
 
 ## Project status
 
-LikePilot is under active development. See [ROADMAP.md](ROADMAP.md) for verified progress, outstanding work, and migration decisions.
+See [ROADMAP.md](ROADMAP.md) for verified progress and remaining work. The directory migration is being performed incrementally; the roadmap distinguishes completed structural changes from startup and integration checks that still need to pass.

@@ -1,100 +1,49 @@
-```
-# Database files
-*.db
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
-# Environment files
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment and secrets
 .env
 .env.local
 *.env.*
 
-# Logs
-*.log
+# Runtime data (preserve existing tracked files; ignore new generated data)
+data/*
+!data/.gitkeep
+logs/
+diagnostics/
+profiles/
+backups/
+*.db
+*.sqlite
+*.sqlite3
 
-# Temporary files
+# Runtime-generated files
+*.log
 *.tmp
 *.temp
+runtime_port.txt
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.venv.bak/
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.sqlite
-.DS_Store
-Thumbs.db
-
-# Windows
-$RECYCLE.BIN/
-Desktop.ini
-ehthumbs.db
-Icon?
-Network Trash Folder/
-Temporary Items/
-WS_FTP.LOG
-
-# macOS
-.DS_Store
-.AppleDouble
-.LSOverride
-.Spotlight-V100
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-.apdisk
-
-# Linux
-*~
-*.swp
-*.swo
-*#
-
-# VSCode
-.vscode/
-
-# PyCharm
-.idea/
-
-# Build artifacts
+# Build and package artifacts
 build/
 dist/
 *.egg-info/
 *.egg
+*.whl
 
-# Compression files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
-```
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

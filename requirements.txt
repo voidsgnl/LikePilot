@@ -1,9 +1,1 @@
-selenium
-webdriver-manager
-python-dotenv
-colorama
-undetected-chromedriver
-flask
-requests
-psutil
-eventlet
+-e .
