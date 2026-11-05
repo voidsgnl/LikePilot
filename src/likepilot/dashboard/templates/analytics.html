@@ -3,8 +3,7 @@
 {% block body_class %}page-analytics{% endblock %}
 
 {% block title %}Analytics{% endblock %}
-{% block subtitle %}Understand how credits are moving over time, which platforms are generating samples, and what the
-current session looks like at a glance.{% endblock %}
+{% block subtitle %}Explore one focused view of runtime credit activity and historical performance at a time.{% endblock %}
 {% block head %}
 <script src="{{ url_for('static', filename='analytics.js') }}" defer></script>{% endblock %}
 
@@ -48,7 +47,7 @@ current session looks like at a glance.{% endblock %}
 </section>
 
 <section class="panel panel-pad stack-sm console-shell" data-tab-group data-tab-group-name="analytics"
-    data-tab-default="summary">
+    data-tab-default="{{ analytics_view|default('summary') }}">
     <div class="surface-header">
         <div>
             <div class="section-kicker">Credit telemetry</div>
@@ -59,7 +58,7 @@ current session looks like at a glance.{% endblock %}
         <div class="panel-note mono">Historical export</div>
     </div>
 
-    <section class="panel inset-panel collapsible-block" data-collapsible data-collapsible-key="analytics-export">
+    <section class="panel inset-panel collapsible-block analytics-export-panel" data-collapsible data-collapsible-key="analytics-export" {% if analytics_view != 'export' %}hidden{% endif %}>
         <div class="inline-row-wrap collapsible-header">
             <div>
                 <h3 class="section-heading">Export controls</h3>
@@ -99,17 +98,18 @@ current session looks like at a glance.{% endblock %}
         </div>
     </section>
 
-    <div class="subnav">
-        <button class="subnav-button" type="button" data-tab-target="summary">Summary</button>
-        <button class="subnav-button" type="button" data-tab-target="trends">Trends</button>
-        <button class="subnav-button" type="button" data-tab-target="platforms">Platforms</button>
-        <button class="subnav-button" type="button" data-tab-target="heatmap">Heatmap</button>
-        <button class="subnav-button" type="button" data-tab-target="insights">Insights</button>
-    </div>
+    <nav class="subnav page-nav" aria-label="Analytics pages">
+        <a class="subnav-button {% if analytics_view == 'summary' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='summary') }}">Summary</a>
+        <a class="subnav-button {% if analytics_view == 'trends' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='trends') }}">Trends</a>
+        <a class="subnav-button {% if analytics_view == 'platforms' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='platforms') }}">Platforms</a>
+        <a class="subnav-button {% if analytics_view == 'heatmap' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='heatmap') }}">Heatmap</a>
+        <a class="subnav-button {% if analytics_view == 'insights' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='insights') }}">Insights</a>
+        <a class="subnav-button {% if analytics_view == 'export' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='export') }}">Export</a>
+    </nav>
 
     <div id="analytics-feedback" class="section-subtle">Loading analytics.</div>
 
-    <div class="tab-panel active" data-tab-panel="summary">
+    <div class="tab-panel {% if analytics_view == 'summary' %}active{% endif %}" data-tab-panel="summary" {% if analytics_view != 'summary' %}hidden{% endif %}>
         <section class="panel inset-panel">
             <h2 class="section-heading">Session interpretation</h2>
             <div id="session-summary" class="section-subtle" style="line-height:1.7;">
@@ -118,7 +118,7 @@ current session looks like at a glance.{% endblock %}
         </section>
     </div>
 
-    <div class="tab-panel" data-tab-panel="trends">
+    <div class="tab-panel {% if analytics_view == 'trends' %}active{% endif %}" data-tab-panel="trends" {% if analytics_view != 'trends' %}hidden{% endif %}>
         <section class="panel inset-panel" style="min-height:360px; display:flex; flex-direction:column;">
             <div class="inline-row" style="margin-bottom:12px;">
                 <div>
@@ -133,7 +133,7 @@ current session looks like at a glance.{% endblock %}
         </section>
     </div>
 
-    <div class="tab-panel" data-tab-panel="platforms">
+    <div class="tab-panel {% if analytics_view == 'platforms' %}active{% endif %}" data-tab-panel="platforms" {% if analytics_view != 'platforms' %}hidden{% endif %}>
         <section class="panel inset-panel">
             <h2 class="section-heading">Platform distribution</h2>
             <div class="section-subtle" style="margin-bottom:14px;">How many captured samples came from each platform.
@@ -142,7 +142,7 @@ current session looks like at a glance.{% endblock %}
         </section>
     </div>
 
-    <div class="tab-panel" data-tab-panel="heatmap">
+    <div class="tab-panel {% if analytics_view == 'heatmap' %}active{% endif %}" data-tab-panel="heatmap" {% if analytics_view != 'heatmap' %}hidden{% endif %}>
         <section class="panel inset-panel">
             <div class="inline-row" style="margin-bottom:16px;">
                 <div>
@@ -170,7 +170,7 @@ current session looks like at a glance.{% endblock %}
         </section>
     </div>
 
-    <div class="tab-panel" data-tab-panel="insights">
+    <div class="tab-panel {% if analytics_view == 'insights' %}active{% endif %}" data-tab-panel="insights" {% if analytics_view != 'insights' %}hidden{% endif %}>
         <div class="insights-grid">
             <section class="panel inset-panel">
                 <h2 class="section-heading">Performance Insights</h2>

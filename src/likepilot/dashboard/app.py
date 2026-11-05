@@ -318,9 +318,13 @@ def platforms():
 
 
 @app.route('/analytics')
+@app.route('/analytics/<analytics_view>')
 @login_required
-def analytics():
-    return render_template('analytics.html', page="analytics")
+def analytics(analytics_view='summary'):
+    allowed_views = {'summary', 'trends', 'platforms', 'heatmap', 'insights', 'export'}
+    if analytics_view not in allowed_views:
+        return redirect(url_for('analytics'))
+    return render_template('analytics.html', page="analytics", analytics_view=analytics_view)
 
 @app.route('/settings')
 @login_required

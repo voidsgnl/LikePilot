@@ -3,13 +3,12 @@
 {% block body_class %}page-settings{% endblock %}
 
 {% block title %}Configuration{% endblock %}
-{% block subtitle %}Create agents, assign browser profiles, and remove old nodes from a cleaner configuration
-workspace.{% endblock %}
+{% block subtitle %}Manage one part of the LikePilot runtime configuration at a time.{% endblock %}
 {% block head %}
 <script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 
 {% block content %}
-<section class="panel panel-pad stack-sm page-section console-shell">
+<section class="panel panel-pad stack-sm page-section console-shell settings-browser-panel" {% if settings_view != 'browser' %}hidden{% endif %}>
     <div class="surface-header">
         <div>
             <div class="section-kicker">Runtime</div>
@@ -36,7 +35,7 @@ workspace.{% endblock %}
     </div>
 </section>
 
-<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-default="add">
+<section class="panel panel-pad stack-sm page-section console-shell settings-agent-panel" {% if settings_view == 'browser' %}hidden{% endif %} data-tab-group data-tab-default="{{ 'manage' if settings_view == 'agents/manage' else 'add' }}">
     <div class="surface-header">
         <div>
             <div class="section-kicker">Provisioning</div>
@@ -47,14 +46,15 @@ workspace.{% endblock %}
         <div class="panel-note mono">Persisted configuration</div>
     </div>
 
-    <div class="subnav">
-        <button class="subnav-button" type="button" data-tab-target="add">Add agent</button>
-        <button class="subnav-button" type="button" data-tab-target="manage">Manage agents</button>
-    </div>
+    <nav class="subnav page-nav" aria-label="Settings pages">
+        <a class="subnav-button {% if settings_view == 'browser' %}active{% endif %}" href="{{ url_for('settings', settings_view='browser') }}">Browser</a>
+        <a class="subnav-button {% if settings_view == 'agents/new' %}active{% endif %}" href="{{ url_for('settings', settings_view='agents/new') }}">Add agent</a>
+        <a class="subnav-button {% if settings_view == 'agents/manage' %}active{% endif %}" href="{{ url_for('settings', settings_view='agents/manage') }}">Manage agents</a>
+    </nav>
 
     <div id="settings-feedback" class="section-subtle">Loading configured agents.</div>
 
-    <div class="tab-panel active" data-tab-panel="add">
+    <div class="tab-panel {% if settings_view == 'agents/new' %}active{% endif %}" data-tab-panel="add" {% if settings_view != 'agents/new' %}hidden{% endif %}>
         <div class="settings-layout section-scroll">
             <section class="panel inset-panel">
                 <h2 class="section-heading">Provision an agent</h2>
@@ -167,7 +167,7 @@ workspace.{% endblock %}
         </div>
     </div>
 
-    <div class="tab-panel" data-tab-panel="manage">
+    <div class="tab-panel {% if settings_view == 'agents/manage' %}active{% endif %}" data-tab-panel="manage" {% if settings_view != 'agents/manage' %}hidden{% endif %}>
         <section class="panel inset-panel section-scroll">
             <div class="inline-row" style="margin-bottom:16px;">
                 <div>

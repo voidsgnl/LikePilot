@@ -4,8 +4,9 @@
 
 - Started the full dashboard information-architecture redesign: a searchable agent directory, dedicated per-agent workspaces, provider and platform catalogs, and direct Operations subpages. Existing Flask APIs and runtime data remain the source of truth.
 - Added per-agent runtime controls for start, ready, initialize, pause, resume, stop, and pending platform selection; recent events use the existing runtime log format.
+- Split Analytics into dedicated routes for summary, trends, platforms, heatmap, insights, and export; split Settings into browser, add-agent, and manage-agent pages. The dashboard overview is now the default landing page.
 - Split Settings into Browser, Create Agent, and Manage Agents pages; Operations now renders and loads only its selected workspace.
-- Replaced the placeholder-heavy overview with a compact, live API-backed runtime summary; added responsive mobile navigation and routed quick-agent links directly to each agent's dedicated page.
+- Replaced the placeholder-heavy overview with a compact, live API-backed runtime summary; added responsive mobile navigation.
 
 - Introduced a shared dashboard theme inspired by msf-web-console: compact dark surfaces, restrained green accents, consistent controls, and responsive navigation.
 

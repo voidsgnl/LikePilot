@@ -52,3 +52,11 @@
 .overview-shortcut:hover{border-color:#3fb950;color:#56d364}
 @media(max-width:900px){.overview-columns{grid-template-columns:1fr}}
 @media(max-width:700px){.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Dedicated page navigation: route changes replace tab toggles, keeping each workspace focused. */
+.page-nav{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.page-nav .subnav-button{display:inline-flex;align-items:center;text-decoration:none}
+[hidden]{display:none!important}
+.analytics-export-panel{margin-bottom:10px}
+.settings-agent-panel .settings-layout,.settings-agent-panel .section-scroll{max-height:none;overflow:visible}
+@media(max-width:700px){.page-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:7px}.page-nav .subnav-button{white-space:nowrap}}
