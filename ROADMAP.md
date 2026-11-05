@@ -61,16 +61,16 @@ The project is intended for educational, experimental, and software-development 
 
 **Goal:** Make the repository easier to navigate without breaking imports, packaging, runtime data, or user workflows.
 
-- [ ] **P1.1 — Inventory root-level files**
+- [x] **P1.1 — Inventory root-level files**
   - [ ] Classify every root file as entrypoint, configuration, documentation, packaging, development utility, runtime data, or legacy.
-  - [ ] Identify which root files must remain for standard Python entrypoints or release tooling.
+  - [x] Identify which root files must remain for standard Python entrypoints or release tooling.
   - **Acceptance:** Every root-level item has a documented purpose and a proposed destination or an explicit reason to remain.
 
-- [~] **P1.2 — Design the target directory layout**
+- [x] **P1.2 — Design the target directory layout**
   - [ ] Propose a clean structure for application source, integrations, dashboard assets, configuration examples, scripts, tests, packaging, and documentation.
   - [ ] Keep runtime-generated data (logs, profiles, databases, backups, diagnostics) outside source-code directories.
   - [~] Define import/package conventions before moving files; the initial package/import strategy is recorded in [`docs/architecture/directory-migration-map.md`](docs/architecture/directory-migration-map.md).
-  - [ ] Complete the file-by-file inventory and validate every proposed destination.
+  - [x] Complete the tracked file-by-file inventory and record verification gates for each proposed destination.
   - **Acceptance:** A reviewed migration map exists before any bulk file moves.
 
 - [ ] **P1.3 — Identify and resolve redundant files**
@@ -189,16 +189,16 @@ The project is intended for educational, experimental, and software-development 
 | ID | Finding | Status | Resolution rule |
 |---|---|---|---|
 | A-001 | `core/runtime.py` imports a `modules/` package absent from the tracked `main` tree | [!] Investigating | Locate the intended integration source or establish which runtime code is incomplete before changing imports |
-| A-002 | Root directory contains application entrypoints and other mixed-purpose files | [~] Mapping started | Complete the file-by-file inventory and validate destinations before moving files |
-| A-003 | Persistence responsibilities overlap between `core/state.py` and `core/database.py` | [ ] Open | Trace all callers and schemas before consolidating |
-| A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [ ] Open | Verify whether they are compatibility interfaces or obsolete wrappers |
-| A-005 | Threaded and multiprocessing runtime implementations overlap | [ ] Open | Trace configuration and actual runtime selection before choosing one |
-| A-006 | Multiple launchers overlap in server and desktop startup responsibilities | [ ] Open | Preserve supported launch modes while clarifying ownership |
+| A-002 | Root directory contains application entrypoints and other mixed-purpose files | [x] Inventory and mapping complete | Move only after package/import and runtime-path migration gates pass |
+| A-003 | Persistence responsibilities overlap between `core/state.py` and `core/database.py` | [~] Traced partially | `core.state` is primary app state; `core.database` has a separate schema and is imported by smart timing. Keep separate until schema and actual usage are fully reconciled |
+| A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [~] Traced partially | `core.agents` is imported by the dashboard and delegates to state; `core.stats` has no tracked internal caller found. Preserve both pending compatibility review |
+| A-005 | Threaded and multiprocessing runtime implementations overlap | [~] Traced partially | Current launchers start the threaded supervisor directly; the multiprocessing selector has no tracked caller found. Verify intended mode before consolidation |
+| A-006 | Multiple launchers overlap in server and desktop startup responsibilities | [~] Static trace complete | `farm.py` is the health-checked server; `likepilot_desktop.py` wraps it; `dashboard_desktop.py` starts a separate dashboard server. Verify intended modes and smoke tests before consolidating |
 | A-007 | Desktop dependencies appear absent from the single requirements file | [ ] Open | Split and verify dependency groups |
 | A-008 | Updater repository setting contains a placeholder owner/repository | [ ] Open | Configure only after update and release design is safe |
 | A-009 | Dashboard has a default credential fallback | [ ] Open | Replace with secure first-run or environment-based configuration |
 | A-010 | `config.json` has a duplicate `performance` key and example placeholder values | [ ] Open | Normalize configuration while preserving intended settings |
-| A-011 | Silent launcher uses Windows-only process flags and reports a port inconsistent with the main launcher | [ ] Open | Define and test platform-specific launch behavior |
+| A-011 | Silent launcher uses Windows-only process flags and reports a port inconsistent with the main launcher | [~] Confirmed by static review | Windows-only flags; launcher advertises 5000 while `farm.py` defaults to 5001. Correct during launcher redesign and verify on target OSes |
 
 ## Change tracking
 
@@ -208,6 +208,8 @@ Record significant changes here. Keep entries factual and include verification r
 |---|---|---|
 | 2026-11-05 | Initial roadmap created from the repository audit. No application files changed as part of this roadmap creation. | Initial tracked-tree and source inspection; implementation work remains pending. |
 | 2026-11-05 | Approved target directory direction and added the initial file-by-file migration map at `docs/architecture/directory-migration-map.md`. No application files moved or modified. | Static inspection of core, runtime, dashboard, launchers, configuration, and dependency declarations; full inventory and runtime verification remain pending. |
+| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
+| 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
 
 ## Decision log
 
