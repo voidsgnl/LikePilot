@@ -38,10 +38,11 @@
         const logs = Array.isArray(agent.logs) ? agent.logs : [];
         events.innerHTML = logs.length ? logs.map((item) => {
             const line = String(item);
-            const match = line.match(/^(.*?) \\[([^\\]]+)\\] (.*)$/);
-            const timestamp = match ? match[1] : '';
-            const level = match ? match[2] : 'INFO';
-            const message = match ? match[3] : line;
+            const splitAt = line.lastIndexOf(' [');
+            const closeAt = line.indexOf('] ', splitAt);
+            const timestamp = splitAt >= 0 ? line.slice(0, splitAt) : '';
+            const level = splitAt >= 0 && closeAt > splitAt ? line.slice(splitAt + 2, closeAt) : 'INFO';
+            const message = closeAt >= 0 ? line.slice(closeAt + 2) : line;
             return '<article class="event-row"><div class="event-row-meta"><span class="event-level">' +
                 safe(level) + '</span><time>' + safe(timestamp) +
                 '</time></div><p>' + safe(message) + '</p></article>';
