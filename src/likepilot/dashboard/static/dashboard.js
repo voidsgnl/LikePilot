@@ -176,6 +176,11 @@ function escapeHtml(value) {
         .replaceAll("'", '&#39;');
 }
 
+function formatSignedNumber(value) {
+    const number = Number(value || 0);
+    return `${number >= 0 ? '+' : ''}${number}`;
+}
+
 function setLoadingState(element, message) {
     if (element) {
         element.innerHTML = `<div class="section-subtle">${escapeHtml(message)}</div>`;
