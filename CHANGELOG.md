@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed Firefox startup on Ubuntu Snap installations by resolving the executable inside the mounted Firefox Snap; added `LIKEPILOT_FIREFOX_BINARY` for explicit executable overrides. Chrome startup behavior is unchanged.
+
 - Added a GitHub Actions workflow that installs LikePilot with development dependencies, compiles source/tests, and runs the full pytest suite on pushes to `main`, pull requests, and manual dispatch.
 
 - Simplified Analytics, Create Agent, Manage Agents, and Browser Settings by removing repeated headings, decorative labels, redundant descriptions, and initial loading copy; corrected the historical chart label and refreshed the service-worker cache to v1.0.14.
