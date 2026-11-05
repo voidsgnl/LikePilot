@@ -64,3 +64,5 @@
 
 /* The overview now contains one primary runtime panel. */
 .overview-columns-single{grid-template-columns:minmax(0,1fr)!important}
+
+.settings-layout-single{grid-template-columns:minmax(0,1fr)!important}
