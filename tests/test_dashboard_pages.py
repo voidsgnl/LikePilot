@@ -127,3 +127,25 @@ def test_agent_directory_uses_one_contextual_empty_state():
     assert 'id="directory-empty"' not in template
     assert "No agents configured. Create an agent to get started." in script
     assert "No agents match these filters." in script
+
+def test_global_header_keeps_only_actionable_status_and_navigation():
+    layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "dashboard.js").read_text(encoding="utf-8")
+
+    assert 'id="live-updates-pill"' in layout
+    assert 'id="agent-quick-switch"' in layout
+    assert 'id="session-badge"' not in layout
+    assert 'id="clock"' not in layout
+    assert "renderSessionBadge" not in script
+    assert "updateClock" not in script
+
+
+def test_analytics_shows_missing_history_without_placeholder_values():
+    template = (DASHBOARD / "templates" / "analytics.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "analytics.js").read_text(encoding="utf-8")
+
+    assert "hasHistory" in script
+    assert "hasHistory ? (metrics.latest_credits ?? '—') : '—'" in script
+    assert "1250, 1280, 1320" not in script
+    assert "initializePredictionChart" not in script
+    assert "Summary of recorded credit snapshots." in template
