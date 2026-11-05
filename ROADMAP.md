@@ -111,11 +111,13 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add a dedicated per-agent detail workspace with status, controls, configuration summary, and recent events.
   - [ ] Verify all controls and status refresh behavior locally.
 - [ ] **P3.4 — Verify the browser dashboard across supported browsers and screen sizes.**
+  - [ ] Verify the completed content cleanup in Firefox and Chrome.
+  - [ ] Run the full test suite and fix any regressions.
 - **Acceptance:** visible controls map to working backend behavior with clear success, empty, loading, and error states.
 
 ## Phase 3.5 — Dashboard content cleanup
 
-- [~] **P3.5.1 — Remove duplicate and low-value page content.**
+- [x] **P3.5.1 — Remove duplicate and low-value page content.**
   - [x] Remove Overview shortcuts that duplicate primary navigation.
   - [x] Remove repeated summary metrics and low-value columns from the agent directory.
   - [x] Simplify Create Agent and Manage Agents panels by removing repeated headings, nested cards, and redundant links.
@@ -132,8 +134,6 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Remove the Operations panel header that repeated the page title and added non-functional guidance.
   - [x] Restrict Database to schema metadata only: tables, columns, constraints, foreign keys, and indexes; remove row previews and the table-data API.
   - [x] Remove repeated headings, decorative labels, and redundant explanatory copy from Analytics and agent/browser settings pages.
-  - [ ] Verify all affected pages and actions in Firefox and Chrome.
-  - [ ] Run the full test suite and fix any regressions.
 - [~] **P3.5.2 — Refine agent workspace controls and information density.**
   - [x] Show only the action appropriate to the current agent state: Start, Ready, Initialize, Pause, Resume, or Stop.
   - [x] Separate heartbeat/session timestamps from saved profile configuration.
