@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block body_class %}page-agents{% endblock %}
 {% block title %}Agents{% endblock %}
-{% block subtitle %}Browse every configured agent, inspect its current state, and open its dedicated workspace.{% endblock %}
+{% block subtitle %}Find an agent and open its controls, configuration, and activity.{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='agents-directory.js') }}" defer></script>{% endblock %}
 {% block content %}
 <section class="directory-toolbar panel panel-pad">
-    <div><div class="section-kicker">Runtime inventory</div><h2 class="section-heading">Agent directory</h2><p class="section-subtle">Each agent has an independent detail page for controls, configuration, and runtime events.</p></div>
+    <div><div class="section-kicker">Runtime inventory</div><h2 class="section-heading">Agent directory</h2></div>
     <a class="btn-primary" href="/settings/agents/new">Create agent</a>
 </section>
 <section class="panel panel-pad stack-sm">
