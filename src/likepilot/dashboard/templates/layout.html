@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='console-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='workspace-pages.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
     <style>
         .notification-container {
@@ -59,8 +58,6 @@
                     <div class="nav-section-label">Workspace</div>
                     <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon">▦</span><span class="nav-copy"><span class="nav-title">Overview</span><span class="nav-meta">System summary</span></span></a>
                     <a href="/agents" class="nav-link {% if page == 'agents' %}active{% endif %}"><span class="nav-icon">◉</span><span class="nav-copy"><span class="nav-title">Agents</span><span class="nav-meta">Directory and control</span></span></a>
-                    <a href="/providers" class="nav-link {% if page == 'providers' %}active{% endif %}"><span class="nav-icon">⇄</span><span class="nav-copy"><span class="nav-title">Providers</span><span class="nav-meta">Service integrations</span></span></a>
-                    <a href="/platforms" class="nav-link {% if page == 'platforms' %}active{% endif %}"><span class="nav-icon">◎</span><span class="nav-copy"><span class="nav-title">Platforms</span><span class="nav-meta">Network actions</span></span></a>
                     <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span><span class="nav-meta">Credit telemetry</span></span></a>
                     <div class="nav-section-label">Administration</div>
                     <a href="/settings/browser" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span><span class="nav-meta">Browser and agents</span></span></a>
@@ -220,12 +217,14 @@
             };
 
             notification.style.borderLeft = `4px solid ${colors[type] || colors.info}`;
-            notification.innerHTML = `
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <div style="width: 8px; height: 8px; border-radius: 50%; background: ${colors[type] || colors.info}; flex-shrink: 0;"></div>
-                    <span>${message}</span>
-                </div>
-            `;
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:8px;';
+            const dot = document.createElement('span');
+            dot.style.cssText = `width:8px;height:8px;border-radius:50%;background:${colors[type] || colors.info};flex-shrink:0;`;
+            const label = document.createElement('span');
+            label.textContent = String(message ?? '');
+            row.append(dot, label);
+            notification.appendChild(row);
 
             container.appendChild(notification);
 
