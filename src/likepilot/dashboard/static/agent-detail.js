@@ -16,6 +16,10 @@
         if (!agent) {
             set('agent-summary', 'This agent no longer exists or is not available.');
             set('agent-status', 'Not found');
+            root.querySelectorAll('[data-agent-action]').forEach((button) => { button.hidden = true; });
+            byId('agent-platform-select').hidden = true;
+            byId('agent-confirm-platform').hidden = true;
+            byId('agent-event-list').innerHTML = '<div class="empty-state">No runtime events available.</div>';
             return;
         }
         set('agent-name', name);
@@ -25,11 +29,9 @@
         badge.className = 'status-badge status-' + String(agent.status || 'unknown').toLowerCase().replace(/[^a-z0-9]+/g, '-');
         set('agent-credits', agent.credits);
         set('agent-gain', (Number(agent.session_gain) >= 0 ? '+' : '') + Number(agent.session_gain || 0));
-        set('agent-peak', agent.session_peak);
-        set('agent-samples', agent.samples);
         set('agent-provider', agent.site);
         set('agent-platform', agent.platform);
-        set('agent-profile', agent.chrome_profile);
+        set('agent-profile', agent.chrome_profile || agent.browser_profile);
         set('agent-proxy', agent.proxy || 'Not configured');
         set('agent-fallback', agent.fallback_chain || agent.fallback_platform || 'None');
         set('agent-heartbeat', agent.heartbeat_at);
@@ -47,16 +49,18 @@
                 safe(level) + '</span><time>' + safe(timestamp) +
                 '</time></div><p>' + safe(message) + '</p></article>';
         }).join('') : '<div class="empty-state">No recent events for this agent.</div>';
+        const actionAvailability = {
+            start: agent.status === 'Stopped',
+            ready: agent.status === 'Awaiting Login',
+            initialize: agent.status === 'Login Success',
+            pause: agent.status === 'Running',
+            resume: agent.status === 'Paused',
+            stop: agent.status !== 'Stopped'
+        };
         root.querySelectorAll('[data-agent-action]').forEach((button) => {
-            const action = button.dataset.agentAction;
-            button.hidden = (action === 'ready' && !['Awaiting Login', 'Login Success'].includes(agent.status)) ||
-                (action === 'initialize' && agent.status !== 'Login Success');
-            button.disabled = (action === 'start' && agent.status !== 'Stopped') ||
-                (action === 'ready' && !['Awaiting Login', 'Login Success'].includes(agent.status)) ||
-                (action === 'initialize' && agent.status !== 'Login Success') ||
-                (action === 'pause' && agent.status !== 'Running') ||
-                (action === 'resume' && agent.status !== 'Paused') ||
-                (action === 'stop' && agent.status === 'Stopped');
+            const available = Boolean(actionAvailability[button.dataset.agentAction]);
+            button.hidden = !available;
+            button.disabled = !available;
         });
         const platformSelect = byId('agent-platform-select');
         if (platformSelect) platformSelect.value = agent.platform || 'Twitter';
@@ -89,8 +93,10 @@
         });
     });
 
-    byId('agent-confirm-platform')?.addEventListener('click', async () => {
+    byId('agent-confirm-platform')?.addEventListener('click', async (event) => {
+        const button = event.currentTarget;
         const platform = byId('agent-platform-select')?.value;
+        button.disabled = true;
         try {
             const response = await fetch('/api/platform', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -100,7 +106,11 @@
             if (!response.ok) throw new Error(result.message || 'Platform update failed.');
             window.showNotification?.(result.message || 'Platform updated.', 'success');
             await loadAgent();
-        } catch (error) { window.showNotification?.(error.message, 'error'); }
+        } catch (error) {
+            window.showNotification?.(error.message, 'error');
+        } finally {
+            button.disabled = false;
+        }
     });
 
     loadAgent().catch((error) => {
