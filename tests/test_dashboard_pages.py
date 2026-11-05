@@ -93,6 +93,8 @@ def test_agent_workspace_keeps_only_operational_metrics():
 
     assert 'id="agent-credits"' in template
     assert 'id="agent-gain"' in template
+    assert 'id="agent-platform-select" aria-label="Select platform" hidden' in template
+    assert 'id="agent-confirm-platform" hidden' in template
     assert 'id="agent-peak"' not in template
     assert 'id="agent-samples"' not in template
     assert "actionAvailability" in script
