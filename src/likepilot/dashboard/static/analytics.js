@@ -106,11 +106,13 @@
         mainChart.update();
 
         const metrics = data.metrics || {};
+        const samples = Number(metrics.samples || 0);
+        const hasHistory = samples > 0;
         const gain = metrics.session_gain ?? 0;
-        document.getElementById('metric-latest').innerText = metrics.latest_credits ?? 0;
-        document.getElementById('metric-gain').innerText = formatSignedNumber(gain);
-        document.getElementById('metric-peak').innerText = metrics.session_peak ?? 0;
-        document.getElementById('metric-samples').innerText = metrics.samples ?? 0;
+        document.getElementById('metric-latest').innerText = hasHistory ? (metrics.latest_credits ?? '—') : '—';
+        document.getElementById('metric-gain').innerText = hasHistory ? formatSignedNumber(gain) : '—';
+        document.getElementById('metric-peak').innerText = hasHistory ? (metrics.session_peak ?? '—') : '—';
+        document.getElementById('metric-samples').innerText = samples;
 
         const breakdown = document.getElementById('platform-breakdown');
         const platforms = Object.entries(data.platform_stats || {});
@@ -183,83 +185,7 @@
         heatmapGrid.replaceChildren();
     }
 
-    // Initialize prediction chart
-    function initializePredictionChart() {
-        const predictionCtx = document.getElementById('predictionChart');
-        if (!predictionCtx) return;
-
-        const ctx = predictionCtx.getContext('2d');
-        const colors = getChartColors();
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Now', '6h', '12h', '18h', '24h'],
-                datasets: [{
-                    label: 'Projected Credits',
-                    data: [1250, 1280, 1320, 1350, 1377],
-                    borderColor: colors.accent,
-                    backgroundColor: 'rgba(111, 218, 122, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: colors.accent,
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 6
-                }, {
-                    label: 'Historical Average',
-                    data: [1200, 1220, 1240, 1260, 1280],
-                    borderColor: 'rgba(164, 185, 152, 0.5)',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    fill: false,
-                    pointRadius: 0,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 1500,
-                    easing: 'easeOutQuart'
-                },
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top',
-                        labels: {
-                            color: colors.textSoft,
-                            usePointStyle: true
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(22, 23, 20, 0.95)',
-                        titleColor: colors.accent,
-                        bodyColor: '#edf2e8',
-                        borderColor: 'rgba(164, 185, 152, 0.3)',
-                        borderWidth: 1,
-                        cornerRadius: 8
-                    }
-                },
-                scales: {
-                    x: {
-                        ticks: { color: colors.textSoft },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
-                    },
-                    y: {
-                        beginAtZero: false,
-                        ticks: { color: colors.textSoft },
-                        grid: { color: 'rgba(255,255,255,0.1)' }
-                    }
-                }
-            }
-        });
-    }
-
     // Initialize advanced components
     initializeHeatmap();
-    initializePredictionChart();
 
 })();
