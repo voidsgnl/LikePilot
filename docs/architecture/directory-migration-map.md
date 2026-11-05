@@ -4,7 +4,7 @@
 **Branch:** `main`  
 **Rule:** This document is an inventory and migration plan, not authorization to move or delete files without the verification gates below.
 
-## Target layout
+## Target layout (single web delivery model)
 
 ```text
 LikePilot/
@@ -57,7 +57,7 @@ LikePilot/
     └── backups/
 ```
 
-The `src/likepilot` layout requires a deliberate package/import migration. Existing imports such as `from core...` and `from web...` must not be broken by moving files. We will either convert imports consistently to the package namespace and configure packaging, or retain temporary compatibility entrypoints during migration.
+The `src/likepilot` layout requires a deliberate package/import migration. There is no desktop package or executable packaging area in the target architecture. Existing imports such as `from core...` and `from web...` must not be broken by moving files. We will either convert imports consistently to the package namespace and configure packaging, or retain temporary compatibility entrypoints during migration.
 
 ## Current tracked-file mapping
 
