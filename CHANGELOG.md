@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added a GitHub Actions workflow that installs LikePilot with development dependencies, compiles source/tests, and runs the full pytest suite on pushes to `main`, pull requests, and manual dispatch.
+
 - Simplified Analytics, Create Agent, Manage Agents, and Browser Settings by removing repeated headings, decorative labels, redundant descriptions, and initial loading copy; corrected the historical chart label and refreshed the service-worker cache to v1.0.14.
 
 - Restricted Operations → Database to schema metadata only (tables, columns, nullability, primary/foreign keys, and indexes); removed row previews and the table-data API. Bumped the service-worker cache to v1.0.13.
