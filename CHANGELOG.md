@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Refined individual agent workspaces: show only state-appropriate controls, separate runtime timestamps from saved profile details, remove low-value Session Peak/Samples metrics, and correct the Manage Agents destination. Bumped the service-worker cache to v1.0.9.
+
 - Simplified dashboard content: removed duplicate Overview shortcuts and directory metrics, trimmed agent configuration pages, and removed static provider/platform catalogs from primary navigation while preserving integration code and routes.
 - Reduced Analytics navigation to available views, moved Chart.js loading to Analytics only, and refreshed the service-worker cache to v1.0.8.
 - Reduced theme choices to Dark, Light, and High Contrast; legacy theme preferences are normalized to Dark.
