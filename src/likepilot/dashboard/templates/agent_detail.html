@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block body_class %}page-agent-detail{% endblock %}
-{% block title %}Agent workspace{% endblock %}
+{% block title %}{{ agent_name }}{% endblock %}
 {% block subtitle %}A dedicated control and inspection workspace for one agent.{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='agent-detail.js') }}" defer></script>{% endblock %}
 {% block content %}
@@ -20,9 +20,13 @@
         </div>
         <div class="workspace-actions">
             <button class="btn-primary" type="button" data-agent-action="start">Start</button>
+            <button class="btn-secondary" type="button" data-agent-action="ready">Ready</button>
+            <button class="btn-secondary" type="button" data-agent-action="initialize">Initialize</button>
             <button class="btn-secondary" type="button" data-agent-action="pause">Pause</button>
             <button class="btn-secondary" type="button" data-agent-action="resume">Resume</button>
             <button class="btn-danger" type="button" data-agent-action="stop">Stop</button>
+            <select id="agent-platform-select" aria-label="Select platform"><option value="Twitter">Twitter</option><option value="Twitter Likes">Twitter Likes</option><option value="Twitter Retweets">Twitter Retweets</option><option value="Instagram">Instagram</option><option value="Instagram Likes">Instagram Likes</option><option value="IG Comments">IG Comments</option><option value="TikTok">TikTok</option><option value="TikTok Likes">TikTok Likes</option><option value="YouTube Subs">YouTube Subs</option><option value="YouTube Likes">YouTube Likes</option><option value="Facebook Subs">Facebook Subs</option><option value="Facebook Likes">Facebook Likes</option><option value="FB Comments">FB Comments</option></select>
+            <button class="btn-secondary" type="button" id="agent-confirm-platform">Confirm platform</button>
         </div>
     </section>
     <section class="workspace-metrics">

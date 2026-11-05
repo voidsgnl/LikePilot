@@ -43,11 +43,20 @@
         ).join('') : '<div class="empty-state">No recent events for this agent.</div>';
         root.querySelectorAll('[data-agent-action]').forEach((button) => {
             const action = button.dataset.agentAction;
-            button.disabled = (action === 'start' && !['Stopped'].includes(agent.status)) ||
+            button.hidden = (action === 'ready' && !['Awaiting Login', 'Login Success'].includes(agent.status)) ||
+                (action === 'initialize' && agent.status !== 'Login Success');
+            button.disabled = (action === 'start' && agent.status !== 'Stopped') ||
+                (action === 'ready' && !['Awaiting Login', 'Login Success'].includes(agent.status)) ||
+                (action === 'initialize' && agent.status !== 'Login Success') ||
                 (action === 'pause' && agent.status !== 'Running') ||
                 (action === 'resume' && agent.status !== 'Paused') ||
                 (action === 'stop' && agent.status === 'Stopped');
         });
+        const platformSelect = byId('agent-platform-select');
+        if (platformSelect) platformSelect.value = agent.platform || 'Twitter';
+        const confirmPlatform = byId('agent-confirm-platform');
+        if (confirmPlatform) confirmPlatform.hidden = !agent.switch_pending;
+        if (platformSelect) platformSelect.hidden = !agent.switch_pending;
         const error = byId('agent-error');
         if (agent.last_error) { error.hidden = false; error.textContent = agent.last_error; }
         else { error.hidden = true; }
@@ -72,6 +81,20 @@
                 button.disabled = false;
             }
         });
+    });
+
+    byId('agent-confirm-platform')?.addEventListener('click', async () => {
+        const platform = byId('agent-platform-select')?.value;
+        try {
+            const response = await fetch('/api/platform', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, platform })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Platform update failed.');
+            window.showNotification?.(result.message || 'Platform updated.', 'success');
+            await loadAgent();
+        } catch (error) { window.showNotification?.(error.message, 'error'); }
     });
 
     loadAgent().catch((error) => {
