@@ -88,7 +88,7 @@ The `src/likepilot` layout requires a deliberate package/import migration. Exist
 
 ## Missing or not-yet-mapped content
 
-- `modules/` is imported by `core/runtime.py` but is absent from the tracked `main` tree. Do not create placeholder bot classes or relocate imagined files. Locate the real source first.
+- `modules/` is now present in remote `main` with `base.py`, `facebook.py`, `instagram.py`, `tiktok.py`, `twitter.py`, `youtube.py`, `kingdomlikes.py`, and `youlikehits.py`. Runtime import names have been statically checked against class definitions; clean-checkout import and startup tests remain pending.
 - The current GitHub tree contains no tracked `tests/`, `docs/`, `pyproject.toml`, or `CHANGELOG.md`. These are planned additions, not existing files to move.
 - The current root `config.json`, `agents.json`, and `stats.json` need runtime ownership checks before they are classified as templates, live state, or obsolete artifacts.
 
@@ -104,7 +104,7 @@ The `src/likepilot` layout requires a deliberate package/import migration. Exist
 
 ## Initial findings that affect the mapping
 
-- `core/runtime.py` imports classes from an untracked `modules/` package. This is a blocker to validating the package move.
+- `core/runtime.py` imports classes from the now-tracked `modules/` package. The source is available, but clean-checkout import and runtime behavior still need verification.
 - `farm.py` imports `core.runtime` and `web.app`; the desktop entrypoints also import these top-level packages.
 - `web/app.py` imports `core.*` and resolves assets/templates relative to the current layout.
 - `core/database.py` creates a SQLite database at a path derived from the current repository layout, while `core/state.py` has its own persistence implementation. Their relationship is not yet established.
@@ -172,19 +172,22 @@ This inventory covers the complete 66-path GitHub tree on `main` at the time of 
 | `core/state.py` | `src/likepilot/core/state.py` | Primary active persistence layer for agents, logs, settings and credit history; also migrates legacy JSON data. |
 | `core/stats.py` | `src/likepilot/core/stats.py` initially | Thin facade over `core.state`; no tracked internal import found, but preserve pending compatibility review. |
 
-### Integration inventory and unresolved source
+### Integration inventory (remote `main`, checked 2026-11-05)
 
-The tracked runtime registry references these missing modules:
+The integration source is now tracked in `modules/`:
 
-- `modules.facebook`
-- `modules.instagram`
-- `modules.tiktok`
-- `modules.twitter`
-- `modules.youtube`
-- `modules.kingdomlikes`
-- `modules.youlikehits`
+| Current file | Implementation role | Proposed migration treatment |
+|---|---|---|
+| `modules/base.py` | Shared bot abstractions: `BaseBot`, `Like4LikeBase`, `KingdomLikesBase`, `YouLikeHitsBase` | Move with integration adapters; preserve shared base contracts and avoid premature provider/network split |
+| `modules/facebook.py` | Facebook actions built on `Like4LikeBase` | Treat as Like4Like-specific Facebook adapter; decide final provider/network placement after adapter contract review |
+| `modules/instagram.py` | Instagram actions built on `Like4LikeBase` | Treat as Like4Like-specific Instagram adapter |
+| `modules/tiktok.py` | TikTok actions built on `Like4LikeBase` | Treat as Like4Like-specific TikTok adapter |
+| `modules/twitter.py` | X/Twitter actions built on `Like4LikeBase` | Treat as Like4Like-specific X/Twitter adapter |
+| `modules/youtube.py` | YouTube actions built on `Like4LikeBase` | Treat as Like4Like-specific YouTube adapter |
+| `modules/kingdomlikes.py` | KingdomLikes actions across several social networks | Treat as provider adapter; keep its network-specific action classes together initially |
+| `modules/youlikehits.py` | YouLikeHits YouTube actions | Treat as provider adapter; keep its action classes together initially |
 
-The tracked tree has no `modules/` directory or implementation files. Code search found the imports in `core/runtime.py`, but no corresponding bot class definitions elsewhere in the tracked repository. Therefore the integration package cannot yet be mapped to `src/likepilot/integrations/providers/` and `networks/` at class/file level. Do not create stubs or infer adapter behavior. The local working copy may contain ignored or uncommitted files; it must be checked before declaring the integrations lost.
+Static comparison of `core/runtime.py` imports and module class declarations found definitions for all imported class names. The files import `modules.base` and existing `core.state`/Selenium APIs. The directory has no explicit `__init__.py`; Python namespace-package behavior may permit imports from a repository-root checkout, but this must be verified in a clean environment. The current layout couples some provider and network concerns, so do not mechanically split classes into the proposed `providers/` and `networks/` folders until adapter boundaries and shared behavior are documented.
 
 ### Runtime/data-path findings
 
@@ -242,3 +245,8 @@ The dashboard groups above expand to these exact tracked paths and destinations:
 ### Git history check for the missing integrations
 
 A GitHub commit-history query for the path `modules/` returned no commits. This means the missing integration directory was not present in the repository's visible path history, rather than being removed in a later tracked commit. It does not rule out ignored or uncommitted local files. The local checkout must still be checked before deciding whether the implementation needs to be restored from another source or developed.
+
+
+### Integration source update (2026-11-05)
+
+The `modules/` directory is present on remote `main` with eight Python files. Static class-name reconciliation against `core/runtime.py` found no missing imported class definitions. This resolves the previous source-location blocker (A-001) but does not prove that Selenium/browser workflows execute correctly. Before moving these files, verify namespace-package imports, dependencies, browser setup, and provider/network action behavior from a clean checkout. The likely migration is coordinated under `src/likepilot/integrations/`; preserve current adapter coupling initially and refine the provider/network split only after tracing actual responsibilities.
