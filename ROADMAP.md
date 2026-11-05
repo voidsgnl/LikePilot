@@ -188,7 +188,7 @@ The project is intended for educational, experimental, and software-development 
 
 | ID | Finding | Status | Resolution rule |
 |---|---|---|---|
-| A-001 | `core/runtime.py` imports a `modules/` package absent from the tracked `main` tree | [!] Investigating | Locate the intended integration source or establish which runtime code is incomplete before changing imports |
+| A-001 | `core/runtime.py` imports a `modules/` package absent from the tracked `main` tree and its visible path history | [!] Blocked pending local check | Check ignored/untracked local files; no `modules/` path commits were found. Do not fabricate replacement integrations |
 | A-002 | Root directory contains application entrypoints and other mixed-purpose files | [x] Inventory and mapping complete | Move only after package/import and runtime-path migration gates pass |
 | A-003 | Persistence responsibilities overlap between `core/state.py` and `core/database.py` | [~] Traced partially | `core.state` is primary app state; `core.database` has a separate schema and is imported by smart timing. Keep separate until schema and actual usage are fully reconciled |
 | A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [~] Traced partially | `core.agents` is imported by the dashboard and delegates to state; `core.stats` has no tracked internal caller found. Preserve both pending compatibility review |
@@ -209,6 +209,7 @@ Record significant changes here. Keep entries factual and include verification r
 | 2026-11-05 | Initial roadmap created from the repository audit. No application files changed as part of this roadmap creation. | Initial tracked-tree and source inspection; implementation work remains pending. |
 | 2026-11-05 | Approved target directory direction and added the initial file-by-file migration map at `docs/architecture/directory-migration-map.md`. No application files moved or modified. | Static inspection of core, runtime, dashboard, launchers, configuration, and dependency declarations; full inventory and runtime verification remain pending. |
 | 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
+| 2026-11-05 | Checked Git history for the missing `modules/` path; no path commits were found. Expanded the migration map with exact dashboard asset paths. | GitHub path-history query returned no commits for `modules/`; local ignored/untracked files remain unverified. |
 | 2026-11-05 | Completed the tracked-file inventory and static dependency/entrypoint trace; expanded the migration map with per-file destinations and data-path risks. No application files moved or modified. | Reviewed all 66 tracked paths, core modules, launchers, config/state ownership, and searched tracked code for missing integration classes and runtime selector callers. Clean-checkout execution remains blocked by the absent `modules/` package. |
 
 ## Decision log
