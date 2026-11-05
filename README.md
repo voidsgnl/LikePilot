@@ -1,30 +1,29 @@
 # LikePilot
 
-## Getting Started
+LikePilot is a multi-platform automation and agent-management application built with Python. It integrates multiple engagement/task providers with supported social networks through configurable automation agents. The application is managed through a local web dashboard in a browser.
 
-1. Place `LikePilot.exe` in a folder
-2. Double-click to run
-3. Sign in with your dashboard credentials
-4. Configure agents and start harvesting
+LikePilot is actively developed and intended for educational, experimental, and software-development purposes. Integrations and workflows are evolving; not all functionality should be considered production-ready. Users are responsible for complying with connected services' terms and automating only accounts and environments they are authorized to use.
 
-## System Requirements
+## Getting started
 
-- Windows 10 or later
-- Microsoft Edge WebView2 Runtime (pre-installed on most systems)
+The intended workflow is:
 
-## How It Works
+1. Clone the repository.
+2. Create and activate a Python virtual environment.
+3. Install the project dependencies.
+4. Configure the application using the documented setup.
+5. Start the web server with the provided command.
+6. Open the local dashboard URL in your browser.
 
-- **SYSTEM_CONFIG**: Add and manage agents
-- **MISSION_CONTROL**: Start/stop agents, monitor progress
-- **Pause/Resume**: Control automation without closing sessions
+The exact clean-install commands and supported Python versions will be documented after the dependency and startup audit is complete. Until then, use the existing development instructions and treat the setup workflow as evolving.
 
-## Data Location
+## Application model
 
-All data (profiles, logs, database) is stored next to the EXE:
-- `likepilot.db` — Your session and history
-- `profiles/` — Browser data
-- `logs/` — Activity logs
+- **Web dashboard:** the sole user interface; accessed through a standard browser.
+- **Application server:** serves the dashboard and coordinates agent execution.
+- **Integrations:** provider-specific and social-network-specific adapters.
+- **Runtime data:** databases, profiles, logs, and backups are kept separate from application source.
 
-## Support
+## Project status
 
-If the app won't open, update Microsoft Edge WebView2 Runtime and try again.
+LikePilot is under active development. See [ROADMAP.md](ROADMAP.md) for verified progress, outstanding work, and migration decisions.
