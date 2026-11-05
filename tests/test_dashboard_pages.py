@@ -171,3 +171,19 @@ def test_dashboard_shell_avoids_redundant_copy_and_loading_motion():
     assert "Loading agents." not in template
     assert "animation:none!important" in styles
     assert "Loading runtime…" not in overview
+
+
+def test_database_operations_exposes_schema_only():
+    template = (DASHBOARD / "templates" / "operations.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "operations.js").read_text(encoding="utf-8")
+    source = (DASHBOARD / "app.py").read_text(encoding="utf-8")
+
+    assert 'id="ops-db-view-data"' not in template
+    assert 'id="ops-db-preview"' not in template
+    assert "row_count" not in script
+    assert "/api/operations/database/table?" not in script
+    assert "/api/operations/database/table" not in source
+    assert "SELECT * FROM" not in source
+    assert "foreign_key_list" in source
+    assert "index_list" in source
+    assert "index_info" in source
