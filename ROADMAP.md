@@ -6,7 +6,7 @@
 
 LikePilot is a multi-platform automation and agent-management application. It connects engagement/task providers with social networks; Like4Like is one provider, not the product identity.
 
-The project is intended for educational, experimental, and software-development use. Users remain responsible for complying with the terms and policies of each connected service and for automating only accounts and environments they are authorized to use.
+The project is intended for educational, experimental, and software-development use. Users remain responsible for complying with the terms and policies of each connected service and for automating only accounts and environments they are authorized to use.\n\n## Product direction decision (2026-11-05)\n\nLikePilot is **web-only**: the dashboard runs in the application server and users access it through a normal browser. `pywebview` and native desktop-window wrappers are not part of the target runtime. The intended user workflow is clone, configure, install dependencies, start the server, and open the dashboard. Desktop launchers and executable packaging are legacy scope and must be evaluated for removal; do not remove them until the browser-server workflow, data paths, and launch scripts are verified. Windows and Linux source workflows remain subject to compatibility testing.
 
 ## Status key
 
@@ -38,13 +38,13 @@ The project is intended for educational, experimental, and software-development 
   - [ ] Confirm runtime behavior for each registered provider/network/action combination.
   - **Acceptance:** A clean checkout can import and start the primary runtime; each registered integration has an identifiable implementation and a verified execution path.
 
-- [ ] **P0.2 — Verify startup paths**
+- [~] **P0.2 — Verify startup paths**\n  - [x] Select the browser-based web dashboard as the sole intended UI; retire the pywebview desktop-shell direction.\n  - [ ] Establish one canonical web-server startup command and verify clean shutdown.
   - [ ] Trace `farm.py`, `likepilot_desktop.py`, `dashboard_desktop.py`, and `start_silent.py`.
   - [ ] Identify the intended primary launch path and supported alternate launch modes.
   - [ ] Check dashboard ports, startup health checks, shutdown behavior, and error reporting.
   - **Acceptance:** Each documented launch command starts the intended service or exits with a useful actionable error.
 
-- [ ] **P0.3 — Dependency and import audit**
+- [ ] **P0.3 — Dependency and import audit**\n  - [ ] Ensure `pywebview` is not required by the web-only install; remove it from runtime dependency declarations if present.\n  - [ ] Keep the base install limited to dependencies required by the web server and agent runtime.
   - [ ] Compare imports across the project with declared dependencies.
   - [ ] Separate required runtime, desktop UI, development, and optional dependencies.
   - [ ] Verify dependency availability and compatibility on the intended Windows and Linux source workflows.
@@ -140,13 +140,13 @@ The project is intended for educational, experimental, and software-development 
 
 **Goal:** Support both executable distribution and source-based development without conflating the two.
 
-- [ ] **P5.1 — Define Windows executable packaging**
+- [!] **P5.1 — Windows executable packaging (out of target scope)**\n  - [x] Product direction is browser-based web-only operation; native pywebview shell is not required.\n  - [ ] Remove obsolete executable packaging and WebView2 instructions after confirming no supported deployment depends on them.
   - [ ] Identify the supported entrypoint and required bundled resources.
   - [ ] Build a reproducible executable from a clean environment.
   - [ ] Verify first-run data directories, WebView2 requirements, logs, and upgrade behavior.
   - **Acceptance:** A clean Windows machine can follow the release instructions and launch the packaged application.
 
-- [ ] **P5.2 — Define source installation**
+- [~] **P5.2 — Define source installation (primary installation path)**
   - [ ] Document Python version constraints and virtual-environment setup.
   - [ ] Provide explicit install commands for core and optional desktop dependencies.
   - [ ] Verify launch from a clean source checkout.
