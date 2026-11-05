@@ -82,6 +82,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
   - [x] Add separate Chrome and Firefox driver construction with browser-specific persistent profiles.
   - [x] Detect the executable inside Ubuntu's Firefox Snap and support `LIKEPILOT_FIREFOX_BINARY` as an explicit override.
+  - [x] Restrict the existing CDP stealth injection to Chrome; Firefox skips CDP-only commands.
   - [ ] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
   - [ ] Verify Chrome regression and proxy behavior for both browsers.
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
@@ -198,7 +199,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-005 | Desktop wrappers and executable build path were unrelated to web operation. | [x] Removed from the supported architecture and repository migration | Keep the web install free of desktop-only dependencies |
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Preserved intentionally | Migrate only with compatibility and backup tests |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
-| A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection and Ubuntu Firefox Snap binary resolution; local startup verification pending | Verify Firefox/geckodriver and Chrome regression locally |
+| A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
 
 ## Change tracking
 
@@ -209,6 +210,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Confirmed `python3 farm.py` starts the existing web server before the src-layout migration. | User-reported successful startup; post-migration verification remains pending. |
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
 | 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
+| 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
 
 
 ## Phase 8 — Dashboard visual system
