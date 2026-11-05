@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Restricted Operations → Database to schema metadata only (tables, columns, nullability, primary/foreign keys, and indexes); removed row previews and the table-data API. Bumped the service-worker cache to v1.0.13.
+
 - Centered and simplified the login screen; removed redundant navigation/page copy; disabled decorative dashboard motion and stabilized header/overview loading space. Updated service-worker cache to v1.0.12.
 
 - Made empty Analytics history explicit with em-dash metric values, removed dormant hard-coded forecast data, tightened Analytics wording, and removed the duplicate Operations heading/tagline.
