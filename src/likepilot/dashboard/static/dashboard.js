@@ -1,12 +1,4 @@
 // Enhanced dashboard functionality with modern UI features
-function updateClock() {
-    const clock = document.getElementById('clock');
-    if (clock) {
-        clock.innerText = new Date().toLocaleTimeString('en-GB', { hour12: false });
-        clock.style.animation = 'fadeIn 0.3s ease-out';
-    }
-}
-
 function showLoadingState(elementId, message = 'Loading...') {
     const element = document.getElementById(elementId);
     if (element) {
@@ -184,11 +176,6 @@ function escapeHtml(value) {
         .replaceAll("'", '&#39;');
 }
 
-function formatSignedNumber(value) {
-    const number = Number(value || 0);
-    return `${number >= 0 ? '+' : ''}${number}`;
-}
-
 function setLoadingState(element, message) {
     if (element) {
         element.innerHTML = `<div class="section-subtle">${escapeHtml(message)}</div>`;
@@ -317,18 +304,6 @@ function hasRecentActivity(agentStatus) {
     return (Date.now() - latestTimestamp) <= 120000;
 }
 
-function renderSessionBadge(data) {
-    const badge = document.getElementById('session-badge');
-    if (!badge) {
-        return;
-    }
-    const agents = Object.values((data && data.agents) || {});
-    const running = agents.filter((agent) => agent.status === 'Running').length;
-    const waiting = agents.filter((agent) => agent.status === 'Awaiting Login' || agent.status === 'Login Success' || agent.status === 'Awaiting Switch').length;
-    const gain = agents.reduce((sum, agent) => sum + Number(agent.session_gain || 0), 0);
-    badge.innerText = `${running} run | ${waiting} wait | ${formatSignedNumber(gain)} gain`;
-}
-
 function renderAgentQuickSwitch(data) {
     const host = document.getElementById('agent-quick-switch');
     if (!host) {
@@ -352,7 +327,6 @@ function renderAgentQuickSwitch(data) {
             <span class="quick-pulse ${hasRecentActivity(data.agents[name]) ? 'active' : ''}" aria-hidden="true"></span>
         </a>
     `).join('');
-    renderSessionBadge(data);
 }
 
 function createEventStream(url, onData, onError, fallbackIntervalMs, fallbackFn) {
@@ -480,8 +454,6 @@ function initializeCollapsibles(root = document) {
 // Initialize everything
 initializeTheme();
 initializeSidebar();
-updateClock();
-setInterval(updateClock, 1000);
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeTabGroups();
