@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed the shared workspace grid: the navigation backdrop no longer occupies the main content column; bumped the service-worker cache to refresh the corrected stylesheet.
+
 - Removed superseded `index.html` and `settings.html` templates after confirming that no active Flask route renders them.
 
 - Started the full dashboard information-architecture redesign: a searchable agent directory, dedicated per-agent workspaces, provider and platform catalogs, and direct Operations subpages. Existing Flask APIs and runtime data remain the source of truth.
