@@ -66,10 +66,11 @@ The project is intended for educational, experimental, and software-development 
   - [ ] Identify which root files must remain for standard Python entrypoints or release tooling.
   - **Acceptance:** Every root-level item has a documented purpose and a proposed destination or an explicit reason to remain.
 
-- [ ] **P1.2 — Design the target directory layout**
+- [~] **P1.2 — Design the target directory layout**
   - [ ] Propose a clean structure for application source, integrations, dashboard assets, configuration examples, scripts, tests, packaging, and documentation.
   - [ ] Keep runtime-generated data (logs, profiles, databases, backups, diagnostics) outside source-code directories.
-  - [ ] Define import/package conventions before moving files.
+  - [~] Define import/package conventions before moving files; the initial package/import strategy is recorded in [`docs/architecture/directory-migration-map.md`](docs/architecture/directory-migration-map.md).
+  - [ ] Complete the file-by-file inventory and validate every proposed destination.
   - **Acceptance:** A reviewed migration map exists before any bulk file moves.
 
 - [ ] **P1.3 — Identify and resolve redundant files**
@@ -188,7 +189,7 @@ The project is intended for educational, experimental, and software-development 
 | ID | Finding | Status | Resolution rule |
 |---|---|---|---|
 | A-001 | `core/runtime.py` imports a `modules/` package absent from the tracked `main` tree | [!] Investigating | Locate the intended integration source or establish which runtime code is incomplete before changing imports |
-| A-002 | Root directory contains application entrypoints and other mixed-purpose files | [ ] Open | Inventory and design target layout before moving files |
+| A-002 | Root directory contains application entrypoints and other mixed-purpose files | [~] Mapping started | Complete the file-by-file inventory and validate destinations before moving files |
 | A-003 | Persistence responsibilities overlap between `core/state.py` and `core/database.py` | [ ] Open | Trace all callers and schemas before consolidating |
 | A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [ ] Open | Verify whether they are compatibility interfaces or obsolete wrappers |
 | A-005 | Threaded and multiprocessing runtime implementations overlap | [ ] Open | Trace configuration and actual runtime selection before choosing one |
@@ -206,6 +207,7 @@ Record significant changes here. Keep entries factual and include verification r
 | Date | Change | Verification |
 |---|---|---|
 | 2026-11-05 | Initial roadmap created from the repository audit. No application files changed as part of this roadmap creation. | Initial tracked-tree and source inspection; implementation work remains pending. |
+| 2026-11-05 | Approved target directory direction and added the initial file-by-file migration map at `docs/architecture/directory-migration-map.md`. No application files moved or modified. | Static inspection of core, runtime, dashboard, launchers, configuration, and dependency declarations; full inventory and runtime verification remain pending. |
 
 ## Decision log
 
@@ -215,3 +217,4 @@ Record significant changes here. Keep entries factual and include verification r
 | 2026-11-05 | Investigate redundancy before deleting or merging files. | Similar names do not prove equivalent behavior or safe removal. |
 | 2026-11-05 | Treat executable distribution and source installation as separate supported workflows. | They have different dependencies, launch paths, and packaging requirements. |
 | 2026-11-05 | Describe LikePilot as multi-platform, with providers distinct from social networks. | Like4Like is one provider, not the product identity. |
+| 2026-11-05 | Use the approved `src/likepilot` package layout with separate integrations, dashboard, desktop/entrypoints, scripts, packaging, tests, docs, and runtime data areas as the target architecture. | Reduce root clutter while preserving distinct runtime responsibilities; validate import and data-path changes before migration. |
