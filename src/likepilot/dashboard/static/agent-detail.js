@@ -36,11 +36,16 @@
         set('agent-session-start', agent.session_started_at);
         const events = byId('agent-event-list');
         const logs = Array.isArray(agent.logs) ? agent.logs : [];
-        events.innerHTML = logs.length ? logs.map((item) =>
-            '<article class="event-row"><div class="event-row-meta"><span class="event-level">' +
-            safe(item.level || 'INFO') + '</span><time>' + safe(item.created_at || '') +
-            '</time></div><p>' + safe(item.message || '') + '</p></article>'
-        ).join('') : '<div class="empty-state">No recent events for this agent.</div>';
+        events.innerHTML = logs.length ? logs.map((item) => {
+            const line = String(item);
+            const match = line.match(/^(.*?) \\[([^\\]]+)\\] (.*)$/);
+            const timestamp = match ? match[1] : '';
+            const level = match ? match[2] : 'INFO';
+            const message = match ? match[3] : line;
+            return '<article class="event-row"><div class="event-row-meta"><span class="event-level">' +
+                safe(level) + '</span><time>' + safe(timestamp) +
+                '</time></div><p>' + safe(message) + '</p></article>';
+        }).join('') : '<div class="empty-state">No recent events for this agent.</div>';
         root.querySelectorAll('[data-agent-action]').forEach((button) => {
             const action = button.dataset.agentAction;
             button.hidden = (action === 'ready' && !['Awaiting Login', 'Login Success'].includes(agent.status)) ||
