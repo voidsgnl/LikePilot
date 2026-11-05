@@ -21,10 +21,8 @@
                 <td><span class="status-badge ${statusClass(agent.status)}">${escape(agent.status)}</span></td>
                 <td>${escape(agent.site)}</td><td>${escape(agent.platform)}</td>
                 <td class="mono">${escape(agent.credits)}</td>
-                <td class="mono">${Number(agent.session_gain || 0) >= 0 ? '+' : ''}${escape(agent.session_gain || 0)}</td>
-                <td class="mono">${escape(agent.heartbeat_at || '—')}</td>
                 <td><a class="btn-secondary btn-compact" href="/agents/${encodeURIComponent(name)}">Open ↗</a></td>
-            </tr>`).join('') : '<tr><td colspan="8" class="section-subtle">No agents match these filters.</td></tr>';
+            </tr>`).join('') : '<tr><td colspan="6" class="section-subtle">No agents match these filters.</td></tr>';
         document.getElementById('directory-empty').hidden = rows.length > 0 || entries.length === 0;
     }
     async function refresh() {
@@ -32,12 +30,6 @@
         if (!response.ok) throw new Error('Agent inventory is unavailable.');
         const data = await response.json();
         entries = Object.entries(data.agents || {});
-        const values = entries.map(([,agent]) => agent);
-        const waiting = values.filter((a) => ['Awaiting Login','Login Success','Awaiting Switch'].includes(a.status)).length;
-        document.getElementById('directory-total').textContent = values.length;
-        document.getElementById('directory-running').textContent = values.filter((a) => a.status === 'Running').length;
-        document.getElementById('directory-waiting').textContent = waiting;
-        document.getElementById('directory-stopped').textContent = values.filter((a) => a.status === 'Stopped').length;
         document.getElementById('directory-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
         render();
     }
