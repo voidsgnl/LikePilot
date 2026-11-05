@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Fixed Firefox agent startup by skipping the Chrome-only CDP stealth injection for Firefox; added regression coverage for Firefox and Chrome. Firefox continues through Selenium WebDriver without CDP commands.
+
 - Fixed Firefox startup on Ubuntu Snap installations by resolving the executable inside the mounted Firefox Snap; added `LIKEPILOT_FIREFOX_BINARY` for explicit executable overrides. Chrome startup behavior is unchanged.
 
 - Added a GitHub Actions workflow that installs LikePilot with development dependencies, compiles source/tests, and runs the full pytest suite on pushes to `main`, pull requests, and manual dispatch.
