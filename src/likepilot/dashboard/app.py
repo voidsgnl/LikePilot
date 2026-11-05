@@ -35,7 +35,6 @@ PROJECT_ROOT = RUNTIME_ROOT
 LOGS_DIR = os.path.join(PROJECT_ROOT, "logs")
 DIAGNOSTICS_DIR = os.path.join(PROJECT_ROOT, "diagnostics")
 BRAND_DIR = os.path.join(os.path.dirname(__file__), "favicon")
-DATABASE_PREVIEW_LIMIT = 100
 LOG_TAIL_LIMIT = 400
 
 # Dashboard Credentials
@@ -66,71 +65,28 @@ def _database_connection():
 def _list_database_tables():
     init_db()
     with _database_connection() as conn:
-        rows = conn.execute(
-            """
-            SELECT name
-            FROM sqlite_master
-            WHERE type = 'table' AND name NOT LIKE 'sqlite_%'
-            ORDER BY name ASC
-            """
-        ).fetchall()
+        rows = conn.execute("SELECT name FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%' ORDER BY name ASC").fetchall()
         tables = []
         for row in rows:
-            table_name = row["name"]
+            table_name = row['name']
             quoted_table = _quote_identifier(table_name)
-            columns = [
-                {
-                    "name": column["name"],
-                    "type": column["type"] or "",
-                    "notnull": bool(column["notnull"]),
-                    "primary_key": bool(column["pk"]),
-                }
-                for column in conn.execute(f"PRAGMA table_info({quoted_table})").fetchall()
-            ]
-            foreign_keys = [
-                {
-                    "from_column": foreign_key["from"],
-                    "to_table": foreign_key["table"],
-                    "to_column": foreign_key["to"],
-                }
-                for foreign_key in conn.execute(f"PRAGMA foreign_key_list({quoted_table})").fetchall()
-            ]
-            count_row = conn.execute(f"SELECT COUNT(*) AS count FROM {quoted_table}").fetchone()
-            tables.append(
-                {
-                    "name": table_name,
-                    "row_count": int(count_row["count"]) if count_row else 0,
-                    "columns": columns,
-                    "foreign_keys": foreign_keys,
-                }
-            )
+            columns = [{
+                'name': column['name'],
+                'type': column['type'] or '',
+                'notnull': bool(column['notnull']),
+                'primary_key': bool(column['pk']),
+                'default': column['dflt_value'],
+            } for column in conn.execute(f'PRAGMA table_info({quoted_table})').fetchall()]
+            foreign_keys = [{
+                'from_column': key['from'], 'to_table': key['table'], 'to_column': key['to'],
+            } for key in conn.execute(f'PRAGMA foreign_key_list({quoted_table})').fetchall()]
+            indexes = []
+            for index in conn.execute(f'PRAGMA index_list({quoted_table})').fetchall():
+                quoted_index = _quote_identifier(index['name'])
+                index_columns = [item['name'] for item in conn.execute(f'PRAGMA index_info({quoted_index})').fetchall() if item['name']]
+                indexes.append({'name': index['name'], 'unique': bool(index['unique']), 'columns': index_columns})
+            tables.append({'name': table_name, 'columns': columns, 'foreign_keys': foreign_keys, 'indexes': indexes})
         return tables
-
-
-def _read_database_table(table_name, limit=DATABASE_PREVIEW_LIMIT):
-    limit = max(1, min(int(limit or DATABASE_PREVIEW_LIMIT), DATABASE_PREVIEW_LIMIT))
-    tables = _list_database_tables()
-    table_map = {table["name"]: table for table in tables}
-    if table_name not in table_map:
-        return None
-
-    quoted_table = _quote_identifier(table_name)
-    with _database_connection() as conn:
-        columns = table_map[table_name]["columns"]
-        column_names = [column["name"] for column in columns]
-        order_column = "id" if "id" in column_names else ("created_at" if "created_at" in column_names else None)
-        order_clause = f" ORDER BY {_quote_identifier(order_column)} DESC" if order_column else ""
-        rows = conn.execute(
-            f"SELECT * FROM {quoted_table}{order_clause} LIMIT ?",
-            (limit,),
-        ).fetchall()
-    return {
-        "table": table_name,
-        "row_count": table_map[table_name]["row_count"],
-        "columns": columns,
-        "rows": [dict(row) for row in rows],
-        "limit": limit,
-    }
 
 
 def _safe_file_path(base_dir, name):
@@ -624,9 +580,7 @@ def export_activity_api():
 @app.route('/api/operations/database')
 @login_required
 def operations_database():
-    db_path = os.path.join(PROJECT_ROOT, _resolve_db_file())
     tables = _list_database_tables()
-    size_bytes = os.path.getsize(db_path) if os.path.exists(db_path) else 0
     relationships = []
     for table in tables:
         for foreign_key in table.get("foreign_keys", []):
@@ -641,8 +595,6 @@ def operations_database():
     return jsonify(
         {
             "database": {
-                "path": db_path,
-                "size_bytes": size_bytes,
                 "table_count": len(tables),
                 "relationship_count": len(relationships),
             },
@@ -650,17 +602,6 @@ def operations_database():
             "relationships": relationships,
         }
     )
-
-
-@app.route('/api/operations/database/table')
-@login_required
-def operations_database_table():
-    table_name = (request.args.get("name") or "").strip()
-    limit = request.args.get("limit", DATABASE_PREVIEW_LIMIT)
-    payload = _read_database_table(table_name, limit=limit)
-    if not payload:
-        return jsonify({"message": "Table not found"}), 404
-    return jsonify(payload)
 
 
 @app.route('/api/operations/logs')
