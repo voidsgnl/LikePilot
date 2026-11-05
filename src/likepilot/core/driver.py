@@ -1,4 +1,4 @@
-"""Browser driver factory for the globally selected LikePilot browser."""
+""""Browser driver factory for the globally selected LikePilot browser."""
 
 import os
 from urllib.parse import urlsplit
@@ -163,7 +163,11 @@ def create_stealth_driver(headless=False, proxy=None, profile_name=None, startup
 
 
 def inject_stealth(driver):
-    """Apply the existing Chrome CDP tweak when the driver supports it."""
+    """Apply the existing Chrome-only CDP tweak; Firefox uses WebDriver."""
+    browser_name = (getattr(driver, "capabilities", {}) or {}).get("browserName", "")
+    if str(browser_name).strip().lower() != "chrome":
+        return
+
     execute_cdp = getattr(driver, "execute_cdp_cmd", None)
     if not callable(execute_cdp):
         return
