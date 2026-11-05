@@ -109,3 +109,21 @@ def test_agent_workspace_separates_runtime_details_from_configuration():
     assert 'id="agent-session-start"' in template
     assert 'href="/settings/agents/manage"' in template
     assert "Manage saved agents" in template
+
+
+def test_overview_update_indicator_has_a_matching_template_element():
+    template = (DASHBOARD / "templates" / "dashboard.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "overview.js").read_text(encoding="utf-8")
+
+    assert 'id="overview-updated"' in template
+    assert "getElementById('overview-updated')" in script
+    assert "Agent snapshot" in template
+
+
+def test_agent_directory_uses_one_contextual_empty_state():
+    template = (DASHBOARD / "templates" / "agents.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "agents-directory.js").read_text(encoding="utf-8")
+
+    assert 'id="directory-empty"' not in template
+    assert "No agents configured. Create an agent to get started." in script
+    assert "No agents match these filters." in script

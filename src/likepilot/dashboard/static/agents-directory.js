@@ -15,6 +15,9 @@
             const matchesStatus = selected === 'all' || (selected === 'waiting' ? isWaiting : agent.status === selected);
             return matchesTerm && matchesStatus;
         });
+        const emptyMessage = entries.length === 0
+            ? 'No agents configured. Create an agent to get started.'
+            : 'No agents match these filters.';
         body.innerHTML = rows.length ? rows.map(([name, agent]) => `
             <tr>
                 <td><a class="directory-agent-link" href="/agents/${encodeURIComponent(name)}">${escape(name)}</a><div class="section-subtle mono">${escape(agent.chrome_profile || 'No browser profile')}</div></td>
@@ -22,8 +25,7 @@
                 <td>${escape(agent.site)}</td><td>${escape(agent.platform)}</td>
                 <td class="mono">${escape(agent.credits)}</td>
                 <td><a class="btn-secondary btn-compact" href="/agents/${encodeURIComponent(name)}">Open ↗</a></td>
-            </tr>`).join('') : '<tr><td colspan="6" class="section-subtle">No agents match these filters.</td></tr>';
-        document.getElementById('directory-empty').hidden = rows.length > 0 || entries.length === 0;
+            </tr>`).join('') : `<tr><td colspan="6" class="section-subtle">${emptyMessage}</td></tr>`;
     }
     async function refresh() {
         const response = await fetch('/api/status', {headers:{Accept:'application/json'}});

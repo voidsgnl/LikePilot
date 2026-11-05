@@ -116,6 +116,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Load Chart.js only on Analytics pages and refresh the service-worker cache.
   - [x] Reduce theme choices to Dark, Light, and High Contrast while normalizing legacy saved theme values.
   - [x] Render notification text as text content rather than interpolated HTML.
+  - [x] Restore the Overview refresh timestamp target so successful polling does not throw a missing-element error.
+  - [x] Use one contextual empty row in the agent directory instead of duplicating the no-results message.
   - [ ] Verify all affected pages and actions in Firefox and Chrome.
   - [ ] Run the full test suite and fix any regressions.
 - [~] **P3.5.2 — Refine agent workspace controls and information density.**
