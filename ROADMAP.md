@@ -118,6 +118,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Render notification text as text content rather than interpolated HTML.
   - [x] Restore the Overview refresh timestamp target so successful polling does not throw a missing-element error.
   - [x] Use one contextual empty row in the agent directory instead of duplicating the no-results message.
+  - [x] Remove the redundant global session summary and local clock; retain the actionable agent quick switch and live connection indicator.
+  - [x] Tighten Overview and Agents page descriptions; display browser-neutral profile labels in the directory.
   - [ ] Verify all affected pages and actions in Firefox and Chrome.
   - [ ] Run the full test suite and fix any regressions.
 - [~] **P3.5.2 — Refine agent workspace controls and information density.**
