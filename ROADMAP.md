@@ -131,6 +131,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Show unavailable analytics metrics as “—” when no credit snapshots exist; remove dormant hard-coded forecast data.
   - [x] Remove the Operations panel header that repeated the page title and added non-functional guidance.
   - [x] Restrict Database to schema metadata only: tables, columns, constraints, foreign keys, and indexes; remove row previews and the table-data API.
+  - [x] Remove repeated headings, decorative labels, and redundant explanatory copy from Analytics and agent/browser settings pages.
   - [ ] Verify all affected pages and actions in Firefox and Chrome.
   - [ ] Run the full test suite and fix any regressions.
 - [~] **P3.5.2 — Refine agent workspace controls and information density.**
