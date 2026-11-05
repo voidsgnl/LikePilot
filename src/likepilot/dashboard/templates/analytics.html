@@ -5,6 +5,7 @@
 {% block title %}Analytics{% endblock %}
 {% block subtitle %}Explore one focused view of runtime credit activity and historical performance at a time.{% endblock %}
 {% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='analytics.js') }}" defer></script>{% endblock %}
 
 {% block content %}
@@ -102,8 +103,6 @@
         <a class="subnav-button {% if analytics_view == 'summary' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='summary') }}">Summary</a>
         <a class="subnav-button {% if analytics_view == 'trends' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='trends') }}">Trends</a>
         <a class="subnav-button {% if analytics_view == 'platforms' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='platforms') }}">Platforms</a>
-        <a class="subnav-button {% if analytics_view == 'heatmap' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='heatmap') }}">Heatmap</a>
-        <a class="subnav-button {% if analytics_view == 'insights' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='insights') }}">Insights</a>
         <a class="subnav-button {% if analytics_view == 'export' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='export') }}">Export</a>
     </nav>
 
