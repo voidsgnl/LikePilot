@@ -196,6 +196,6 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add a shared console theme stylesheet with the charcoal/green palette, compact surfaces, borders, controls, and typography.
   - [x] Restyle the navigation shell, top bar, common panels, tables, forms, buttons, badges, and login page.
   - [x] Restyle dashboard-specific metric and chart panels.
-  - [x] Preserve LikePilot navigation, routes, page content, theme options, and application behavior.
+  - [x] Preserve LikePilot routes and application behavior while simplifying navigation, page content, and theme choices.
   - [ ] Verify all dashboard pages and responsive layouts in Firefox and Chrome.
   - [ ] Tune any page-specific layout regressions found during browser testing.
