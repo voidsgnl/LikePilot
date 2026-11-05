@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LikePilot Control</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('brand_asset', filename='favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('brand_asset', filename='favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('brand_asset', filename='favicon-16x16.png') }}">
+    <link rel="apple-touch-icon" href="{{ url_for('brand_asset', filename='apple-touch-icon.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
+    <style>
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        .notification-container > * {
+            pointer-events: auto;
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="{% block body_class %}page-agents{% endblock %}">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <div class="notification-container" id="notification-container" aria-live="polite" aria-atomic="false"></div>
+    <div class="app-shell" id="app-shell">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-inner">
+                <button type="button" id="sidebar-collapse-btn" class="sidebar-collapse" title="Collapse navigation"
+                    aria-label="Collapse navigation">
+                    <span class="collapse-icon">◂</span>
+                </button>
+
+                <div class="brand-block">
+                    <div class="brand-mark" aria-hidden="true">
+                        <img src="{{ url_for('brand_asset', filename='192x192.png') }}" class="brand-mark-image" alt="">
+                    </div>
+                    <div class="brand-copy">
+                        <div class="brand-kicker">LikePilot</div>
+                        <div class="brand-title">Control Grid</div>
+                    </div>
+                </div>
+
+                <nav class="nav-group" aria-label="Primary">
+                    <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}">
+                        <span class="nav-icon" title="Dashboard" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </span>
+                        <span class="nav-copy">
+                            <span class="nav-title">Dashboard</span>
+                            <span class="nav-meta">Live overview</span>
+                        </span>
+                    </a>
+                    <a href="/" class="nav-link {% if page == 'grid' %}active{% endif %}">
+                        <span class="nav-icon" title="Agents" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
+                                <rect x="3.5" y="5" width="17" height="14" rx="3"></rect>
+                                <path d="M7.5 9.5h9m-9 4h5m-2.5-8v-2m5 2v-2"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-copy">
+                            <span class="nav-title">Agents</span>
+                            <span class="nav-meta">Runtime surface</span>
+                        </span>
+                    </a>
+                    <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}">
+                        <span class="nav-icon" title="Analytics" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
+                                <path d="M4 18.5h16"></path>
+                                <path d="M7 18V11"></path>
+                                <path d="M12 18V7"></path>
+                                <path d="M17 18v-4"></path>
+                                <path d="M6 8.5 10 6l3 2.5 4-3"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-copy">
+                            <span class="nav-title">Analytics</span>
+                            <span class="nav-meta">Credit telemetry</span>
+                        </span>
+                    </a>
+                    <a href="/settings" class="nav-link {% if page == 'settings' %}active{% endif %}">
+                        <span class="nav-icon" title="Settings" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
+                                <path d="M5 7h14"></path>
+                                <path d="M5 17h14"></path>
+                                <path d="M9 7a2 2 0 1 0 0 .01"></path>
+                                <path d="M15 17a2 2 0 1 0 0 .01"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-copy">
+                            <span class="nav-title">Config</span>
+                            <span class="nav-meta">Provisioning</span>
+                        </span>
+                    </a>
+                    <a href="/operations" class="nav-link {% if page == 'operations' %}active{% endif %}">
+                        <span class="nav-icon" title="Operations" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="nav-icon-svg">
+                                <path d="M4.5 6.5h15"></path>
+                                <path d="M4.5 12h15"></path>
+                                <path d="M4.5 17.5h15"></path>
+                                <path d="M8 6.5v11"></path>
+                            </svg>
+                        </span>
+                        <span class="nav-copy">
+                            <span class="nav-title">Operations</span>
+                            <span class="nav-meta">Inspectors</span>
+                        </span>
+                    </a>
+                </nav>
+
+                <div class="sidebar-footer">
+                    <div class="theme-panel">
+                        <label class="theme-panel-label" for="theme-select">
+                            <span class="button-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" class="button-icon-svg">
+                                    <path d="M12 4.5a7.5 7.5 0 1 0 7.5 7.5c0-.7-.1-1.4-.3-2.1-.7 1.1-1.9 1.8-3.3 1.8-2.3 0-4.2-1.9-4.2-4.2 0-1.2.5-2.3 1.4-3.1-.4-.1-.8-.1-1.1-.1Z"></path>
+                                </svg>
+                            </span>
+                            <span id="theme-preview" class="theme-preview theme-preview-dark" aria-hidden="true"></span>
+                            <span class="button-label">Theme</span>
+                        </label>
+                        <select id="theme-select" class="theme-select" aria-label="Select theme">
+                            <option value="dark">Dark Grid</option>
+                            <option value="light">Light Ops</option>
+                            <option value="cobalt">Cobalt</option>
+                            <option value="ember">Ember</option>
+                            <option value="forest">Forest</option>
+                            <option value="high-contrast">High Contrast</option>
+                        </select>
+                    </div>
+                    <a href="/logout" class="btn-logout icon-button" id="logout-link" title="Log out" aria-label="Log out">
+                        <span class="button-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" class="button-icon-svg">
+                                <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"></path>
+                                <path d="M14 8l5 4-5 4"></path>
+                                <path d="M9 12h10"></path>
+                            </svg>
+                        </span>
+                        <span class="button-label">Logout</span>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content" id="main-content" role="main">
+            <header class="topbar" role="banner">
+                <div class="topbar-main">
+                    <div class="topbar-eyebrow">Workspace command console</div>
+                    <div class="topbar-heading-row">
+                        <h1 class="page-title">{% block title %}{% endblock %}</h1>
+                        <div id="session-badge" class="meta-pill compact-pill" title="Session summary" aria-label="Session status">Session pending</div>
+                    </div>
+                    <div class="page-subtitle">{% block subtitle %}Monitor agents, track credits, and manage activity
+                        from a single workspace.{% endblock %}</div>
+                </div>
+                <div class="topbar-meta">
+                    <div class="status-cluster">
+                        <div id="live-updates-pill" class="meta-pill compact-pill live-pill live-pill-warning"
+                            title="Live updates" aria-label="Connection status">
+                            <span class="live-dot" aria-hidden="true"></span>
+                            <span id="live-updates-label">Connecting</span>
+                        </div>
+                        <div class="meta-pill mono compact-pill" title="Local time" aria-label="Current time">Local <span id="clock"></span></div>
+                    </div>
+                    <div id="agent-quick-switch" class="agent-quick-switch" role="navigation" aria-label="Quick agent switch">
+                        <span class="section-subtle">Loading agents.</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <div id="app-modal" class="app-modal" hidden aria-hidden="true">
+        <div class="app-modal-backdrop" data-modal-close></div>
+        <section class="app-modal-card" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
+            <div class="app-modal-header">
+                <h2 id="app-modal-title" class="section-heading">Confirm</h2>
+            </div>
+            <div id="app-modal-body" class="section-subtle app-modal-body"></div>
+            <div class="app-modal-actions">
+                <button type="button" class="btn-secondary btn-compact" id="app-modal-cancel">Cancel</button>
+                <button type="button" class="btn-primary btn-compact" id="app-modal-confirm">OK</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        (function () {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            const preview = document.getElementById('theme-preview');
+            if (preview) {
+                preview.className = 'theme-preview theme-preview-' + savedTheme;
+            }
+            const select = document.getElementById('theme-select');
+            if (select) {
+                select.value = savedTheme;
+            }
+        })();
+
+        // Global notification system
+        window.showNotification = function(message, type = 'info', duration = 3000) {
+            const container = document.getElementById('notification-container');
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.style.cssText = `
+                padding: 12px 16px;
+                border-radius: 12px;
+                background: var(--surface-strong);
+                border: 1px solid var(--glass-border);
+                backdrop-filter: blur(10px);
+                box-shadow: var(--shadow-lg);
+                color: var(--text);
+                font-size: 0.85rem;
+                margin-bottom: 8px;
+                animation: slideIn 0.3s ease-out;
+                max-width: 300px;
+            `;
+
+            const colors = {
+                success: 'var(--success)',
+                error: 'var(--danger)',
+                warning: 'var(--warning)',
+                info: 'var(--accent)'
+            };
+
+            notification.style.borderLeft = `4px solid ${colors[type] || colors.info}`;
+            notification.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <div style="width: 8px; height: 8px; border-radius: 50%; background: ${colors[type] || colors.info}; flex-shrink: 0;"></div>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            container.appendChild(notification);
+
+            if (duration > 0) {
+                setTimeout(() => {
+                    notification.style.animation = 'fadeOut 0.3s ease-out';
+                    setTimeout(() => notification.remove(), 300);
+                }, duration);
+            }
+
+            return notification;
+        };
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/static/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registered successfully');
+
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    showNotification('New version available! Refresh to update.', 'info', 10000);
+                                }
+                            });
+                        });
+                    })
+                    .catch(error => {
+                        console.log('ServiceWorker registration failed:', error);
+                    });
+            });
+        }
+
+        // Performance monitoring
+        if ('performance' in window && 'PerformanceObserver' in window) {
+            // Monitor Largest Contentful Paint (LCP)
+            const lcpObserver = new PerformanceObserver(list => {
+                const entries = list.getEntries();
+                const lastEntry = entries[entries.length - 1];
+                console.log('LCP:', lastEntry.startTime);
+            });
+            lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+
+            // Monitor First Input Delay (FID)
+            const fidObserver = new PerformanceObserver(list => {
+                const entries = list.getEntries();
+                entries.forEach(entry => {
+                    console.log('FID:', entry.processingStart - entry.startTime);
+                });
+            });
+            fidObserver.observe({ entryTypes: ['first-input'] });
+
+            // Monitor Cumulative Layout Shift (CLS)
+            let clsValue = 0;
+            const clsObserver = new PerformanceObserver(list => {
+                const entries = list.getEntries();
+                entries.forEach(entry => {
+                    if (!entry.hadRecentInput) {
+                        clsValue += entry.value;
+                    }
+                });
+                console.log('CLS:', clsValue);
+            });
+            clsObserver.observe({ entryTypes: ['layout-shift'] });
+        }
+
+        // Lazy loading for images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy');
+                            observer.unobserve(img);
+                        }
+                    }
+                });
+            });
+
+            // Observe all images with data-src attribute
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // Keyboard navigation enhancements
+        document.addEventListener('keydown', function(e) {
+            // Tab navigation improvements
+            if (e.key === 'Tab') {
+                document.body.classList.add('keyboard-navigation');
+            }
+
+            // Escape key handling
+            if (e.key === 'Escape') {
+                // Close modals, clear focus, etc.
+                const modal = document.querySelector('.app-modal[hidden="false"]');
+                if (modal) {
+                    modal.setAttribute('hidden', 'true');
+                }
+            }
+
+            // High contrast mode toggle (Ctrl+Shift+H)
+            if (e.ctrlKey && e.shiftKey && e.key === 'H') {
+                e.preventDefault();
+                toggleHighContrast();
+            }
+        });
+
+        // Remove keyboard navigation class when mouse is used
+        document.addEventListener('mousedown', function() {
+            document.body.classList.remove('keyboard-navigation');
+        });
+
+        // High contrast mode function
+        function toggleHighContrast() {
+            const body = document.body;
+            const currentTheme = body.getAttribute('data-theme') || 'dark';
+
+            if (currentTheme === 'high-contrast') {
+                // Switch back to previous theme or default
+                const savedTheme = localStorage.getItem('previous-theme') || 'dark';
+                body.setAttribute('data-theme', savedTheme);
+                localStorage.setItem('theme', savedTheme);
+                showNotification('High contrast mode disabled', 'info');
+            } else {
+                // Save current theme and switch to high contrast
+                localStorage.setItem('previous-theme', currentTheme);
+                body.setAttribute('data-theme', 'high-contrast');
+                showNotification('High contrast mode enabled', 'info');
+            }
+        }
+
+        // Focus management for dynamic content
+        function manageFocus(element) {
+            if (element && typeof element.focus === 'function') {
+                // Small delay to ensure element is rendered
+                setTimeout(() => {
+                    element.focus();
+                    // Announce to screen readers
+                    if ('speechSynthesis' in window) {
+                        const announcement = element.getAttribute('aria-label') ||
+                                           element.textContent ||
+                                           'Content updated';
+                        const utterance = new SpeechSynthesisUtterance(announcement);
+                        utterance.volume = 0; // Silent, just for screen readers
+                        speechSynthesis.speak(utterance);
+                    }
+                }, 100);
+            }
+        }
+
+        // ARIA live regions for dynamic updates
+        function updateLiveRegion(message, priority = 'polite') {
+            const liveRegion = document.getElementById('live-region') ||
+                             document.createElement('div');
+            liveRegion.id = 'live-region';
+            liveRegion.setAttribute('aria-live', priority);
+            liveRegion.setAttribute('aria-atomic', 'true');
+            liveRegion.className = 'sr-only';
+            liveRegion.textContent = message;
+
+            if (!document.getElementById('live-region')) {
+                document.body.appendChild(liveRegion);
+            }
+
+            // Clear after announcement
+            setTimeout(() => {
+                liveRegion.textContent = '';
+            }, 1000);
+        }
+    </script>
+</body>
+
+</html>

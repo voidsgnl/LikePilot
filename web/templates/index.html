@@ -1,0 +1,132 @@
+{% extends "layout.html" %}
+
+{% block body_class %}page-agents{% endblock %}
+
+{% block title %}Agent Workspace{% endblock %}
+{% block subtitle %}Run agents, inspect their health, and monitor live credit movement with clearer action states and
+session metrics.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='agents.js') }}" defer></script>{% endblock %}
+
+{% block content %}
+<section class="collapsible-block" data-collapsible data-collapsible-key="agents-stats">
+    <div class="collapsible-header">
+        <div>
+            <div class="section-kicker">Session overview</div>
+            <div class="section-subtle">Quick totals for the current runtime state.</div>
+        </div>
+        <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
+            aria-expanded="true">
+            <span class="collapse-toggle-label">Hide</span>
+            <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+        </button>
+    </div>
+    <div class="collapsible-body" data-collapse-body>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Active agents</div>
+                <div class="stat-value" id="agent-count">0</div>
+                <div class="stat-meta">Configured nodes currently visible in the runtime grid.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Auto rotation</div>
+                <div class="stat-value" id="auto-switch-state">Off</div>
+                <div class="stat-meta">
+                    <label class="inline-switch" for="auto-switch-toggle">
+                        <input type="checkbox" id="auto-switch-toggle">
+                        <span>Enable automatic platform switching</span>
+                    </label>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Running now</div>
+                <div class="stat-value" id="running-count">0</div>
+                <div class="stat-meta">Agents actively executing tasks across the current session.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Awaiting input</div>
+                <div class="stat-value" id="waiting-count">0</div>
+                <div class="stat-meta">Nodes waiting for login, switch, pause, or operator confirmation.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-default="overview">
+    <div class="surface-header">
+        <div>
+            <div class="section-kicker">Agent runtime</div>
+            <h2 class="section-heading">Command surface</h2>
+            <div class="section-subtle">Operate agents, review handoff status, and inspect the latest runtime trail
+                from one dense control view.</div>
+        </div>
+        <div class="panel-note mono">Live stream with automatic fallback</div>
+    </div>
+
+    <div class="subnav">
+        <button class="subnav-button" type="button" data-tab-target="overview">Overview</button>
+        <button class="subnav-button" type="button" data-tab-target="live">Live runs</button>
+        <button class="subnav-button" type="button" data-tab-target="logs">Recent logs</button>
+    </div>
+
+    <div id="agent-feedback" class="section-subtle">Loading agent status.</div>
+
+    <div class="tab-panel active" data-tab-panel="overview">
+        <div class="console-grid section-scroll">
+            <section class="panel inset-panel stack-sm collapsible-block" data-collapsible data-collapsible-key="agents-focus-queue">
+                <div class="inline-row-wrap collapsible-header">
+                    <div>
+                        <h3 class="section-heading">Focus queue</h3>
+                        <div class="section-subtle">Select an agent to inspect, route, or pause.</div>
+                    </div>
+                    <div class="actions">
+                        <div class="panel-note mono">Pinned focus</div>
+                        <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
+                            aria-expanded="true">
+                            <span class="collapse-toggle-label">Hide</span>
+                            <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapsible-body" data-collapse-body>
+                    <div id="agent-focus-nav" class="pager"></div>
+                </div>
+            </section>
+
+            <section class="stack-sm">
+                <div id="agent-focus-card"></div>
+            </section>
+        </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="live">
+        <div class="table-wrap section-scroll">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Agent</th>
+                        <th>Status</th>
+                        <th>Site</th>
+                        <th>Platform</th>
+                        <th>Credits</th>
+                        <th>Gain</th>
+                        <th>Peak</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody id="agent-live-body">
+                    <tr>
+                        <td colspan="8" class="section-subtle">Loading live runs....</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="logs">
+        <div id="agent-logs-list" class="mini-list section-scroll">
+            <div class="section-subtle">Loading recent logs.</div>
+        </div>
+    </div>
+</section>
+{% endblock %}

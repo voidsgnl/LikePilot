@@ -1,0 +1,160 @@
+{% extends "layout.html" %}
+
+{% block body_class %}page-operations{% endblock %}
+
+{% block title %}Operations{% endblock %}
+{% block subtitle %}Inspect the live SQLite data, browse runtime logs, and manage diagnostic captures from one operator-focused workspace.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='operations.js') }}" defer></script>{% endblock %}
+
+{% block content %}
+<section class="collapsible-block" data-collapsible data-collapsible-key="operations-summary">
+    <div class="collapsible-header">
+        <div>
+            <div class="section-kicker">Operator surface</div>
+            <div class="section-subtle">A quick read on the persisted database, available logs, and stored diagnostics.</div>
+        </div>
+        <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle aria-expanded="true">
+            <span class="collapse-toggle-label">Hide</span>
+            <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+        </button>
+    </div>
+    <div class="collapsible-body" data-collapse-body>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Tables</div>
+                <div class="stat-value" id="ops-db-count">0</div>
+                <div class="stat-meta" id="ops-db-meta">Database not loaded yet.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Logs</div>
+                <div class="stat-value" id="ops-log-count">0</div>
+                <div class="stat-meta" id="ops-log-summary-meta">No log inventory yet.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Diagnostics</div>
+                <div class="stat-value" id="ops-diagnostic-count">0</div>
+                <div class="stat-meta" id="ops-diagnostic-summary-meta">No diagnostic captures loaded.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-group-name="operations" data-tab-default="database">
+    <div class="surface-header">
+        <div>
+            <div class="section-kicker">Operations console</div>
+            <h2 class="section-heading">Inspection tools</h2>
+            <div class="section-subtle">Keep runtime data visible without mixing admin tools into the live agent grid.</div>
+        </div>
+        <div class="panel-note mono">Read mostly, act carefully</div>
+    </div>
+
+    <div class="subnav">
+        <button class="subnav-button" type="button" data-tab-target="database">Database</button>
+        <button class="subnav-button" type="button" data-tab-target="logs">Logs</button>
+        <button class="subnav-button" type="button" data-tab-target="diagnostics">Diagnostics</button>
+    </div>
+
+    <div id="operations-feedback" class="section-subtle">Loading operations data.</div>
+
+    <div class="tab-panel active" data-tab-panel="database">
+        <div class="ops-grid section-scroll">
+            <aside class="panel inset-panel stack-sm">
+                <div class="inline-row">
+                    <div>
+                        <h3 class="section-heading">Tables</h3>
+                        <div class="section-subtle">Read-only SQLite browser.</div>
+                    </div>
+                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-db">Refresh</button>
+                </div>
+                <div id="ops-db-summary" class="section-subtle">Loading database details.</div>
+                <div id="ops-db-list" class="ops-list"></div>
+            </aside>
+
+            <section class="panel inset-panel stack-sm">
+                <div class="inline-row-wrap">
+                    <div>
+                        <h3 class="section-heading">Database workspace</h3>
+                        <div class="section-subtle">Switch between row preview and a schema canvas that maps table relationships.</div>
+                    </div>
+                    <div class="subnav ops-inline-subnav">
+                        <button class="subnav-button active" type="button" id="ops-db-view-data">Data</button>
+                        <button class="subnav-button" type="button" id="ops-db-view-schema">Schema</button>
+                    </div>
+                </div>
+                <div id="ops-db-table-meta" class="section-subtle">Choose a table to inspect.</div>
+                <div id="ops-db-preview" class="ops-viewer empty-state">Choose a table to inspect.</div>
+                <div id="ops-db-schema" class="ops-schema-shell" hidden>
+                    <div class="ops-schema-header">
+                        <div class="section-subtle" id="ops-db-schema-meta">Loading schema map.</div>
+                        <div class="panel-note mono">Visual structure</div>
+                    </div>
+                    <div class="ops-schema-stage" id="ops-schema-stage">
+                        <svg class="ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg>
+                        <div class="ops-schema-grid" id="ops-schema-grid"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="logs">
+        <div class="ops-grid section-scroll">
+            <aside class="panel inset-panel stack-sm">
+                <div class="inline-row">
+                    <div>
+                        <h3 class="section-heading">Log files</h3>
+                        <div class="section-subtle">Files captured under <span class="mono">logs/</span>.</div>
+                    </div>
+                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-logs">Refresh</button>
+                </div>
+                <div id="ops-log-list" class="ops-list"></div>
+            </aside>
+
+            <section class="panel inset-panel stack-sm">
+                <div class="inline-row-wrap">
+                    <div>
+                        <h3 class="section-heading">Log viewer</h3>
+                        <div id="ops-log-meta" class="section-subtle">Select a log file to view its latest lines.</div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn-secondary btn-compact" id="ops-clear-log" disabled>Clear</button>
+                        <button type="button" class="btn-danger btn-compact" id="ops-delete-log" disabled>Delete</button>
+                    </div>
+                </div>
+                <pre id="ops-log-content" class="ops-log-view">Select a log file to view its latest lines.</pre>
+            </section>
+        </div>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="diagnostics">
+        <div class="ops-grid section-scroll">
+            <aside class="panel inset-panel stack-sm">
+                <div class="inline-row-wrap">
+                    <div>
+                        <h3 class="section-heading">Diagnostic captures</h3>
+                        <div class="section-subtle">Grouped HTML and PNG snapshots from <span class="mono">diagnostics/</span>.</div>
+                    </div>
+                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-diagnostics">Refresh</button>
+                </div>
+                <div id="ops-diagnostic-list" class="ops-list"></div>
+            </aside>
+
+            <section class="panel inset-panel stack-sm">
+                <div class="inline-row-wrap">
+                    <div>
+                        <h3 class="section-heading">Capture viewer</h3>
+                        <div id="ops-diagnostic-meta" class="section-subtle">Select a capture to preview its contents.</div>
+                    </div>
+                    <div class="actions">
+                        <button type="button" class="btn-danger btn-compact" id="ops-delete-diagnostic" disabled>Delete</button>
+                        <button type="button" class="btn-danger btn-compact" id="ops-clear-diagnostics">Clear all</button>
+                    </div>
+                </div>
+                <div id="ops-diagnostic-preview" class="ops-viewer empty-state">Select a capture to preview its contents.</div>
+            </section>
+        </div>
+    </div>
+</section>
+{% endblock %}

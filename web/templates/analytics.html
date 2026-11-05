@@ -1,0 +1,232 @@
+{% extends "layout.html" %}
+
+{% block body_class %}page-analytics{% endblock %}
+
+{% block title %}Analytics{% endblock %}
+{% block subtitle %}Understand how credits are moving over time, which platforms are generating samples, and what the
+current session looks like at a glance.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='analytics.js') }}" defer></script>{% endblock %}
+
+{% block content %}
+<section class="collapsible-block" data-collapsible data-collapsible-key="analytics-stats">
+    <div class="collapsible-header">
+        <div>
+            <div class="section-kicker">Session overview</div>
+            <div class="section-subtle">Top-line metrics from the captured credit history.</div>
+        </div>
+        <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
+            aria-expanded="true">
+            <span class="collapse-toggle-label">Hide</span>
+            <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+        </button>
+    </div>
+    <div class="collapsible-body" data-collapse-body>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Latest credits</div>
+                <div class="stat-value" id="metric-latest">0</div>
+                <div class="stat-meta">Most recent balance captured from the runtime feed.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Session gain</div>
+                <div class="stat-value" id="metric-gain">+0</div>
+                <div class="stat-meta">Net movement across the current recorded session.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Session peak</div>
+                <div class="stat-value" id="metric-peak">0</div>
+                <div class="stat-meta">Highest balance observed in the active history window.</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Samples</div>
+                <div class="stat-value" id="metric-samples">0</div>
+                <div class="stat-meta">Recorded credit snapshots available for analysis.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="panel panel-pad stack-sm console-shell" data-tab-group data-tab-group-name="analytics"
+    data-tab-default="summary">
+    <div class="surface-header">
+        <div>
+            <div class="section-kicker">Credit telemetry</div>
+            <h2 class="section-heading">Historical analysis</h2>
+            <div class="section-subtle">Review the balance line, export session data, and compare platform sampling
+                density in a tighter console layout.</div>
+        </div>
+        <div class="panel-note mono">Historical export</div>
+    </div>
+
+    <section class="panel inset-panel collapsible-block" data-collapsible data-collapsible-key="analytics-export">
+        <div class="inline-row-wrap collapsible-header">
+            <div>
+                <h3 class="section-heading">Export controls</h3>
+                <div class="section-subtle">Download logs and credit history for a custom date range.</div>
+            </div>
+            <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
+                aria-expanded="true">
+                <span class="collapse-toggle-label">Hide</span>
+                <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+            </button>
+        </div>
+        <div class="collapsible-body" data-collapse-body>
+            <div class="export-grid">
+                <div>
+                    <label class="section-subtle field-label" for="export-start-date">Start date</label>
+                    <input type="date" id="export-start-date">
+                </div>
+                <div>
+                    <label class="section-subtle field-label" for="export-end-date">End date</label>
+                    <input type="date" id="export-end-date">
+                </div>
+                <div>
+                    <label class="section-subtle field-label" for="export-format">Format</label>
+                    <select id="export-format">
+                        <option value="csv" selected>CSV</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <div class="actions">
+                    <label class="section-subtle field-label" for="export-activity-btn">Export</label>
+                    <button class="btn-secondary" id="export-activity-btn" type="button">Download activity</button>
+                </div>
+            </div>
+            <div class="section-subtle">
+                Export logs and credit history for a date range, including summary metrics and platform totals.
+            </div>
+        </div>
+    </section>
+
+    <div class="subnav">
+        <button class="subnav-button" type="button" data-tab-target="summary">Summary</button>
+        <button class="subnav-button" type="button" data-tab-target="trends">Trends</button>
+        <button class="subnav-button" type="button" data-tab-target="platforms">Platforms</button>
+        <button class="subnav-button" type="button" data-tab-target="heatmap">Heatmap</button>
+        <button class="subnav-button" type="button" data-tab-target="insights">Insights</button>
+    </div>
+
+    <div id="analytics-feedback" class="section-subtle">Loading analytics.</div>
+
+    <div class="tab-panel active" data-tab-panel="summary">
+        <section class="panel inset-panel">
+            <h2 class="section-heading">Session interpretation</h2>
+            <div id="session-summary" class="section-subtle" style="line-height:1.7;">
+                Waiting for credit history.
+            </div>
+        </section>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="trends">
+        <section class="panel inset-panel" style="min-height:360px; display:flex; flex-direction:column;">
+            <div class="inline-row" style="margin-bottom:12px;">
+                <div>
+                    <h2 class="section-heading">Credit trend</h2>
+                    <div class="section-subtle">Captured balance history.</div>
+                </div>
+                <div class="panel-note mono">Live stream</div>
+            </div>
+            <div style="position:relative; flex:1; min-height:250px; padding-bottom:8px;">
+                <canvas id="mainEarningsChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="platforms">
+        <section class="panel inset-panel">
+            <h2 class="section-heading">Platform distribution</h2>
+            <div class="section-subtle" style="margin-bottom:14px;">How many captured samples came from each platform.
+            </div>
+            <div id="platform-breakdown" class="stack-sm"></div>
+        </section>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="heatmap">
+        <section class="panel inset-panel">
+            <div class="inline-row" style="margin-bottom:16px;">
+                <div>
+                    <h2 class="section-heading">Activity Heatmap</h2>
+                    <div class="section-subtle">Credit earning patterns by hour and day of week.</div>
+                </div>
+                <div class="panel-note mono">Last 30 days</div>
+            </div>
+            <div class="heatmap-container">
+                <div class="heatmap-grid" id="activity-heatmap"></div>
+                <div class="heatmap-legend">
+                    <div class="legend-scale">
+                        <span>Less</span>
+                        <div class="legend-colors">
+                            <div class="legend-color" style="background: rgba(111,218,122,0.2)"></div>
+                            <div class="legend-color" style="background: rgba(111,218,122,0.4)"></div>
+                            <div class="legend-color" style="background: rgba(111,218,122,0.6)"></div>
+                            <div class="legend-color" style="background: rgba(111,218,122,0.8)"></div>
+                            <div class="legend-color" style="background: var(--accent)"></div>
+                        </div>
+                        <span>More</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="tab-panel" data-tab-panel="insights">
+        <div class="insights-grid">
+            <section class="panel inset-panel">
+                <h2 class="section-heading">Performance Insights</h2>
+                <div class="insights-list" id="performance-insights">
+                    <div class="insight-item insight-positive">
+                        <div class="insight-icon">📈</div>
+                        <div class="insight-content">
+                            <div class="insight-title">Peak Performance Hours</div>
+                            <div class="insight-description">Your best earning hours are 2-4 PM with 45% higher success rate</div>
+                        </div>
+                    </div>
+                    <div class="insight-item insight-warning">
+                        <div class="insight-icon">⚠️</div>
+                        <div class="insight-content">
+                            <div class="insight-title">Platform Fatigue Detected</div>
+                            <div class="insight-description">Instagram success rate dropped 15% this week. Consider rotation.</div>
+                        </div>
+                    </div>
+                    <div class="insight-item insight-info">
+                        <div class="insight-icon">🎯</div>
+                        <div class="insight-content">
+                            <div class="insight-title">Optimal Agent Count</div>
+                            <div class="insight-description">Running 4-6 agents simultaneously maximizes efficiency without rate limits</div>
+                        </div>
+                    </div>
+                    <div class="insight-item insight-positive">
+                        <div class="insight-icon">💰</div>
+                        <div class="insight-content">
+                            <div class="insight-title">Revenue Trend</div>
+                            <div class="insight-description">Credits earned increased 23% compared to last month</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="panel inset-panel">
+                <h2 class="section-heading">Predictive Analytics</h2>
+                <div class="prediction-chart">
+                    <canvas id="predictionChart" height="200"></canvas>
+                </div>
+                <div class="prediction-insights">
+                    <div class="prediction-item">
+                        <div class="prediction-label">Next 24h Projection</div>
+                        <div class="prediction-value positive">+127 credits</div>
+                    </div>
+                    <div class="prediction-item">
+                        <div class="prediction-label">Confidence Level</div>
+                        <div class="prediction-value">87%</div>
+                    </div>
+                    <div class="prediction-item">
+                        <div class="prediction-label">Best Platform Tomorrow</div>
+                        <div class="prediction-value">YouTube</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+</section>
+{% endblock %}
