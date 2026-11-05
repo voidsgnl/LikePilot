@@ -60,3 +60,7 @@
 .analytics-export-panel{margin-bottom:10px}
 .settings-agent-panel .settings-layout,.settings-agent-panel .section-scroll{max-height:none;overflow:visible}
 @media(max-width:700px){.page-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:7px}.page-nav .subnav-button{white-space:nowrap}}
+
+
+/* The overview now contains one primary runtime panel. */
+.overview-columns-single{grid-template-columns:minmax(0,1fr)!important}
