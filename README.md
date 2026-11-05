@@ -36,7 +36,7 @@ The `farm.py` command is a small compatibility launcher. The installed package a
 ## Application structure
 
 - `src/likepilot/core/` — runtime, configuration, persistence, browser lifecycle, and shared services.
-- `src/likepilot/integrations/adapters/` — current provider adapters. Their provider/network coupling is preserved during the initial move and will be refined after behavior tests.
+- `src/likepilot/integrations/providers/` and `src/likepilot/integrations/networks/` — provider foundations/adapters and social-network action adapters. Existing behavior is preserved during the initial move and boundaries will be refined after integration tests.
 - `src/likepilot/dashboard/` — Flask application, templates, static assets, and favicon resources.
 - `src/likepilot/entrypoints/` — supported web-server entrypoint.
 - `config/` — sanitized configuration examples.
