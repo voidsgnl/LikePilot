@@ -86,3 +86,24 @@ def test_agent_directory_uses_compact_inventory_columns():
     assert "Session gain" not in template
     assert "Last heartbeat" not in template
     assert "directory-total" not in script
+
+def test_agent_workspace_keeps_only_operational_metrics():
+    template = (DASHBOARD / "templates" / "agent_detail.html").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "agent-detail.js").read_text(encoding="utf-8")
+
+    assert 'id="agent-credits"' in template
+    assert 'id="agent-gain"' in template
+    assert 'id="agent-peak"' not in template
+    assert 'id="agent-samples"' not in template
+    assert "actionAvailability" in script
+    assert "ready: agent.status === 'Awaiting Login'" in script
+    assert "initialize: agent.status === 'Login Success'" in script
+
+
+def test_agent_workspace_separates_runtime_details_from_configuration():
+    template = (DASHBOARD / "templates" / "agent_detail.html").read_text(encoding="utf-8")
+
+    assert 'id="agent-heartbeat"' in template
+    assert 'id="agent-session-start"' in template
+    assert 'href="/settings/agents/manage"' in template
+    assert "Manage saved agents" in template
