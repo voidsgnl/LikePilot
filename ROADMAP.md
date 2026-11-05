@@ -6,7 +6,7 @@
 
 LikePilot is a multi-platform automation and agent-management application. It connects engagement/task providers with social networks; Like4Like is one provider, not the product identity.
 
-The project is intended for educational, experimental, and software-development use. Users remain responsible for complying with the terms and policies of each connected service and for automating only accounts and environments they are authorized to use.\n\n## Product direction decision (2026-11-05)\n\nLikePilot is **web-only**: the dashboard runs in the application server and users access it through a normal browser. `pywebview` and native desktop-window wrappers are not part of the target runtime. The intended user workflow is clone, configure, install dependencies, start the server, and open the dashboard. Desktop launchers and executable packaging are legacy scope and must be evaluated for removal; do not remove them until the browser-server workflow, data paths, and launch scripts are verified. Windows and Linux source workflows remain subject to compatibility testing.
+The project is intended for educational, experimental, and software-development use. Users remain responsible for complying with the terms and policies of each connected service and for automating only accounts and environments they are authorized to use.\n\n## Product direction decision (2026-11-05)\n\nLikePilot has **one delivery model: a browser-accessed web application**. Users clone, configure, install the web/runtime dependencies, start the server, and open the dashboard in a normal browser. Native desktop wrappers, Python desktop-window shells, Windows executable packaging, and desktop-specific dependency groups are out of scope and are to be retired. Keep the web installation free of desktop-only dependencies. Verify the browser-server workflow, data paths, and launch scripts before removing legacy files. Windows and Linux source workflows remain subject to compatibility testing.
 
 ## Status key
 
@@ -38,16 +38,16 @@ The project is intended for educational, experimental, and software-development 
   - [ ] Confirm runtime behavior for each registered provider/network/action combination.
   - **Acceptance:** A clean checkout can import and start the primary runtime; each registered integration has an identifiable implementation and a verified execution path.
 
-- [~] **P0.2 — Verify startup paths**\n  - [x] Select the browser-based web dashboard as the sole intended UI; retire the pywebview desktop-shell direction.\n  - [ ] Establish one canonical web-server startup command and verify clean shutdown.
-  - [ ] Trace `farm.py`, `likepilot_desktop.py`, `dashboard_desktop.py`, and `start_silent.py`.
-  - [ ] Identify the intended primary launch path and supported alternate launch modes.
+- [~] **P0.2 — Verify startup paths**\n  - [x] Select the browser-based web dashboard as the sole UI and sole delivery model; retire the desktop-shell and executable-build directions.\n  - [ ] Establish one canonical web-server startup command and verify clean shutdown.
+  - [ ] Trace `farm.py` and legacy desktop launchers so desktop-only paths can be safely retired.
+  - [ ] Establish `farm.py` (or its replacement) as the only supported application launch path.
   - [ ] Check dashboard ports, startup health checks, shutdown behavior, and error reporting.
   - **Acceptance:** Each documented launch command starts the intended service or exits with a useful actionable error.
 
-- [ ] **P0.3 — Dependency and import audit**\n  - [ ] Ensure `pywebview` is not required by the web-only install; remove it from runtime dependency declarations if present.\n  - [ ] Keep the base install limited to dependencies required by the web server and agent runtime.
+- [ ] **P0.3 — Dependency and import audit**\n  - [ ] Remove desktop-only dependencies and build requirements from the project; keep only dependencies required by the web application and agent runtime.\n  - [ ] Keep the base install limited to dependencies required by the web server and agent runtime.
   - [ ] Compare imports across the project with declared dependencies.
-  - [ ] Separate required runtime, desktop UI, development, and optional dependencies.
-  - [ ] Verify dependency availability and compatibility on the intended Windows and Linux source workflows.
+  - [ ] Separate required web/runtime dependencies from development-only dependencies; do not maintain a desktop dependency group.
+  - [ ] Verify dependency availability and compatibility on the intended Windows and Linux web-source workflows.
   - **Acceptance:** A clean environment can install the documented dependency set and pass import/startup checks for the selected mode.
 
 - [ ] **P0.4 — Configuration and security baseline**
@@ -78,7 +78,7 @@ The project is intended for educational, experimental, and software-development 
   - [ ] Compare `core/agents.py` and agent operations in `core/state.py`.
   - [ ] Compare `core/stats.py` and statistics functions in `core/state.py`.
   - [ ] Compare `core/runtime.py` and `core/multiprocess_runtime.py` supervisor responsibilities.
-  - [ ] Compare startup/server responsibilities in `farm.py`, `dashboard_desktop.py`, and `likepilot_desktop.py`.
+  - [ ] Compare startup/server responsibilities in `farm.py` and legacy desktop wrappers before retiring the latter.
   - [ ] Identify unused, obsolete, duplicate, and compatibility files through import and execution tracing.
   - **Acceptance:** Each consolidation or removal has verified callers, migration notes where needed, and regression checks.
 
@@ -123,7 +123,7 @@ The project is intended for educational, experimental, and software-development 
 - [ ] **P3.1 — Audit dashboard features against backend behavior.**
 - [ ] **P3.2 — Ensure settings persist and are validated.**
 - [ ] **P3.3 — Improve agent status, activity, analytics, and error visibility.**
-- [ ] **P3.4 — Ensure desktop and browser dashboard modes have consistent behavior.**
+- [ ] **P3.4 — Verify the browser dashboard is the single supported UI and behaves consistently across supported browsers.**
 - **Acceptance:** Visible controls map to implemented backend behavior, with clear loading, empty, success, and error states.
 
 ## Phase 4 — Data, privacy, and operational safety
@@ -138,7 +138,7 @@ The project is intended for educational, experimental, and software-development 
 
 ## Phase 5 — Installation, portability, and packaging
 
-**Goal:** Support both executable distribution and source-based development without conflating the two.
+**Goal:** Provide one reproducible source-based web installation and startup workflow.
 
 - [!] **P5.1 — Windows executable packaging (out of target scope)**\n  - [x] Product direction is browser-based web-only operation; native pywebview shell is not required.\n  - [ ] Remove obsolete executable packaging and WebView2 instructions after confirming no supported deployment depends on them.
   - [ ] Identify the supported entrypoint and required bundled resources.
@@ -148,19 +148,19 @@ The project is intended for educational, experimental, and software-development 
 
 - [~] **P5.2 — Define source installation (primary installation path)**
   - [ ] Document Python version constraints and virtual-environment setup.
-  - [ ] Provide explicit install commands for core and optional desktop dependencies.
+  - [ ] Provide explicit install commands for the web application and agent runtime only.
   - [ ] Verify launch from a clean source checkout.
   - **Acceptance:** A developer can clone the repository, install dependencies, configure the app, and run the documented source entrypoint.
 
 - [ ] **P5.3 — Verify Linux source workflow**
   - [ ] Replace Windows-only launcher assumptions where a cross-platform equivalent is intended.
-  - [ ] Verify browser driver, WebView, and system-library requirements.
+  - [ ] Verify browser driver and required system-library dependencies; no embedded WebView is part of the product.
   - [ ] Document any platform-specific limitations.
   - **Acceptance:** Linux support is stated only for workflows that have been tested successfully.
 
 - [ ] **P5.4 — Release automation**
-  - [ ] Add build and validation scripts.
-  - [ ] Add automated checks for imports, tests, and packaging.
+  - [ ] Add web application validation and deployment scripts; do not add desktop executable build scripts.
+  - [ ] Add automated checks for imports, tests, and the web installation/startup workflow.
   - [ ] Define versioning, release assets, checksums, and release notes.
   - **Acceptance:** Release artifacts are reproducible and accompanied by installation and verification instructions.
 
@@ -194,7 +194,7 @@ The project is intended for educational, experimental, and software-development 
 | A-004 | Agent and statistics wrapper modules overlap with `core/state.py` | [~] Traced partially | `core.agents` is imported by the dashboard and delegates to state; `core.stats` has no tracked internal caller found. Preserve both pending compatibility review |
 | A-005 | Threaded and multiprocessing runtime implementations overlap | [~] Traced partially | Current launchers start the threaded supervisor directly; the multiprocessing selector has no tracked caller found. Verify intended mode before consolidation |
 | A-006 | Multiple launchers overlap in server and desktop startup responsibilities | [~] Static trace complete | `farm.py` is the health-checked server; `likepilot_desktop.py` wraps it; `dashboard_desktop.py` starts a separate dashboard server. Verify intended modes and smoke tests before consolidating |
-| A-007 | Desktop dependencies appear absent from the single requirements file | [ ] Open | Split and verify dependency groups |
+| A-007 | Legacy desktop wrappers and executable-build files remain in the repository | [~] Retirement approved | Trace references, remove desktop-only code/build assets, and verify the web install remains independent |
 | A-008 | Updater repository setting contains a placeholder owner/repository | [ ] Open | Configure only after update and release design is safe |
 | A-009 | Dashboard has a default credential fallback | [ ] Open | Replace with secure first-run or environment-based configuration |
 | A-010 | `config.json` has a duplicate `performance` key and example placeholder values | [ ] Open | Normalize configuration while preserving intended settings |
@@ -218,8 +218,8 @@ Record significant changes here. Keep entries factual and include verification r
 |---|---|---|
 | 2026-11-05 | Keep `main` as the working branch; do not create feature branches. | Project workflow preference. |
 | 2026-11-05 | Investigate redundancy before deleting or merging files. | Similar names do not prove equivalent behavior or safe removal. |
-| 2026-11-05 | Treat executable distribution and source installation as separate supported workflows. | They have different dependencies, launch paths, and packaging requirements. |
+| 2026-11-05 | Support only the browser-based web application; retire desktop executable distribution. | Keep one installation, dependency, launch, and maintenance path. |
 | 2026-11-05 | Describe LikePilot as multi-platform, with providers distinct from social networks. | Like4Like is one provider, not the product identity. |
-| 2026-11-05 | Use the approved `src/likepilot` package layout with separate integrations, dashboard, desktop/entrypoints, scripts, packaging, tests, docs, and runtime data areas as the target architecture. | Reduce root clutter while preserving distinct runtime responsibilities; validate import and data-path changes before migration. |
+| 2026-11-05 | Use the approved `src/likepilot` package layout with separate integrations, dashboard, web entrypoints, scripts, tests, docs, and runtime data areas as the target architecture. | Reduce root clutter while preserving distinct runtime responsibilities; validate import and data-path changes before migration. |
 
 | 2026-11-05 | Verified the remote `modules/` directory and reconciled it with `core/runtime.py`; updated A-001 and P0.1. No application files moved or modified. | Eight module files present; all runtime-imported class names are defined in the integration source. Static verification only; clean-checkout import, startup, and live execution remain untested. |
