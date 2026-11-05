@@ -118,10 +118,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Render notification text as text content rather than interpolated HTML.
   - [ ] Verify all affected pages and actions in Firefox and Chrome.
   - [ ] Run the full test suite and fix any regressions.
-- [ ] **P3.5.2 — Refine agent workspace controls and information density.**
-  - [ ] Review state-aware availability of Start, Ready, Initialize, Pause, Resume, and Stop.
-  - [ ] Separate live runtime details from saved configuration without duplicating fields.
-  - [ ] Keep only metrics that support an operational decision.
+- [~] **P3.5.2 — Refine agent workspace controls and information density.**
+  - [x] Show only the action appropriate to the current agent state: Start, Ready, Initialize, Pause, Resume, or Stop.
+  - [x] Separate heartbeat/session timestamps from saved profile configuration.
+  - [x] Keep Credits and Session Gain as the primary agent metrics; remove Session Peak and Samples from the workspace.
+  - [x] Correct the configuration link to open Manage Agents rather than Browser Settings.
+  - [ ] Verify each status transition and platform-switch flow in the running dashboard.
 
 ## Phase 4 — Security and operations
 
