@@ -66,6 +66,7 @@ def test_analytics_does_not_present_fabricated_telemetry():
     assert "87%" not in analytics_template
     assert "Math.random()" not in analytics_script
 
+
 def test_dashboard_navigation_omits_static_catalog_pages():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
     assert 'href="/providers"' not in layout
