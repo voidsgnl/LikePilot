@@ -1,20 +1,21 @@
 // Service Worker for LikePilot - Performance Optimization
-const CACHE_NAME = 'likepilot-v1.0.1';
-const STATIC_CACHE = 'likepilot-static-v1.0.1';
-const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.1';
+const CACHE_NAME = 'likepilot-v1.0.2';
+const STATIC_CACHE = 'likepilot-static-v1.0.2';
+const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.2';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
     '/',
     '/dashboard',
     '/static/dashboard.css',
+    '/static/console-theme.css',
     '/static/dashboard.js',
     '/static/analytics.js',
     '/static/agents.js',
     '/static/settings.js',
     '/static/operations.js',
     'https://cdn.jsdelivr.net/npm/chart.js',
-    'https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap'
+    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 ];
 
 // Install event - cache static assets

@@ -152,3 +152,14 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Confirmed `python3 farm.py` starts the existing web server before the src-layout migration. | User-reported successful startup; post-migration verification remains pending. |
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
 | 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
+
+
+## Phase 8 — Dashboard visual system
+
+- [~] **P8.1 — Align the LikePilot dashboard with the msf-web-console visual language.**
+  - [x] Add a shared console theme stylesheet with the charcoal/green palette, compact surfaces, borders, controls, and typography.
+  - [x] Restyle the navigation shell, top bar, common panels, tables, forms, buttons, badges, and login page.
+  - [x] Restyle dashboard-specific metric and chart panels.
+  - [x] Preserve LikePilot navigation, routes, page content, theme options, and application behavior.
+  - [ ] Verify all dashboard pages and responsive layouts in Firefox and Chrome.
+  - [ ] Tune any page-specific layout regressions found during browser testing.
