@@ -88,6 +88,21 @@ def get_chrome_options(profile_name=None, proxy=None, startup_url=None):
 def get_firefox_options(profile_name=None, proxy=None, startup_url=None, headless=False):
     """Build Firefox options and a dedicated persistent Firefox profile."""
     options = FirefoxOptions()
+
+    # Ubuntu's Firefox Snap launcher is not a Firefox binary from
+    # geckodriver's perspective. Point Selenium at the executable inside
+    # the mounted Snap; allow an explicit override for other installations.
+    firefox_binary = os.getenv("LIKEPILOT_FIREFOX_BINARY")
+    if not firefox_binary and os.path.isfile(
+        "/snap/firefox/current/usr/lib/firefox/firefox"
+    ):
+        firefox_binary = "/snap/firefox/current/usr/lib/firefox/firefox"
+    if firefox_binary:
+        if not os.path.isfile(firefox_binary) or not os.access(firefox_binary, os.X_OK):
+            raise FileNotFoundError(
+                f"Firefox binary is not executable: {firefox_binary}"
+            )
+        options.binary_location = firefox_binary
     if headless:
         options.add_argument("-headless")
     options.set_preference("dom.notifications.enabled", False)
