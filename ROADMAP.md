@@ -69,14 +69,20 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 - [ ] **P2.1 — Map provider/network/action combinations to concrete classes.**
 - [ ] **P2.2 — Verify agent create, configure, start, pause, resume, stop, restart, and delete flows.**
-- [ ] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
+- [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
+  - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
+  - [x] Add separate Chrome and Firefox driver construction with browser-specific persistent profiles.
+  - [ ] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
+  - [ ] Verify Chrome regression and proxy behavior for both browsers.
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
 - **Acceptance:** each advertised integration and agent transition is verified and failures are visible.
 
 ## Phase 3 — Browser dashboard
 
 - [ ] **P3.1 — Audit dashboard controls against backend behavior.**
-- [ ] **P3.2 — Verify settings persistence and validation.**
+- [~] **P3.2 — Verify settings persistence and validation.**
+  - [x] Add authenticated API endpoints and dashboard control for global browser selection.
+  - [ ] Verify persistence and invalid-value rejection in the local dashboard.
 - [ ] **P3.3 — Improve agent status, activity, analytics, and error visibility.**
 - [ ] **P3.4 — Verify the browser dashboard across supported browsers and screen sizes.**
 - **Acceptance:** visible controls map to working backend behavior with clear success, empty, loading, and error states.
@@ -135,6 +141,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-005 | Desktop wrappers and executable build path were unrelated to web operation. | [x] Removed from the supported architecture and repository migration | Keep the web install free of desktop-only dependencies |
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Preserved intentionally | Migrate only with compatibility and backup tests |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
+| A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection; local Firefox verification pending | Verify Firefox/geckodriver and Chrome regression locally |
 
 ## Change tracking
 
@@ -144,3 +151,4 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Added the initial repository inventory and migration map. | Static inspection of tracked source, launchers, integrations, and runtime-data ownership. |
 | 2026-11-05 | Confirmed `python3 farm.py` starts the existing web server before the src-layout migration. | User-reported successful startup; post-migration verification remains pending. |
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
+| 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |

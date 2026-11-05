@@ -9,7 +9,7 @@ description = "Multi-provider automation and agent management through a local we
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "selenium",
+    "selenium>=4.20",
     "webdriver-manager",
     "python-dotenv",
     "colorama",

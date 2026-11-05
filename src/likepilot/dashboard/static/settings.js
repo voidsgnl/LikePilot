@@ -361,6 +361,36 @@ function renderAgents(data) {
             : `<span class="section-subtle">Create your first agent to start using the workspace.</span>`;
     }
 
+    function loadBrowserSetting() {
+        const select = document.getElementById('default-browser');
+        const feedback = document.getElementById('browser-setting-feedback');
+        if (!select || !feedback) return;
+        fetchJson('/api/settings/browser').then((data) => {
+            select.value = data.browser || 'chrome';
+            feedback.textContent = 'Current default: ' + (data.browser || 'chrome').toUpperCase();
+        }).catch(() => { feedback.textContent = 'Unable to load browser setting.'; });
+    }
+
+    function saveBrowserSetting() {
+        const select = document.getElementById('default-browser');
+        const feedback = document.getElementById('browser-setting-feedback');
+        if (!select || !feedback) return;
+        const button = document.querySelector('[data-save-browser]');
+        if (button) button.disabled = true;
+        fetchJson('/api/settings/browser', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ browser: select.value })
+        }).then((data) => {
+            feedback.textContent = data.message || 'Browser setting saved.';
+            return showSuccessModal(data.message || 'Browser setting saved.', {
+                title: 'Browser setting updated', confirmLabel: 'Close'
+            });
+        }).catch((error) => {
+            feedback.textContent = error.message || 'Unable to save browser setting.';
+        }).finally(() => { if (button) button.disabled = false; });
+    }
+
     function loadAgents() {
         fetchJson('/api/status')
             .then(renderAgents)
@@ -370,6 +400,9 @@ function renderAgents(data) {
     }
 
     document.addEventListener('click', (event) => {
+        const browserButton = event.target.closest('[data-save-browser]');
+        if (browserButton) { saveBrowserSetting(); return; }
+
         const addButton = event.target.closest('[data-add-agent]');
         if (addButton) {
             void deployAgent();
@@ -393,6 +426,8 @@ function renderAgents(data) {
             void pickChain(chainButton.getAttribute('data-pick-chain'));
         }
     });
+
+    loadBrowserSetting();
 
     createEventStream(
         '/api/stream/status',

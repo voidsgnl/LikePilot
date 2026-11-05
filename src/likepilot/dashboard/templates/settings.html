@@ -9,6 +9,33 @@ workspace.{% endblock %}
 <script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 
 {% block content %}
+<section class="panel panel-pad stack-sm page-section console-shell">
+    <div class="surface-header">
+        <div>
+            <div class="section-kicker">Runtime</div>
+            <h2 class="section-heading">Default browser</h2>
+            <div class="section-subtle">One browser selection applies to every agent. Existing running sessions keep their current browser until restarted.</div>
+        </div>
+        <div class="panel-note mono">Global setting</div>
+    </div>
+    <div class="form-grid">
+        <div class="field-stack">
+            <label class="section-subtle field-label" for="default-browser">Browser used for new sessions</label>
+            <select id="default-browser">
+                <option value="chrome">Google Chrome</option>
+                <option value="firefox">Mozilla Firefox</option>
+            </select>
+        </div>
+        <div class="field-stack">
+            <div class="section-subtle field-label">Browser status</div>
+            <div id="browser-setting-feedback" class="section-subtle">Loading browser setting.</div>
+        </div>
+    </div>
+    <div class="actions">
+        <button class="btn-primary" type="button" data-save-browser>Save browser setting</button>
+    </div>
+</section>
+
 <section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-default="add">
     <div class="surface-header">
         <div>
@@ -41,7 +68,7 @@ workspace.{% endblock %}
                     </div>
 
                     <div class="field-stack">
-                        <label class="section-subtle field-label" for="new-agent-profile">Chrome profile</label>
+                        <label class="section-subtle field-label" for="new-agent-profile">Browser profile</label>
                         <input type="text" id="new-agent-profile" placeholder="Example: Profile 5">
                     </div>
 

@@ -1,4 +1,7 @@
 {
+  "browser": {
+    "default": "chrome"
+  },
   "stealth": {
     "randomize_fingerprint": true,
     "randomize_user_agent": true,

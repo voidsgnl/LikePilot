@@ -9,6 +9,9 @@ from likepilot.core.paths import runtime_path
 CONFIG_FILE = runtime_path("config.json")
 
 DEFAULT_CONFIG = {
+    "browser": {
+        "default": "chrome",
+    },
     "stealth": {
         "randomize_fingerprint": True,
         "randomize_user_agent": True,

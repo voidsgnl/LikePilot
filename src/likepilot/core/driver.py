@@ -1,9 +1,14 @@
-import undetected_chromedriver as uc
-from selenium.webdriver.chrome.options import Options
+"""Browser driver factory for the globally selected LikePilot browser."""
+
 import os
-import random
-import time
-import shutil
+from urllib.parse import urlsplit
+
+import undetected_chromedriver as uc
+from selenium import webdriver
+from selenium.webdriver.firefox.firefox_profile import FirefoxProfile
+from selenium.webdriver.firefox.options import Options as FirefoxOptions
+
+from likepilot.core.config import get_config_value
 from likepilot.core.paths import get_runtime_root
 
 
@@ -24,103 +29,129 @@ def _env_int(name, default):
         return default
 
 
-def get_options(profile_name=None, proxy=None, startup_url=None):
-    """Creates a dedicated bot profile that persists logins."""
+def _safe_profile_name(profile_name):
+    profile_name = profile_name or os.getenv("CHROME_PROFILE", "Default")
+    return "".join(char for char in profile_name if char.isalnum() or char in (" ", "-", "_")).strip() or "Default"
+
+
+def _profile_directory(browser, profile_name=None):
+    safe_name = _safe_profile_name(profile_name)
+    prefix = "user_" if browser == "chrome" else "firefox_user_"
+    path = os.path.join(get_runtime_root(), "profiles", f"{prefix}{safe_name}")
+    os.makedirs(path, exist_ok=True)
+    print(f"Using dedicated {browser.title()} profile: {path}")
+    return path
+
+
+def get_chrome_options(profile_name=None, proxy=None, startup_url=None):
+    """Build Chrome options while preserving existing Chrome profile behavior."""
     options = uc.ChromeOptions()
-    options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--no-sandbox")
-    options.add_argument("--disable-gpu") 
-    options.add_argument("--disable-dev-shm-usage")
-    options.add_argument("--disable-features=IsolateOrigins,site-per-process")
-    options.add_argument("--no-first-run")
-    options.add_argument("--no-default-browser-check")
-    options.add_argument("--disable-session-crashed-bubble")
-    options.add_argument("--disable-features=Translate,NotificationTriggers,OptimizationHints")
-    options.add_argument("--disable-background-networking")
-    options.add_argument("--disable-sync")
-    options.add_argument("--homepage=about:blank")
+    for argument in (
+        "--disable-blink-features=AutomationControlled",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-dev-shm-usage",
+        "--disable-features=IsolateOrigins,site-per-process",
+        "--no-first-run",
+        "--no-default-browser-check",
+        "--disable-session-crashed-bubble",
+        "--disable-features=Translate,NotificationTriggers,OptimizationHints",
+        "--disable-background-networking",
+        "--disable-sync",
+        "--homepage=about:blank",
+    ):
+        options.add_argument(argument)
+
     compact_mode = _env_flag("CHROME_COMPACT_MODE", True)
-    window_width = max(360, _env_int("CHROME_WINDOW_WIDTH", 540))
-    window_height = max(640, _env_int("CHROME_WINDOW_HEIGHT", 900))
-    window_x = max(0, _env_int("CHROME_WINDOW_X", 24))
-    window_y = max(0, _env_int("CHROME_WINDOW_Y", 24))
+    width = max(360, _env_int("CHROME_WINDOW_WIDTH", 540))
+    height = max(640, _env_int("CHROME_WINDOW_HEIGHT", 900))
+    x = max(0, _env_int("CHROME_WINDOW_X", 24))
+    y = max(0, _env_int("CHROME_WINDOW_Y", 24))
     if compact_mode:
-        options.add_argument(f"--window-size={window_width},{window_height}")
-        options.add_argument(f"--window-position={window_x},{window_y}")
-    options.add_experimental_option(
-        "prefs",
-        {
-            "profile.default_content_setting_values.notifications": 2,
-            "session.restore_on_startup": 4,
-            "session.startup_urls": [],
-            "homepage": "about:blank",
-            "homepage_is_newtabpage": False,
-        },
-    )
+        options.add_argument(f"--window-size={width},{height}")
+        options.add_argument(f"--window-position={x},{y}")
+
+    options.add_experimental_option("prefs", {
+        "profile.default_content_setting_values.notifications": 2,
+        "session.restore_on_startup": 4,
+        "session.startup_urls": [],
+        "homepage": "about:blank",
+        "homepage_is_newtabpage": False,
+    })
     if startup_url:
         options.add_argument(startup_url)
-    
-    # Use the provided profile name or fallback to Default
-    if not profile_name:
-        profile_name = os.getenv("CHROME_PROFILE", "Default")
-    
-    # Create a dedicated folder in the project for the bot's session
-    project_dir = get_runtime_root()
-    # Sanitize profile name for directory usage
-    safe_profile_name = "".join([c for c in profile_name if c.isalnum() or c in (' ', '-', '_')]).strip()
-    bot_profile_dir = os.path.join(project_dir, "profiles", f"user_{safe_profile_name}")
-    os.makedirs(bot_profile_dir, exist_ok=True)
-    
-    print(f"Using dedicated bot profile: {bot_profile_dir}")
-    if compact_mode:
-        print(f"Using compact browser window: {window_width}x{window_height} at {window_x},{window_y}")
-    options.add_argument(f"--user-data-dir={bot_profile_dir}")
+    options.add_argument(f"--user-data-dir={_profile_directory('chrome', profile_name)}")
     if proxy:
         options.add_argument(f"--proxy-server={proxy}")
-    
-    # Remove any old lock files if they exist
-    lock = os.path.join(bot_profile_dir, "SingletonLock")
-    if os.path.exists(lock):
-        try: os.remove(lock)
-        except: pass
-
     return options
 
-def create_stealth_driver(headless=False, proxy=None, profile_name=None, startup_url=None):
-    """
-    Creates a highly undetectable Chrome driver instance.
-    Prioritizes subprocess mode to avoid long timeouts on Windows.
-    """
-    # Attempt 1: Subprocess mode (Faster and more stable for custom profiles on Windows)
-    try:
-        print(f"[DEBUG] Launching Chrome (Subprocess Mode) for profile: {profile_name}")
-        driver = uc.Chrome(
-            options=get_options(profile_name=profile_name, proxy=proxy, startup_url=startup_url),
-            headless=headless,
-            use_subprocess=True,
-            version_main=145
-        )
+
+def get_firefox_options(profile_name=None, proxy=None, startup_url=None, headless=False):
+    """Build Firefox options and a dedicated persistent Firefox profile."""
+    options = FirefoxOptions()
+    if headless:
+        options.add_argument("-headless")
+    options.set_preference("dom.notifications.enabled", False)
+    options.set_preference("browser.startup.page", 0)
+    options.set_preference("browser.shell.checkDefaultBrowser", False)
+    options.set_preference("toolkit.telemetry.enabled", False)
+
+    profile_path = _profile_directory("firefox", profile_name)
+    options.profile = FirefoxProfile(profile_path)
+
+    if proxy:
+        parsed = urlsplit(proxy if "://" in proxy else f"http://{proxy}")
+        if not parsed.hostname or not parsed.port:
+            raise ValueError("Firefox proxy must include a hostname and port.")
+        scheme = parsed.scheme.lower()
+        options.set_preference("network.proxy.type", 1)
+        if scheme.startswith("socks"):
+            options.set_preference("network.proxy.socks", parsed.hostname)
+            options.set_preference("network.proxy.socks_port", parsed.port)
+            options.set_preference("network.proxy.socks_version", 5 if scheme == "socks5" else 4)
+        else:
+            for protocol in ("http", "ssl", "ftp"):
+                options.set_preference(f"network.proxy.{protocol}", parsed.hostname)
+                options.set_preference(f"network.proxy.{protocol}_port", parsed.port)
+        options.set_preference("network.proxy.no_proxies_on", "localhost, 127.0.0.1")
+        if parsed.username or parsed.password:
+            raise ValueError("Firefox currently supports unauthenticated proxies only; remove proxy credentials or use a compatible proxy endpoint.")
+    return options
+
+
+def create_stealth_driver(headless=False, proxy=None, profile_name=None, startup_url=None, browser=None):
+    """Create a driver using the global dashboard browser setting by default."""
+    selected = (browser or get_config_value("browser.default", "chrome") or "chrome").strip().lower()
+    if selected not in {"chrome", "firefox"}:
+        raise ValueError(f"Unsupported browser selection: {selected}")
+
+    if selected == "firefox":
+        print(f"[DEBUG] Launching Firefox for profile: {profile_name}")
+        options = get_firefox_options(profile_name, proxy, startup_url, headless=headless)
+        driver = webdriver.Firefox(options=options)
+        if startup_url:
+            driver.get(startup_url)
         return driver
-    except Exception as e:
-        print(f"Subprocess launch failed: {e}. Trying fallback mode...")
-        try:
-            # Fallback
-            driver = uc.Chrome(
-                options=get_options(profile_name=profile_name, proxy=proxy, startup_url=startup_url),
-                headless=headless,
-                use_subprocess=False,
-                version_main=145
-            )
-            return driver
-        except Exception as e2:
-            print(f"Critical driver failure: {e2}")
-            raise e2
+
+    print(f"[DEBUG] Launching Chrome for profile: {profile_name}")
+    options = get_chrome_options(profile_name, proxy, startup_url)
+    try:
+        return uc.Chrome(options=options, headless=headless, use_subprocess=True, version_main=145)
+    except Exception as error:
+        print(f"Chrome subprocess launch failed: {error}. Trying fallback mode...")
+        return uc.Chrome(
+            options=get_chrome_options(profile_name, proxy, startup_url),
+            headless=headless,
+            use_subprocess=False,
+            version_main=145,
+        )
+
 
 def inject_stealth(driver):
-    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-        "source": """
-            Object.defineProperty(navigator, 'webdriver', {
-                get: () => undefined
-            });
-        """
+    """Apply the existing Chrome CDP tweak when the driver supports it."""
+    execute_cdp = getattr(driver, "execute_cdp_cmd", None)
+    if not callable(execute_cdp):
+        return
+    execute_cdp("Page.addScriptToEvaluateOnNewDocument", {
+        "source": "Object.defineProperty(navigator, 'webdriver', { get: () => undefined });"
     })

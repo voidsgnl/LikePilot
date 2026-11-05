@@ -9,6 +9,7 @@ from functools import wraps
 from contextlib import contextmanager
 from dotenv import load_dotenv
 from likepilot.core.paths import get_runtime_root, runtime_path
+from likepilot.core.config import get_config_value, set_config_value
 from likepilot.core.agents import add_agent, remove_agent
 from likepilot.core.runtime import supervisor
 from likepilot.core.state import (
@@ -298,6 +299,23 @@ def analytics():
 @login_required
 def settings():
     return render_template('settings.html', page="settings")
+
+
+@app.route('/api/settings/browser', methods=['GET', 'POST'])
+@login_required
+def api_browser_setting():
+    if request.method == 'GET':
+        browser = get_config_value('browser.default', 'chrome')
+        if browser not in {'chrome', 'firefox'}:
+            browser = 'chrome'
+        return jsonify({'browser': browser})
+
+    data = request.get_json(silent=True) or {}
+    browser = (data.get('browser') or '').strip().lower()
+    if browser not in {'chrome', 'firefox'}:
+        return jsonify({'message': 'Browser must be chrome or firefox.'}), 400
+    set_config_value('browser.default', browser)
+    return jsonify({'message': f'Default browser set to {browser.title()}. New sessions will use this browser.', 'browser': browser})
 
 
 @app.route('/operations')
