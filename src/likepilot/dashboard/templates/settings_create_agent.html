@@ -1,0 +1,121 @@
+{% extends "layout.html" %}
+{% block body_class %}page-settings{% endblock %}
+{% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
+{% block title %}Create agent{% endblock %}
+{% block subtitle %}Provision one agent with its own profile, provider, proxy, and fallback configuration.{% endblock %}
+{% block content %}
+<section class="panel panel-pad stack-sm page-section console-shell"><div class="surface-header"><div><div class="section-kicker">Provisioning</div><h2 class="section-heading">New agent configuration</h2><div class="section-subtle">Configure an agent before it appears in the runtime directory.</div></div><div class="panel-note mono">Agent setup</div></div><div id="settings-feedback" class="section-subtle">Ready to provision.</div>
+<div class="tab-panel active" data-tab-panel="add">
+        <div class="settings-layout section-scroll">
+            <section class="panel inset-panel">
+                <h2 class="section-heading">Provision an agent</h2>
+                <div class="section-subtle" style="margin-bottom:18px;">Each agent is mapped to a local Chrome profile
+                    folder and can be controlled independently.</div>
+
+                <div class="form-grid">
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-name">Agent name</label>
+                        <input type="text" id="new-agent-name" placeholder="Example: Agent West">
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-profile">Browser profile</label>
+                        <input type="text" id="new-agent-profile" placeholder="Example: Profile 5">
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-proxy">Proxy</label>
+                        <input type="text" id="new-agent-proxy" placeholder="Optional: http://user:pass@host:port">
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-login-user">Login username</label>
+                        <input type="text" id="new-agent-login-user" placeholder="Optional override for this agent">
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-login-password">Login password</label>
+                        <input type="password" id="new-agent-login-password" placeholder="Optional override for this agent">
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-site">Target site</label>
+                        <select id="new-agent-site">
+                            <option value="Like4Like" selected>Like4Like</option>
+                            <option value="KingdomLikes">KingdomLikes</option>
+                            <option value="YouLikeHits">YouLikeHits</option>
+                        </select>
+                    </div>
+
+                    <div class="field-stack">
+                        <label class="section-subtle field-label" for="new-agent-fallback">Fallback platform</label>
+                        <select id="new-agent-fallback">
+                            <option value="">Manual choice after exhaustion</option>
+                            <option value="Twitter">Twitter follows</option>
+                            <option value="Twitter Likes">Twitter likes</option>
+                            <option value="Twitter Retweets">Twitter retweets</option>
+                            <option value="Instagram">Instagram follows</option>
+                            <option value="Instagram Likes">Instagram likes</option>
+                            <option value="IG Comments">Instagram comments</option>
+                            <option value="TikTok">TikTok follows</option>
+                            <option value="TikTok Likes">TikTok likes</option>
+                            <option value="YouTube Subs">YouTube subs</option>
+                            <option value="YouTube Likes">YouTube likes</option>
+                            <option value="Facebook Subs">Facebook subs</option>
+                            <option value="Facebook Likes">Facebook likes</option>
+                            <option value="FB Comments">Facebook comments</option>
+                        </select>
+                    </div>
+
+                    <div class="field-stack form-grid-wide">
+                        <label class="section-subtle field-label" for="new-agent-chain">Platform chain</label>
+                        <div class="chain-input-row">
+                            <input type="text" id="new-agent-chain" placeholder="No chain selected" readonly>
+                            <button type="button" class="btn-secondary btn-compact"
+                                data-pick-chain="new-agent-chain">Choose</button>
+                        </div>
+                        <div class="section-subtle">Pick platforms in the order you want them tried after exhaustion.</div>
+                    </div>
+
+                    <div class="field-stack form-grid-wide">
+                        <label class="section-subtle field-label" for="new-agent-comment-templates">Instagram comment emojis</label>
+                        <textarea id="new-agent-comment-templates" rows="4" placeholder="One comment per line&#10;🔥🔥&#10;😍😍&#10;👏👏&#10;❤️❤️"></textarea>
+                        <div class="section-subtle">Used for IG Comments when the task does not force a specific comment text.</div>
+                    </div>
+                </div>
+
+                <div class="actions" style="margin-top:18px;">
+                    <button class="btn-primary" data-add-agent>Add agent</button>
+                </div>
+            </section>
+
+            <aside class="panel inset-panel utility-note stack-sm collapsible-block" data-collapsible
+                data-collapsible-key="settings-notes">
+                <div class="inline-row-wrap collapsible-header">
+                    <div>
+                        <h3 class="section-heading">Provisioning notes</h3>
+                        <div class="section-subtle">Keep setup predictable by matching one browser profile to one agent and
+                            only storing overrides when needed.</div>
+                    </div>
+                    <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
+                        aria-expanded="true">
+                        <span class="collapse-toggle-label">Hide</span>
+                        <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
+                    </button>
+                </div>
+                <div class="collapsible-body stack-sm" data-collapse-body>
+                    <div class="event-item">
+                        <div class="section-subtle">Use a fallback platform for a simple next-step route after exhaustion.</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="section-subtle">Use a chain when you want a strict order across multiple platforms.</div>
+                    </div>
+                    <div class="event-item">
+                        <div class="section-subtle">Credentials can stay empty to fall back to the environment defaults.</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+<div class="settings-page-links"><a class="btn-secondary" href="/agents">Open agent directory →</a><a class="btn-secondary" href="/settings/browser">Browser settings →</a></div></section>
+{% endblock %}

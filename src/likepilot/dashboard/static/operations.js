@@ -592,12 +592,19 @@
     }
 
     async function initializeOperationsPage() {
+        const view = document.querySelector('[data-operation-view]')?.getAttribute('data-operation-view') || 'database';
         try {
-            await Promise.all([loadDatabase(), loadLogs(), loadDiagnostics()]);
-            setDatabaseView(state.database.view);
-            setFeedback('Operations data is live.');
+            if (view === 'database') {
+                await loadDatabase();
+                setDatabaseView(state.database.view);
+            } else if (view === 'logs') {
+                await loadLogs();
+            } else if (view === 'diagnostics') {
+                await loadDiagnostics();
+            }
+            setFeedback('This operations workspace is ready.');
         } catch (error) {
-            setFeedback(error.message || 'Unable to load operations data right now.');
+            setFeedback(error.message || 'Unable to load this operations workspace right now.');
         }
     }
 

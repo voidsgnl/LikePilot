@@ -242,6 +242,7 @@
 function renderAgents(data) {
     const list = document.getElementById('active-agents-list');
     const feedback = document.getElementById('settings-feedback');
+    if (!list || !feedback) return;
     const items = Object.entries(data.agents);
     const statusChipClass = (status) => status === 'Running'
         ? 'chip chip-running status-running'
@@ -429,13 +430,15 @@ function renderAgents(data) {
 
     loadBrowserSetting();
 
-    createEventStream(
-        '/api/stream/status',
-        renderAgents,
-        () => setLoadingState(document.getElementById('settings-feedback'), 'Live configuration stream unavailable. Falling back to polling.'),
-        5000,
-        loadAgents
-    );
+    if (document.getElementById('active-agents-list')) {
+        createEventStream(
+            '/api/stream/status',
+            renderAgents,
+            () => setLoadingState(document.getElementById('settings-feedback'), 'Live configuration stream unavailable. Falling back to polling.'),
+            5000,
+            loadAgents
+        );
+    }
 
     const newCommentTemplates = document.getElementById('new-agent-comment-templates');
     if (newCommentTemplates && !newCommentTemplates.value.trim()) {

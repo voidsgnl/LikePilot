@@ -63,14 +63,19 @@
                     <a href="/platforms" class="nav-link {% if page == 'platforms' %}active{% endif %}"><span class="nav-icon">◎</span><span class="nav-copy"><span class="nav-title">Platforms</span><span class="nav-meta">Network actions</span></span></a>
                     <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span><span class="nav-meta">Credit telemetry</span></span></a>
                     <div class="nav-section-label">Administration</div>
-                    <a href="/settings" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span><span class="nav-meta">Browser and agents</span></span></a>
-                    <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span><span class="nav-meta">Database, logs, diagnostics</span></span></a>
-                    <div class="nav-subgroup">
-                        <a href="/operations/database" class="nav-sublink">Database</a>
-                        <a href="/operations/logs" class="nav-sublink">Runtime logs</a>
-                        <a href="/operations/diagnostics" class="nav-sublink">Diagnostics</a>
+                    <a href="/settings/browser" class="nav-link {% if page == 'settings' %}active{% endif %}"><span class="nav-icon">⚙</span><span class="nav-copy"><span class="nav-title">Settings</span><span class="nav-meta">Browser and agents</span></span></a>
+                    <div class="nav-subgroup {% if page == 'settings' %}nav-subgroup-active{% endif %}">
+                        <a href="/settings/browser" class="nav-sublink {% if settings_view == 'browser' %}active{% endif %}">Browser</a>
+                        <a href="/settings/agents/new" class="nav-sublink {% if settings_view == 'create' %}active{% endif %}">Create agent</a>
+                        <a href="/settings/agents/manage" class="nav-sublink {% if settings_view == 'manage' %}active{% endif %}">Manage agents</a>
                     </div>
-                </nav>          </nav>
+                    <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span><span class="nav-meta">Database, logs, diagnostics</span></span></a>
+                    <div class="nav-subgroup {% if page == 'operations' %}nav-subgroup-active{% endif %}">
+                        <a href="/operations/database" class="nav-sublink {% if operation_view == 'database' %}active{% endif %}">Database</a>
+                        <a href="/operations/logs" class="nav-sublink {% if operation_view == 'logs' %}active{% endif %}">Runtime logs</a>
+                        <a href="/operations/diagnostics" class="nav-sublink {% if operation_view == 'diagnostics' %}active{% endif %}">Diagnostics</a>
+                    </div>
+                </nav>
 
                 <div class="sidebar-footer">
                     <div class="theme-panel">
@@ -106,6 +111,7 @@
             </div>
         </aside>
 
+        <button type="button" class="sidebar-backdrop" id="sidebar-backdrop" aria-label="Close navigation"></button>
         <main class="main-content" id="main-content" role="main">
             <header class="topbar" role="banner">
                 <div class="topbar-main">
@@ -118,6 +124,7 @@
                         from a single workspace.{% endblock %}</div>
                 </div>
                 <div class="topbar-meta">
+                    <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
                     <div class="status-cluster">
                         <div id="live-updates-pill" class="meta-pill compact-pill live-pill live-pill-warning"
                             title="Live updates" aria-label="Connection status">
@@ -164,6 +171,26 @@
             if (select) {
                 select.value = savedTheme;
             }
+        })();
+
+        (function () {
+            const shell = document.getElementById('app-shell');
+            const toggle = document.getElementById('mobile-nav-toggle');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (!shell || !toggle || !backdrop) return;
+            const close = () => {
+                shell.classList.remove('mobile-nav-open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Open navigation');
+            };
+            toggle.addEventListener('click', () => {
+                const open = shell.classList.toggle('mobile-nav-open');
+                toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+                toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+            });
+            backdrop.addEventListener('click', close);
+            shell.querySelectorAll('.nav-link,.nav-sublink').forEach((link) => link.addEventListener('click', close));
+            document.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(); });
         })();
 
         // Global notification system

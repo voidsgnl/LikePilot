@@ -83,7 +83,10 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Separate the searchable agent directory from individual agent detail URLs.
   - [x] Add dedicated provider and social-platform catalog pages.
   - [x] Add direct Operations destinations for database, logs, and diagnostics.
-  - [ ] Split agent configuration and browser settings into focused settings pages.
+  - [x] Split browser settings, agent creation, and agent configuration management into dedicated pages.
+  - [x] Make Operations render and load only the selected database, logs, or diagnostics workspace.
+  - [x] Replace the placeholder-heavy overview with a compact live runtime summary.
+  - [x] Add responsive mobile navigation and repair the shared navigation markup.
   - [ ] Verify responsive navigation, page state, and all existing actions.
 - [ ] **P3.1a — Audit dashboard controls against backend behavior.**
 - [~] **P3.2 — Verify settings persistence and validation.**

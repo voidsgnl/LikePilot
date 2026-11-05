@@ -282,7 +282,7 @@ def brand_asset(filename):
 @app.route('/')
 @login_required
 def index():
-    return redirect(url_for('agents', **request.args))
+    return redirect(url_for('dashboard', **request.args))
 
 
 @app.route('/agents')
@@ -325,7 +325,25 @@ def analytics():
 @app.route('/settings')
 @login_required
 def settings():
-    return render_template('settings.html', page="settings")
+    return redirect(url_for('browser_settings'))
+
+
+@app.route('/settings/browser')
+@login_required
+def browser_settings():
+    return render_template('settings_browser.html', page="settings", settings_view="browser")
+
+
+@app.route('/settings/agents/new')
+@login_required
+def create_agent_settings():
+    return render_template('settings_create_agent.html', page="settings", settings_view="create")
+
+
+@app.route('/settings/agents/manage')
+@login_required
+def manage_agent_settings():
+    return render_template('settings_manage_agents.html', page="settings", settings_view="manage")
 
 
 @app.route('/api/settings/browser', methods=['GET', 'POST'])

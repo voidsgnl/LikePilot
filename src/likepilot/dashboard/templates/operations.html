@@ -2,49 +2,17 @@
 
 {% block body_class %}page-operations{% endblock %}
 
-{% block title %}Operations{% endblock %}
-{% block subtitle %}Inspect the live SQLite data, browse runtime logs, and manage diagnostic captures from one operator-focused workspace.{% endblock %}
+{% block title %}{{ {'database':'Database','logs':'Runtime logs','diagnostics':'Diagnostics'}.get(operation_view, 'Operations') }}{% endblock %}
+{% block subtitle %}{{ {'database':'Inspect persisted SQLite tables and relationships.','logs':'Browse and manage application runtime log files.','diagnostics':'Review and manage saved diagnostic captures.'}.get(operation_view, 'Operations workspace') }}{% endblock %}
 {% block head %}
 <script src="{{ url_for('static', filename='operations.js') }}" defer></script>{% endblock %}
 
 {% block content %}
-<section class="collapsible-block" data-collapsible data-collapsible-key="operations-summary">
-    <div class="collapsible-header">
-        <div>
-            <div class="section-kicker">Operator surface</div>
-            <div class="section-subtle">A quick read on the persisted database, available logs, and stored diagnostics.</div>
-        </div>
-        <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle aria-expanded="true">
-            <span class="collapse-toggle-label">Hide</span>
-            <span class="collapse-toggle-icon" aria-hidden="true">▾</span>
-        </button>
-    </div>
-    <div class="collapsible-body" data-collapse-body>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-label">Tables</div>
-                <div class="stat-value" id="ops-db-count">0</div>
-                <div class="stat-meta" id="ops-db-meta">Database not loaded yet.</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Logs</div>
-                <div class="stat-value" id="ops-log-count">0</div>
-                <div class="stat-meta" id="ops-log-summary-meta">No log inventory yet.</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-label">Diagnostics</div>
-                <div class="stat-value" id="ops-diagnostic-count">0</div>
-                <div class="stat-meta" id="ops-diagnostic-summary-meta">No diagnostic captures loaded.</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="panel panel-pad stack-sm page-section console-shell" data-tab-group data-tab-group-name="operations" data-tab-default="{{ operation_view|default('database') }}">
+<section class="panel panel-pad stack-sm page-section console-shell" data-operation-view="{{ operation_view|default('database') }}">
     <div class="surface-header">
         <div>
             <div class="section-kicker">Operations console</div>
-            <h2 class="section-heading">Inspection tools</h2>
+            <h2 class="section-heading">{{ operation_view|title }} workspace</h2>
             <div class="section-subtle">Keep runtime data visible without mixing admin tools into the live agent grid.</div>
         </div>
         <div class="panel-note mono">Read mostly, act carefully</div>
@@ -58,7 +26,8 @@
 
     <div id="operations-feedback" class="section-subtle">Loading operations data.</div>
 
-    <div class="tab-panel {% if operation_view == 'database' %}active{% endif %}" data-tab-panel="database">
+    {% if operation_view == 'database' %}
+<div class="tab-panel {% if operation_view == 'database' %}active{% endif %}" data-tab-panel="database">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row">
@@ -98,8 +67,8 @@
             </section>
         </div>
     </div>
-
-    <div class="tab-panel {% if operation_view == 'logs' %}active{% endif %}" data-tab-panel="logs">
+{% elif operation_view == 'logs' %}
+<div class="tab-panel {% if operation_view == 'logs' %}active{% endif %}" data-tab-panel="logs">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row">
@@ -127,8 +96,8 @@
             </section>
         </div>
     </div>
-
-    <div class="tab-panel {% if operation_view == 'diagnostics' %}active{% endif %}" data-tab-panel="diagnostics">
+{% elif operation_view == 'diagnostics' %}
+<div class="tab-panel {% if operation_view == 'diagnostics' %}active{% endif %}" data-tab-panel="diagnostics">
         <div class="ops-grid section-scroll">
             <aside class="panel inset-panel stack-sm">
                 <div class="inline-row-wrap">
@@ -156,5 +125,6 @@
             </section>
         </div>
     </div>
+{% endif %}
 </section>
 {% endblock %}
