@@ -58,6 +58,8 @@ LikePilot/
 │   ├── development/
 │   └── user-guide/
 ├── tests/
+├── data/                           # reserved; runtime-data migration pending
+│   └── .gitkeep
 └── legacy/
     └── advanced_bot.py              # isolated prototype; review separately
 ```
