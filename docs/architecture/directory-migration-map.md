@@ -207,3 +207,38 @@ The tracked tree has no `modules/` directory or implementation files. Code searc
 6. `farm.py` is the health-checked server launcher (default port 5001). `likepilot_desktop.py` wraps that server and starts the threaded supervisor. `dashboard_desktop.py` starts the Flask app independently and appears to be a dashboard-only mode.
 7. `start_silent.py` is Windows-specific despite being a Python file; its advertised port 5000 conflicts with the server default 5001.
 8. `advanced_bot.py` appears to be an older standalone prototype and is not referenced by the tracked runtime; retain it until the intended legacy policy is approved.
+
+
+### Individual dashboard asset paths
+
+The dashboard groups above expand to these exact tracked paths and destinations:
+
+| Current path | Proposed destination |
+|---|---|
+| `web/static/agents.js` | `src/likepilot/dashboard/static/agents.js` |
+| `web/static/analytics.js` | `src/likepilot/dashboard/static/analytics.js` |
+| `web/static/auth.css` | `src/likepilot/dashboard/static/auth.css` |
+| `web/static/dashboard.css` | `src/likepilot/dashboard/static/dashboard.css` |
+| `web/static/dashboard.js` | `src/likepilot/dashboard/static/dashboard.js` |
+| `web/static/operations.js` | `src/likepilot/dashboard/static/operations.js` |
+| `web/static/settings.js` | `src/likepilot/dashboard/static/settings.js` |
+| `web/static/sw.js` | `src/likepilot/dashboard/static/sw.js` |
+| `web/templates/analytics.html` | `src/likepilot/dashboard/templates/analytics.html` |
+| `web/templates/dashboard.html` | `src/likepilot/dashboard/templates/dashboard.html` |
+| `web/templates/index.html` | `src/likepilot/dashboard/templates/index.html` |
+| `web/templates/layout.html` | `src/likepilot/dashboard/templates/layout.html` |
+| `web/templates/login.html` | `src/likepilot/dashboard/templates/login.html` |
+| `web/templates/operations.html` | `src/likepilot/dashboard/templates/operations.html` |
+| `web/templates/settings.html` | `src/likepilot/dashboard/templates/settings.html` |
+| `web/favicon/192x192.png` | `src/likepilot/dashboard/favicon/192x192.png` |
+| `web/favicon/512x512.png` | `src/likepilot/dashboard/favicon/512x512.png` |
+| `web/favicon/apple-touch-icon.png` | `src/likepilot/dashboard/favicon/apple-touch-icon.png` |
+| `web/favicon/favicon-16x16.png` | `src/likepilot/dashboard/favicon/favicon-16x16.png` |
+| `web/favicon/favicon-32x32.png` | `src/likepilot/dashboard/favicon/favicon-32x32.png` |
+| `web/favicon/favicon.ico` | `src/likepilot/dashboard/favicon/favicon.ico` |
+| `web/favicon/favicon.png` | `src/likepilot/dashboard/favicon/favicon.png` |
+| `web/favicon/site.webmanifest` | `src/likepilot/dashboard/favicon/site.webmanifest` |
+
+### Git history check for the missing integrations
+
+A GitHub commit-history query for the path `modules/` returned no commits. This means the missing integration directory was not present in the repository's visible path history, rather than being removed in a later tracked commit. It does not rule out ignored or uncommitted local files. The local checkout must still be checked before deciding whether the implementation needs to be restored from another source or developed.
