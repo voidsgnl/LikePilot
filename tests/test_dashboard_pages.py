@@ -187,3 +187,22 @@ def test_database_operations_exposes_schema_only():
     assert "foreign_key_list" in source
     assert "index_list" in source
     assert "index_info" in source
+
+
+def test_analytics_and_settings_pages_avoid_repeated_headings():
+    analytics = (DASHBOARD / "templates" / "analytics.html").read_text(encoding="utf-8")
+    create_agent = (DASHBOARD / "templates" / "settings_create_agent.html").read_text(encoding="utf-8")
+    manage_agents = (DASHBOARD / "templates" / "settings_manage_agents.html").read_text(encoding="utf-8")
+    browser = (DASHBOARD / "templates" / "settings_browser.html").read_text(encoding="utf-8")
+
+    assert "Historical analysis" not in analytics
+    assert "Live stream" not in analytics
+    assert "Review the balance line" not in analytics
+    assert "Loading analytics." not in analytics
+    assert "Provisioning" not in create_agent
+    assert "Agent setup" not in create_agent
+    assert "Loading configured agents." not in manage_agents
+    assert "Configuration inventory" not in manage_agents
+    assert "Default browser" not in browser
+    assert "Browser used for new sessions" not in browser
+    assert "restart running agents" in browser
