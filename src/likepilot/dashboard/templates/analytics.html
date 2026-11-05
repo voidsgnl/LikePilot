@@ -3,7 +3,7 @@
 {% block body_class %}page-analytics{% endblock %}
 
 {% block title %}Analytics{% endblock %}
-{% block subtitle %}Review recorded credit balances, trends, and exports.{% endblock %}
+{% block subtitle %}{% endblock %}
 {% block head %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="{{ url_for('static', filename='analytics.js') }}" defer></script>{% endblock %}
@@ -12,8 +12,7 @@
 <section class="collapsible-block" data-collapsible data-collapsible-key="analytics-stats">
     <div class="collapsible-header">
         <div>
-            <div class="section-kicker">Session overview</div>
-            <div class="section-subtle">Summary of recorded credit snapshots.</div>
+            <h2 class="section-heading">Credit summary</h2>
         </div>
         <button type="button" class="collapse-toggle btn-secondary btn-compact" data-collapse-toggle
             aria-expanded="true">
@@ -26,22 +25,22 @@
             <div class="stat-card">
                 <div class="stat-label">Latest credits</div>
                 <div class="stat-value" id="metric-latest">0</div>
-                <div class="stat-meta">Most recent balance captured from the runtime feed.</div>
+
             </div>
             <div class="stat-card">
                 <div class="stat-label">Session gain</div>
                 <div class="stat-value" id="metric-gain">+0</div>
-                <div class="stat-meta">Net movement across the current recorded session.</div>
+
             </div>
             <div class="stat-card">
                 <div class="stat-label">Session peak</div>
                 <div class="stat-value" id="metric-peak">0</div>
-                <div class="stat-meta">Highest balance observed in the active history window.</div>
+
             </div>
             <div class="stat-card">
                 <div class="stat-label">Samples</div>
                 <div class="stat-value" id="metric-samples">0</div>
-                <div class="stat-meta">Recorded credit snapshots available for analysis.</div>
+
             </div>
         </div>
     </div>
@@ -51,12 +50,8 @@
     data-tab-default="{{ analytics_view|default('summary') }}">
     <div class="surface-header">
         <div>
-            <div class="section-kicker">Credit telemetry</div>
-            <h2 class="section-heading">Historical analysis</h2>
-            <div class="section-subtle">Review the balance line, export session data, and compare platform sampling
-                density in a tighter console layout.</div>
+            <h2 class="section-heading">Credit history</h2>
         </div>
-        <div class="panel-note mono">Historical export</div>
     </div>
 
     <section class="panel inset-panel collapsible-block analytics-export-panel" data-collapsible data-collapsible-key="analytics-export" {% if analytics_view != 'export' %}hidden{% endif %}>
@@ -93,9 +88,6 @@
                     <button class="btn-secondary" id="export-activity-btn" type="button">Download activity</button>
                 </div>
             </div>
-            <div class="section-subtle">
-                Export logs and credit history for a date range, including summary metrics and platform totals.
-            </div>
         </div>
     </section>
 
@@ -106,7 +98,7 @@
         <a class="subnav-button {% if analytics_view == 'export' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='export') }}">Export</a>
     </nav>
 
-    <div id="analytics-feedback" class="section-subtle">Loading analytics.</div>
+    <div id="analytics-feedback" class="section-subtle" aria-live="polite"></div>
 
     <div class="tab-panel {% if analytics_view == 'summary' %}active{% endif %}" data-tab-panel="summary" {% if analytics_view != 'summary' %}hidden{% endif %}>
         <section class="panel inset-panel">
@@ -124,7 +116,7 @@
                     <h2 class="section-heading">Credit trend</h2>
                     <div class="section-subtle">Captured balance history.</div>
                 </div>
-                <div class="panel-note mono">Live stream</div>
+                <div class="panel-note mono">Recorded history</div>
             </div>
             <div style="position:relative; flex:1; min-height:250px; padding-bottom:8px;">
                 <canvas id="mainEarningsChart"></canvas>
@@ -135,8 +127,6 @@
     <div class="tab-panel {% if analytics_view == 'platforms' %}active{% endif %}" data-tab-panel="platforms" {% if analytics_view != 'platforms' %}hidden{% endif %}>
         <section class="panel inset-panel">
             <h2 class="section-heading">Platform distribution</h2>
-            <div class="section-subtle" style="margin-bottom:14px;">How many captured samples came from each platform.
-            </div>
             <div id="platform-breakdown" class="stack-sm"></div>
         </section>
     </div>
