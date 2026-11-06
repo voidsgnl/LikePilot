@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Planned centralized task-window management: keep each task window open until the social action is complete and provider points/credit have been collected and confirmed; only then close the task window and return to the provider window.
+
 - Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits. Each provider has independent credentials and an Auto login switch inherited by all assigned agents; disabled mode remains manual, and verification challenges fall back to manual completion. Removed per-agent provider credential controls and refreshed the service-worker cache to v1.0.15. Added provider-settings persistence and dashboard regression tests; GitHub Actions passed (24 tests).
 
 - Fixed Firefox agent startup by skipping the Chrome-only CDP stealth injection for Firefox; added regression coverage for Firefox and Chrome. Firefox continues through Selenium WebDriver without CDP commands.
