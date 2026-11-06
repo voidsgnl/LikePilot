@@ -27,7 +27,10 @@ from likepilot.integrations.providers.kingdomlikes import (
     KingdomLikesTikTokLikeBot,
     KingdomLikesTikTokFollowBot
 )
-from likepilot.integrations.providers.youlikehits import YouLikeHitsYouTubeLikeBot
+from likepilot.integrations.providers.youlikehits import (
+    YouLikeHitsYouTubeLikeBot,
+    YouLikeHitsYouTubeSubscribeBot,
+)
 
 PLATFORMS = [
     "Twitter",
@@ -76,6 +79,7 @@ BOT_REGISTRY = {
         "Facebook Likes": KingdomLikesFacebookLikeBot,
     },
     "YouLikeHits": {
+        "YouTube Subs": YouLikeHitsYouTubeSubscribeBot,
         "YouTube Likes": YouLikeHitsYouTubeLikeBot,
     }
 }
@@ -110,6 +114,7 @@ TASK_URLS = {
         "Facebook Likes": "https://kingdomlikes.com/free_points/facebook-likes",
     },
     "YouLikeHits": {
+        "YouTube Subs": "https://www.youlikehits.com/youtube2.php",
         "YouTube Likes": "https://www.youlikehits.com/youtubelikes.php",
     },
 }
