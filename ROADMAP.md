@@ -203,6 +203,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 - [x] **P7.1 — Document the web-only product direction and initial setup workflow.**
 - [x] **P7.2 — Document the package layout and provider/network separation.**
+  - [x] Give Like4Like its own provider module; keep shared browser/session behavior in `providers/base.py` and point all dependent network adapters at `providers/like4like.py`.
 - [ ] **P7.3 — Complete configuration, troubleshooting, and backup/restore guides.**
 - [ ] **P7.4 — Keep architecture documentation aligned with the final migrated tree.**
 - [ ] **P7.5 — Maintain changelog and release notes.**
@@ -232,6 +233,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
 | 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
 | 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | GitHub Actions: 24 tests passed; live provider login validation remains pending. |
+| 2026-11-06 | Extracted `Like4LikeBase` into `providers/like4like.py`; updated Facebook, Instagram, TikTok, X, and YouTube adapters while keeping shared lifecycle behavior in `providers/base.py`. | Source/import mapping updated; CI and runtime import checks pending. |
 
 
 ## Phase 8 — Dashboard visual system
