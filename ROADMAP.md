@@ -14,7 +14,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - **One canonical start command:** `python farm.py`; the root launcher delegates to the packaged server entrypoint.
 - **Package layout:** `src/likepilot`, with core, integrations, dashboard, and entrypoints separated.
 - **Integration boundaries:** provider and social-network code are placed in distinct package areas. Existing adapters are preserved with minimal logic changes during the move.
-- **Data protection:** existing databases, config, agent files, profiles, logs, and backups remain in their current locations until a separate data-path migration is designed and verified.
+- **Data protection:** runtime state is stored beneath `data/`; first-use migration preserves existing root-level user files and protects destination collisions. Compatibility seed templates live under `legacy/runtime-seed/`.
 - **Working branch:** `main`; no feature branches unless explicitly requested.
 
 ## Status key
@@ -66,10 +66,11 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Define the canonical `data/` layout for configuration, state, database, profiles, logs, diagnostics, backups, runtime metadata, and temporary files.
   - [x] Centralize file/directory paths and add non-destructive first-use migration from legacy root locations.
   - [x] Preserve destination/legacy collisions without overwriting either copy; keep the stricter browser-profile duplicate guard.
+  - [x] Remove runtime JSON state files from the repository root; preserve first-install compatibility through `legacy/runtime-seed/`.
   - [x] Route backup/restore, dashboard operations, provider diagnostics, console logs, smart-timing state, and updater artifacts through the data layout.
   - [x] Run the full Python 3.14 CI suite (39 tests passed, including runtime path and collision cases).
   - [ ] Verify database initialization, backup/restore, and dashboard operations locally.
-  - **Acceptance:** existing user data is discovered and preserved after upgrade; collision cases remain recoverable.
+  - **Acceptance:** existing user data is discovered and preserved after upgrade; collision cases remain recoverable. User confirmed the migrated application starts successfully.
 - [~] **P1.5 — Resolve redundancy and legacy code.**
   - [x] Remove obsolete `index.html` and `settings.html` templates after tracing active Flask routes to their dedicated replacements.
   - [ ] Compare `core/state.py` and `core/database.py` schema and callers.
