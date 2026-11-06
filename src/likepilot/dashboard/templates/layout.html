@@ -134,6 +134,7 @@
                     <div class="reference-toolbar">
                         <button type="button" class="toolbar-icon mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
                         <a href="/dashboard" class="toolbar-icon desktop-home" title="Overview" aria-label="Overview">▦</a>
+                        <a href="/agents" class="toolbar-icon desktop-home" title="Agents" aria-label="Agents">⌕</a>
                         <span class="toolbar-divider"></span>
                     </div>
                     <div class="topbar-heading-row">
@@ -206,6 +207,10 @@
                 toggle.setAttribute('aria-label', 'Open navigation');
             };
             toggle.addEventListener('click', () => {
+                if (window.matchMedia('(min-width: 981px)').matches) {
+                    document.getElementById('sidebar-collapse-btn')?.click();
+                    return;
+                }
                 const open = shell.classList.toggle('mobile-nav-open');
                 toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
                 toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
