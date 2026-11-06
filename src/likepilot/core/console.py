@@ -5,6 +5,8 @@ import sys
 import threading
 from datetime import datetime
 
+from likepilot.core.paths import runtime_dir
+
 
 class _MultiLogWriter:
     def __init__(self, *streams):
@@ -84,7 +86,7 @@ class _FilteredConsoleStream(io.TextIOBase):
 
 
 def install_console_log_router(project_root):
-    logs_dir = os.path.join(project_root, "logs")
+    logs_dir = runtime_dir("logs")
     os.makedirs(logs_dir, exist_ok=True)
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
