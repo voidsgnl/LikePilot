@@ -10,6 +10,11 @@ _WEAK_PASSWORDS = {
     "admin",
     "password",
 }
+_WEAK_SESSION_KEYS = {
+    "replace-with-a-long-random-secret",
+    "secret",
+    "development",
+}
 
 
 def _read_or_create_secret(filename, size=48):
@@ -19,17 +24,25 @@ def _read_or_create_secret(filename, size=48):
         try:
             with open(path, "r", encoding="ascii") as stream:
                 value = stream.read().strip()
-            if value:
-                try:
-                    os.chmod(path, 0o600)
-                except OSError:
-                    pass
-                return value
-        except OSError:
-            raise RuntimeError(f"Unable to read dashboard secret file: {path}")
+            if not value:
+                raise RuntimeError(f"Dashboard secret file is empty: {path}")
+            try:
+                os.chmod(path, 0o600)
+            except OSError:
+                pass
+            return value
+        except OSError as error:
+            raise RuntimeError(f"Unable to read dashboard secret file: {path}") from error
 
     value = secrets.token_urlsafe(size)
-    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    except FileExistsError:
+        with open(path, "r", encoding="ascii") as stream:
+            existing = stream.read().strip()
+        if not existing:
+            raise RuntimeError(f"Dashboard secret file is empty: {path}")
+        return existing
     try:
         with os.fdopen(descriptor, "w", encoding="ascii") as stream:
             stream.write(value + "\n")
@@ -53,6 +66,6 @@ def resolve_dashboard_password():
 
 def resolve_flask_secret_key():
     configured = os.getenv("FLASK_SECRET_KEY", "").strip()
-    if configured:
+    if configured and configured.lower() not in _WEAK_SESSION_KEYS:
         return configured
     return _read_or_create_secret("dashboard-session.key")
