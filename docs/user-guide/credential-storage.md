@@ -4,7 +4,7 @@ LikePilot encrypts provider passwords, legacy agent passwords, and CAPTCHA servi
 
 ## Local key
 
-The first credential write creates `data/config/credential.key` with owner-only file permissions where supported. Keep this file private and do not delete it. LikePilot deliberately refuses to generate a replacement key when encrypted values already exist but the key is missing; generating a new key would make the existing credentials unrecoverable.
+The first encryption or legacy-credential migration creates `data/config/credential.key` with owner-only file permissions where supported. Keep this file private and do not delete it. LikePilot deliberately refuses to generate a replacement key when encrypted values already exist but the key is missing; generating a new key would make the existing credentials unrecoverable.
 
 Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. A legacy CAPTCHA API key in `data/config/config.json` is moved into encrypted settings the first time the CAPTCHA integration loads it.
 
