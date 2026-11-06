@@ -7,6 +7,7 @@ import json
 import time
 from datetime import datetime
 from likepilot.core.config import get_config_value, get_notification_secret
+from likepilot.core.security import redact_sensitive_text
 
 class NotificationManager:
     def __init__(self):
@@ -62,7 +63,7 @@ class NotificationManager:
                 print(f"Failed to send notification: {event_type}")
 
         except Exception as e:
-            print(f"Notification failed: {e}")
+            print(f"Notification failed: {redact_sensitive_text(e)}")
 
     def notify_credits_earned(self, agent_name, platform, credits_earned, total_credits):
         """Notify about credits earned"""
@@ -109,7 +110,7 @@ class NotificationManager:
 
     def notify_system_error(self, error_type, details):
         """Notify about system-level errors"""
-        message = f"🚨 System Error [{error_type}]: {details}"
+        message = f"🚨 System Error [{error_type}]: {redact_sensitive_text(details)}"
         self.notify("system_errors", message, error_type=error_type, details=details)
 
     def _send_discord(self, message, **kwargs):
@@ -138,7 +139,7 @@ class NotificationManager:
             return response.status_code == 204
 
         except Exception as e:
-            print(f"Discord notification failed: {e}")
+            print(f"Discord notification failed: {redact_sensitive_text(e)}")
             return False
 
     def _send_telegram(self, message, **kwargs):
@@ -155,7 +156,7 @@ class NotificationManager:
             return response.json().get("ok", False)
 
         except Exception as e:
-            print(f"Telegram notification failed: {e}")
+            print(f"Telegram notification failed: {redact_sensitive_text(e)}")
             return False
 
     def _send_email(self, message, **kwargs):
@@ -167,7 +168,7 @@ class NotificationManager:
             return True
 
         except Exception as e:
-            print(f"Email notification failed: {e}")
+            print(f"Email notification failed: {redact_sensitive_text(e)}")
             return False
 
 # Global instance
