@@ -359,8 +359,11 @@ class Like4LikeBase(BaseBot):
             if discovered_credits is not None:
                 self._persist_credits(agent_status, discovered_credits)
                 self.heartbeat()
+                return True
+            return False
         except Exception as e:
             self.emit_log(f"L4L Credit Update Failed: {e}", level="WARNING")
+            return False
 
     def safe_click(self, element):
         try:
@@ -406,16 +409,52 @@ class Like4LikeBase(BaseBot):
                 return match.group(0)
         return ""
 
-    def wait_for_popup(self, main_window, timeout_seconds=15):
+    def wait_for_popup(self, main_window, timeout_seconds=15, handles_before=None):
+        """Return only a newly-created task window, never an existing unrelated window."""
+        original_handles = set(handles_before or [main_window])
         deadline = time.time() + timeout_seconds
         while time.time() < deadline:
-            handles = self.driver.window_handles
-            if len(handles) > 1:
-                for handle in handles:
-                    if handle != main_window:
-                        return handle
+            try:
+                new_handles = [
+                    handle for handle in self.driver.window_handles
+                    if handle not in original_handles and handle != main_window
+                ]
+                if new_handles:
+                    return new_handles[-1]
+            except Exception:
+                return None
             time.sleep(0.5)
         return None
+
+    def close_task_window(self, task_window, main_window):
+        """Close a task window only when its caller has verified task and credit completion."""
+        if not self.driver or not task_window or task_window == main_window:
+            return False
+        try:
+            handles = list(self.driver.window_handles)
+            if task_window not in handles:
+                if main_window in handles:
+                    self.driver.switch_to.window(main_window)
+                return False
+            self.driver.switch_to.window(task_window)
+            self.driver.close()
+            remaining = list(self.driver.window_handles)
+            if main_window in remaining:
+                self.driver.switch_to.window(main_window)
+            elif remaining:
+                self.driver.switch_to.window(remaining[0])
+            return True
+        except Exception as exc:
+            self.emit_log(
+                f"Task window was not closed because its state could not be verified: {exc}",
+                level="WARNING",
+            )
+            try:
+                if main_window in self.driver.window_handles:
+                    self.driver.switch_to.window(main_window)
+            except Exception:
+                pass
+            return False
 
     def find_confirm_button(self, task_num="", attempts=15):
         selectors = [
@@ -514,9 +553,11 @@ class KingdomLikesBase(BaseBot):
                 if text.isdigit():
                     self._persist_credits(agent_status, int(text))
                     self.heartbeat()
-                    break
+                    return True
+            return False
         except Exception as e:
             self.emit_log(f"KingdomLikes Credit Update Failed: {e}", level="WARNING")
+            return False
 
 class YouLikeHitsBase(BaseBot):
     SITE_NAME = "YouLikeHits"
@@ -547,6 +588,8 @@ class YouLikeHitsBase(BaseBot):
                     val = int(match.group(1).replace(",", ""))
                     self._persist_credits(agent_status, val)
                     self.heartbeat()
-                    break
+                    return True
+            return False
         except Exception as e:
             self.emit_log(f"YouLikeHits Credit Update Failed: {e}", level="WARNING")
+            return False
