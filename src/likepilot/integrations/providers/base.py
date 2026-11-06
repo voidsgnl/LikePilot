@@ -218,6 +218,7 @@ class BaseBot(ABC):
         self.driver = other_bot.driver
         self.is_running = other_bot.is_running
         self.agent_name = other_bot.agent_name
+        self._known_window_handles = set(getattr(other_bot, "_known_window_handles", set()))
         other_bot.driver = None
         other_bot.is_running = False
 
