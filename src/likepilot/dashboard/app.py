@@ -4,11 +4,13 @@ import json
 import time
 import csv
 import io
+from datetime import timedelta
 import sqlite3
 from functools import wraps
 from contextlib import contextmanager
 from dotenv import load_dotenv
 from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
+from likepilot.dashboard.auth import resolve_dashboard_password, resolve_flask_secret_key
 from likepilot.core.config import get_config_value, set_config_value
 from likepilot.core.agents import add_agent, remove_agent
 from likepilot.core.runtime import supervisor
@@ -32,16 +34,26 @@ RUNTIME_ROOT = get_runtime_root()
 load_dotenv(dotenv_path=runtime_path(".env"), override=True)
 
 app = Flask(__name__)
-app.secret_key = os.getenv("FLASK_SECRET_KEY") or os.urandom(24)
+app.secret_key = resolve_flask_secret_key()
+app.config.update(
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="Lax",
+    SESSION_COOKIE_SECURE=os.getenv("DASHBOARD_COOKIE_SECURE", "").lower() in {"1", "true", "yes"},
+    PERMANENT_SESSION_LIFETIME=timedelta(hours=8),
+)
 PROJECT_ROOT = RUNTIME_ROOT
 LOGS_DIR = runtime_dir("logs")
 DIAGNOSTICS_DIR = runtime_dir("diagnostics")
 BRAND_DIR = os.path.join(os.path.dirname(__file__), "favicon")
 LOG_TAIL_LIMIT = 400
 
-# Dashboard Credentials
+# Dashboard credentials: preserve an explicitly configured password; otherwise
+# initialize a unique local password in data/config/dashboard-password.
 DASHBOARD_USER = os.getenv("DASHBOARD_USER", "admin")
-DASHBOARD_PASS = os.getenv("DASHBOARD_PASS", "likepilot2026")
+DASHBOARD_PASS, DASHBOARD_PASSWORD_GENERATED = resolve_dashboard_password()
+DASHBOARD_PASSWORD_FILE = runtime_path("dashboard-password")
+app.config["LIKEPILOT_DASHBOARD_PASSWORD_GENERATED"] = DASHBOARD_PASSWORD_GENERATED
+app.config["LIKEPILOT_DASHBOARD_PASSWORD_FILE"] = DASHBOARD_PASSWORD_FILE
 
 init_db()
 
@@ -219,14 +231,16 @@ def login():
     error = None
     if request.method == 'POST':
         if request.form.get('username') == DASHBOARD_USER and request.form.get('password') == DASHBOARD_PASS:
+            session.clear()
             session['logged_in'] = True
+            session.permanent = True
             return redirect(url_for('index'))
         error = "ACCESS_DENIED"
     return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
-    session.pop('logged_in', None)
+    session.clear()
     return redirect(url_for('login'))
 
 
@@ -743,7 +757,7 @@ def operations_diagnostics_clear():
     return jsonify({"message": f"Deleted {deleted} diagnostic file(s)."})
 
 def run_dashboard():
-    host = os.getenv("DASHBOARD_HOST", "0.0.0.0")
+    host = os.getenv("DASHBOARD_HOST", "127.0.0.1")
     port = int(os.getenv("DASHBOARD_PORT", "5001"))
     app.run(host=host, port=port, threaded=True)
 
