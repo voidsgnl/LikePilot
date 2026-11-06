@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Completed P2.3 browser/profile/driver verification: Firefox and Chrome startup and agent launch were confirmed locally; proxy connectivity was checked in both browsers; focused driver tests passed (12 passed in 0.28s); GitHub Actions passed on Python 3.14.
+
 - Completed P2.2 agent lifecycle verification after live dashboard checks confirmed create/configure and lifecycle operations, including clean browser-process shutdown on stop, restart, and deletion. CI passed with 83 tests.
 
 - Verified the expanded suite in GitHub Actions on Python 3.14: 83 tests passed, including the new dashboard lifecycle API coverage. Live browser-worker race checks remain open.
