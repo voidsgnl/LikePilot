@@ -5,12 +5,12 @@ Supports 2Captcha and CapSolver services
 import requests
 import time
 import json
-from likepilot.core.config import get_config_value
+from likepilot.core.config import get_captcha_api_key, get_config_value
 
 class CaptchaSolver:
     def __init__(self):
         self.service = get_config_value("captcha.service", "2captcha")
-        self.api_key = get_config_value("captcha.api_key", "")
+        self.api_key = get_captcha_api_key()
         self.max_retries = get_config_value("captcha.max_retries", 3)
         self.enabled = get_config_value("captcha.enabled", False)
 
