@@ -247,8 +247,6 @@ class TwitterFavoriteBot(Like4LikeBase):
                 if not action_completed:
                     self.log_blockers("Twitter like action verification")
                     self.record_page_diagnostics("twitter_like_unverified")
-                    self.driver.refresh()
-                    self.random_sleep(4, 6)
                     return
 
                 print("[INFO] Polling for Confirm button...")
@@ -401,8 +399,6 @@ class TwitterRetweetBot(TwitterFavoriteBot):
                 if not action_completed:
                     self.log_blockers("Twitter retweet action verification")
                     self.record_page_diagnostics("twitter_retweet_unverified")
-                    self.driver.refresh()
-                    self.random_sleep(4, 6)
                     return
 
                 print("[INFO] Polling for Confirm button...")
