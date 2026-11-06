@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Recorded user confirmation that the migrated `python farm.py` startup path launches the dashboard successfully. Clean shutdown and clean-install verification remain pending.
+
 - Recorded the remaining local-only legacy directories in the roadmap: cache-only `web/` and `modules/`, retired `tools/build/`, and persistent browser profiles reserved for the later `data/profiles/` migration. No local runtime data was moved or deleted.
 
 - Extracted `Like4LikeBase` into `src/likepilot/integrations/providers/like4like.py`. Shared browser/session lifecycle behavior remains in `providers/base.py`; Facebook, Instagram, TikTok, X, and YouTube now import the Like4Like foundation from its dedicated module.
