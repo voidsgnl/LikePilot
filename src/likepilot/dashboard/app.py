@@ -6,6 +6,7 @@ import csv
 import io
 from datetime import timedelta
 import sqlite3
+import threading
 from functools import wraps
 from contextlib import contextmanager
 from dotenv import load_dotenv
@@ -56,6 +57,32 @@ app.config["LIKEPILOT_DASHBOARD_PASSWORD_GENERATED"] = DASHBOARD_PASSWORD_GENERA
 app.config["LIKEPILOT_DASHBOARD_PASSWORD_FILE"] = DASHBOARD_PASSWORD_FILE
 
 init_db()
+
+_LOGIN_FAILURES = {}
+_LOGIN_FAILURES_LOCK = threading.Lock()
+_LOGIN_FAILURE_LIMIT = 8
+_LOGIN_FAILURE_WINDOW = 300
+
+
+def _login_rate_limited(client_ip):
+    now = time.time()
+    with _LOGIN_FAILURES_LOCK:
+        attempts = [stamp for stamp in _LOGIN_FAILURES.get(client_ip, []) if now - stamp < _LOGIN_FAILURE_WINDOW]
+        _LOGIN_FAILURES[client_ip] = attempts
+        return len(attempts) >= _LOGIN_FAILURE_LIMIT
+
+
+def _record_login_failure(client_ip):
+    now = time.time()
+    with _LOGIN_FAILURES_LOCK:
+        attempts = [stamp for stamp in _LOGIN_FAILURES.get(client_ip, []) if now - stamp < _LOGIN_FAILURE_WINDOW]
+        attempts.append(now)
+        _LOGIN_FAILURES[client_ip] = attempts
+
+
+def _clear_login_failures(client_ip):
+    with _LOGIN_FAILURES_LOCK:
+        _LOGIN_FAILURES.pop(client_ip, None)
 
 
 def _utc_timestamp(value):
@@ -230,12 +257,18 @@ def login_required(f):
 def login():
     error = None
     if request.method == 'POST':
-        if request.form.get('username') == DASHBOARD_USER and request.form.get('password') == DASHBOARD_PASS:
+        client_ip = request.remote_addr or "unknown"
+        if _login_rate_limited(client_ip):
+            error = "TOO_MANY_ATTEMPTS"
+        elif request.form.get('username') == DASHBOARD_USER and request.form.get('password') == DASHBOARD_PASS:
+            _clear_login_failures(client_ip)
             session.clear()
             session['logged_in'] = True
             session.permanent = True
             return redirect(url_for('index'))
-        error = "ACCESS_DENIED"
+        else:
+            _record_login_failure(client_ip)
+            error = "ACCESS_DENIED"
     return render_template('login.html', error=error)
 
 @app.route('/logout')
