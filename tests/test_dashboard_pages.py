@@ -151,7 +151,7 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "hasHistory ? (metrics.latest_credits ?? '—') : '—'" in script
     assert "1250, 1280, 1320" not in script
     assert "initializePredictionChart" not in script
-    assert "Summary of recorded credit snapshots." in template
+    assert "Captured balance history." in template
 
 def test_login_screen_is_centered_and_minimal():
     template = (DASHBOARD / "templates" / "login.html").read_text(encoding="utf-8")
