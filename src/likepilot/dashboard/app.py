@@ -418,8 +418,6 @@ def api_add_agent():
     fallback_chain = (data.get("fallback_chain") or "").strip() or None
     comment_templates = (data.get("comment_templates") or "").strip() or None
     proxy = (data.get("proxy") or "").strip() or None
-    login_user = (data.get("login_user") or "").strip() or None
-    login_password = (data.get("login_password") or "").strip() or None
     if name and profile:
         add_agent(
             name,
@@ -429,8 +427,6 @@ def api_add_agent():
             fallback_platform=fallback_platform,
             fallback_chain=fallback_chain,
             comment_templates=comment_templates,
-            login_user=login_user,
-            login_password=login_password,
         )
         return jsonify({"message": f"Agent {name} added."})
     return jsonify({"message": "Invalid data"}), 400
@@ -457,9 +453,6 @@ def api_update_agent():
     fallback_chain = (data.get("fallback_chain") or "").strip() or None
     comment_templates = (data.get("comment_templates") or "").strip() or None
     proxy = (data.get("proxy") or "").strip() or None
-    login_user = (data.get("login_user") or "").strip() or None
-    login_password = data.get("login_password")
-    login_password = login_password.strip() if isinstance(login_password, str) else None
 
     current = get_agent(current_name)
     if not current:
@@ -485,10 +478,6 @@ def api_update_agent():
         update_agent(final_name, chrome_profile=profile)
     if proxy != current.get("proxy"):
         update_agent(final_name, proxy=proxy)
-    if login_user != current.get("login_user"):
-        update_agent(final_name, login_user=login_user)
-    if login_password is not None and login_password != (current.get("login_password") or ""):
-        update_agent(final_name, login_password=login_password or None)
     if fallback_platform != current.get("fallback_platform"):
         update_agent(final_name, fallback_platform=fallback_platform)
     if fallback_chain != current.get("fallback_chain"):
@@ -498,7 +487,7 @@ def api_update_agent():
 
     append_agent_log(
         final_name,
-        f"Agent settings updated. Name: {final_name}. Site: {site}. Profile: {profile}. Proxy: {proxy or 'None'}. Login user: {login_user or 'Env default'}. Fallback: {fallback_platform or 'None'}. Chain: {fallback_chain or 'None'}. IG comments: {'Custom list set' if comment_templates else 'Default set'}.",
+        f"Agent settings updated. Name: {final_name}. Site: {site}. Profile: {profile}. Proxy: {proxy or 'None'}. Fallback: {fallback_platform or 'None'}. Chain: {fallback_chain or 'None'}. IG comments: {'Custom list set' if comment_templates else 'Default set'}.",
         level="SYSTEM",
     )
     return jsonify({"message": f"Agent {final_name} updated."})
