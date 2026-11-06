@@ -340,6 +340,16 @@ class BaseBot(ABC):
             time.sleep(0.5)
         return None
 
+    def wait_for_credit_increase(self, timeout_seconds=20, poll_interval=2):
+        """Poll provider credits until a new reward is persisted or the wait expires."""
+        deadline = time.monotonic() + max(0, timeout_seconds)
+        while True:
+            if self.update_credits():
+                return True
+            if time.monotonic() >= deadline:
+                return False
+            time.sleep(max(0.1, poll_interval))
+
     def close_task_window(self, task_window, main_window, *, credits_collected=False):
         """Close a task window only after a provider credit increase has been confirmed."""
         if not credits_collected:
