@@ -10,6 +10,7 @@ from collections import defaultdict
 import statistics
 from likepilot.core.database import db
 from likepilot.core.config import get_config_value
+from likepilot.core.paths import runtime_path
 
 class SmartTimingAnalyzer:
     def __init__(self):
@@ -100,7 +101,7 @@ class SmartTimingAnalyzer:
         # In a real implementation, this would store to database
         # For now, we'll use a simple JSON file
         try:
-            data_file = os.path.join(os.getcwd(), "timing_data.json")
+            data_file = runtime_path("timing_data.json")
 
             if os.path.exists(data_file):
                 with open(data_file, 'r') as f:
