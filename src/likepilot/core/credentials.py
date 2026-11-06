@@ -71,8 +71,6 @@ def is_encrypted(value):
 def encrypt_secret(value):
     if value is None or value == "":
         return value
-    if is_encrypted(value):
-        return value
     token = Fernet(_load_key()).encrypt(str(value).encode("utf-8")).decode("ascii")
     return _PREFIX + token
 
