@@ -36,8 +36,31 @@ def _safe_profile_name(profile_name):
 def _profile_directory(browser, profile_name=None):
     safe_name = _safe_profile_name(profile_name)
     prefix = "user_" if browser == "chrome" else "firefox_user_"
-    path = os.path.join(get_runtime_root(), "profiles", f"{prefix}{safe_name}")
-    os.makedirs(path, exist_ok=True)
+    profile_dirname = f"{prefix}{safe_name}"
+
+    runtime_root = get_runtime_root()
+    legacy_path = os.path.join(runtime_root, "profiles", profile_dirname)
+    data_profiles = os.path.join(runtime_root, "data", "profiles")
+    path = os.path.join(data_profiles, profile_dirname)
+
+    os.makedirs(data_profiles, exist_ok=True)
+    legacy_exists = os.path.isdir(legacy_path)
+    destination_exists = os.path.exists(path)
+
+    if legacy_exists and destination_exists:
+        raise FileExistsError(
+            "Both legacy and new LikePilot browser profiles exist for "
+            f"{browser} profile {safe_name!r}. Neither was changed. "
+            f"Compare and back up '{legacy_path}' and '{path}' before "
+            "resolving the duplicate."
+        )
+    if legacy_exists:
+        # Rename on the same filesystem to preserve the complete browser
+        # profile (including cookies and session databases) without copying.
+        os.replace(legacy_path, path)
+    else:
+        os.makedirs(path, exist_ok=True)
+
     print(f"Using dedicated {browser.title()} profile: {path}")
     return path
 
