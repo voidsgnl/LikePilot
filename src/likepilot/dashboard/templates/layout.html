@@ -89,6 +89,15 @@
                             <option value="high-contrast">High Contrast</option>
                         </select>
                     </div>
+                    <div class="theme-panel layout-panel">
+                        <label class="theme-panel-label" for="density-select">
+                            <span class="button-label">Layout density</span>
+                        </label>
+                        <select id="density-select" class="theme-select" aria-label="Select layout density">
+                            <option value="comfortable">Comfortable</option>
+                            <option value="compact">Compact</option>
+                        </select>
+                    </div>
                     <a href="/logout" class="btn-logout icon-button" id="logout-link" title="Log out" aria-label="Log out">
                         <span class="button-icon" aria-hidden="true">
                             <svg viewBox="0 0 24 24" class="button-icon-svg">
@@ -147,6 +156,11 @@
 
     <script>
         (function () {
+            const storedDensity = localStorage.getItem('layoutDensity') || 'comfortable';
+            const density = ['comfortable', 'compact'].includes(storedDensity) ? storedDensity : 'comfortable';
+            document.documentElement.setAttribute('data-density', density);
+            const densitySelect = document.getElementById('density-select');
+            if (densitySelect) densitySelect.value = density;
             const storedTheme = localStorage.getItem('theme') || 'dark';
             const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'dark';
             localStorage.setItem('theme', savedTheme);
