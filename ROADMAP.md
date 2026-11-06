@@ -96,7 +96,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Implement the missing shared provider pause operation; preserve the browser session and mark the paused exit state for supervisor-driven resume.
   - [x] Add regression tests for pause semantics, stopped-worker prevention, and joined shutdown.
   - [x] Add dashboard/API regression coverage for create, configure, valid and invalid lifecycle transitions, pause/resume, stop/restart, missing agents, and delete shutdown conflicts.
-  - [ ] Run the full CI suite after the API tests and verify delete/restart races against a live worker.
+  - [x] Run the full Python 3.14 CI suite after the API tests; GitHub Actions passed all 83 tests.
+  - [ ] Verify delete/restart races against a live worker in the running dashboard and confirm browser processes close cleanly.
   - [ ] Verify create/configure/start/login/ready/pause/resume/stop/restart/delete in the running dashboard and confirm browser processes close cleanly.
 - [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
