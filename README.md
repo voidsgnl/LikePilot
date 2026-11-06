@@ -46,7 +46,7 @@ The `farm.py` command is a small compatibility launcher. The installed package a
 
 ## Configuration and data
 
-Runtime-generated files are stored under `data/`: configuration in `data/config/`, agent/statistics/timing state in `data/state/`, SQLite databases in `data/database/`, browser profiles in `data/profiles/`, logs in `data/logs/`, diagnostics in `data/diagnostics/`, backups in `data/backups/`, and transient updater/runtime files in `data/runtime/` or `data/tmp/`. On first access, LikePilot non-destructively migrates matching root-level legacy files and directories. If both legacy and destination copies exist, it preserves the legacy copy rather than overwriting either. Set `LIKEPILOT_DATA_DIR` to choose the runtime root; the same `data/` layout is used beneath it.
+Runtime-generated files are stored under `data/`: configuration in `data/config/`, agent/statistics/timing state in `data/state/`, SQLite databases in `data/database/`, browser profiles in `data/profiles/`, logs in `data/logs/`, diagnostics in `data/diagnostics/`, backups in `data/backups/`, and transient updater/runtime files in `data/runtime/` or `data/tmp/`. On first access, LikePilot non-destructively migrates matching root-level legacy files and directories. Tracked compatibility seed files (`config.json`, `agents.json`, and `stats.json`) are copied into `data/` and left in place to avoid dirtying an existing Git checkout; untracked runtime files/directories are moved where possible. If a destination already exists, it is never overwritten. Set `LIKEPILOT_DATA_DIR` to choose the runtime root; the same `data/` layout is used beneath it.
 
 Do not expose the development server to an untrusted network. Configure unique dashboard credentials and a stable secret key before use.
 
