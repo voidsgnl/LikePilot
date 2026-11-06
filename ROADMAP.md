@@ -191,6 +191,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
 - [ ] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
+  - [ ] Remove the built-in `admin` / `likepilot2026` fallback and require an explicitly configured dashboard password without locking out existing installations.
 
 ## Phase 5 — Web installation and portability
 
