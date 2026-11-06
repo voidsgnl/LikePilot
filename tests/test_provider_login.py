@@ -156,3 +156,43 @@ def test_user_secret_with_encryption_prefix_is_still_encrypted(tmp_path, monkeyp
     assert stored != literal
     assert stored.startswith("enc:v1:")
     assert state.get_provider_login_settings("Like4Like")["password"] == literal
+
+
+def test_agent_proxy_is_encrypted_at_rest_and_available_to_runtime(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    proxy = "http://proxy-user:proxy-password@127.0.0.1:8080"
+    state.add_agent("proxy-agent", "Default", proxy=proxy)
+
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT proxy FROM agents WHERE name = 'proxy-agent'"
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert "proxy-password" not in stored
+    assert state.get_agent("proxy-agent")["proxy"] == proxy
+    assert state.get_agents()[0]["proxy"] == proxy
+    assert state.list_runtime_status()["agents"]["proxy-agent"]["proxy"] == proxy
+
+
+def test_legacy_agent_proxy_is_migrated_to_encrypted_storage(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    state.add_agent("legacy-proxy-agent", "Default")
+    proxy = "http://legacy-user:legacy-password@localhost:3128"
+    with sqlite3.connect(state.DB_FILE) as conn:
+        conn.execute(
+            "UPDATE agents SET proxy = ? WHERE name = ?",
+            (proxy, "legacy-proxy-agent"),
+        )
+
+    state.init_db()
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT proxy FROM agents WHERE name = ?",
+            ("legacy-proxy-agent",),
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert state.get_agent("legacy-proxy-agent")["proxy"] == proxy
