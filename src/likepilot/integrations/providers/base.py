@@ -261,6 +261,7 @@ class BaseBot(ABC):
         should_log_history = new_credits != agent_status["credits"] or not stats.get("history")
         if should_log_history:
             log_credit_update(platform, new_credits, agent_name=self.agent_name)
+        credit_increased = new_credits > previous_credits
         if new_credits != previous_credits:
             delta = new_credits - previous_credits
             sign = "+" if delta >= 0 else ""
@@ -268,6 +269,7 @@ class BaseBot(ABC):
                 f"Credits updated from {previous_credits} to {new_credits} ({sign}{delta}).",
                 level="INFO",
             )
+        return credit_increased
 
     def mark_exhausted(self, detail=None):
         self.exit_reason = "exhausted"
@@ -339,7 +341,7 @@ class BaseBot(ABC):
         return None
 
     def close_task_window(self, task_window, main_window, *, credits_collected=False):
-        """Close a task window only after the provider credit balance was read successfully."""
+        """Close a task window only after a provider credit increase has been confirmed."""
         if not credits_collected:
             self.emit_log(
                 "Task window close was blocked because provider credit collection was not confirmed.",
@@ -417,9 +419,9 @@ class Like4LikeBase(BaseBot):
                 except: continue
 
             if discovered_credits is not None:
-                self._persist_credits(agent_status, discovered_credits)
+                credit_increased = self._persist_credits(agent_status, discovered_credits)
                 self.heartbeat()
-                return True
+                return credit_increased
             return False
         except Exception as e:
             self.emit_log(f"L4L Credit Update Failed: {e}", level="WARNING")
@@ -564,9 +566,9 @@ class KingdomLikesBase(BaseBot):
             for el in els:
                 text = el.text.replace(",", "").strip()
                 if text.isdigit():
-                    self._persist_credits(agent_status, int(text))
+                    credit_increased = self._persist_credits(agent_status, int(text))
                     self.heartbeat()
-                    return True
+                    return credit_increased
             return False
         except Exception as e:
             self.emit_log(f"KingdomLikes Credit Update Failed: {e}", level="WARNING")
@@ -599,9 +601,9 @@ class YouLikeHitsBase(BaseBot):
                 match = re.search(r"Points:\s*([\d,]+)", el.text, re.IGNORECASE)
                 if match:
                     val = int(match.group(1).replace(",", ""))
-                    self._persist_credits(agent_status, val)
+                    credit_increased = self._persist_credits(agent_status, val)
                     self.heartbeat()
-                    return True
+                    return credit_increased
             return False
         except Exception as e:
             self.emit_log(f"YouLikeHits Credit Update Failed: {e}", level="WARNING")
