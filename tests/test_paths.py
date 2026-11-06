@@ -12,7 +12,7 @@ def test_runtime_file_paths_use_data_categories(tmp_path, monkeypatch):
     assert runtime_path("runtime_port.txt") == str(tmp_path / "data" / "runtime" / "runtime_port.txt")
 
 
-def test_runtime_file_migration_preserves_legacy_file(tmp_path, monkeypatch):
+def test_tracked_runtime_file_is_copied_without_dirtying_checkout(tmp_path, monkeypatch):
     monkeypatch.setenv("LIKEPILOT_DATA_DIR", str(tmp_path))
     legacy = tmp_path / "config.json"
     expected = '{"browser":{"default":"firefox"}}'
@@ -21,7 +21,7 @@ def test_runtime_file_migration_preserves_legacy_file(tmp_path, monkeypatch):
     destination = runtime_path("config.json")
 
     assert open(destination, encoding="utf-8").read() == expected
-    assert not legacy.exists()
+    assert legacy.read_text(encoding="utf-8") == expected
 
 
 def test_runtime_file_collision_preserves_both_copies(tmp_path, monkeypatch):
