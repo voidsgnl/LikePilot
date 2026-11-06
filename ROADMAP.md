@@ -81,7 +81,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 ## Phase 2 — Integration and agent reliability
 
-- [ ] **P2.1 — Map provider/network/action combinations to concrete classes.**
+- [x] **P2.1 — Map provider/network/action combinations to concrete classes.**
+  - [x] Trace agent provider/platform configuration through `BOT_REGISTRY`, `TASK_URLS`, adapter execution, social-action verification, provider confirmation, and credit polling.
+  - [x] Document all 25 registered combinations and provider-specific unsupported combinations in `docs/architecture/integration-matrix.md`.
+  - [x] Register the existing YouLikeHits YouTube Subscribe adapter and its target URL; it was implemented but unreachable from agent configuration.
+  - [x] Add regression coverage requiring exact key parity between the provider registry and task URL map.
+  - [ ] Verify live selectors, login, social-action verification, and credit confirmation for each registered route/browser; registry coverage is not live-site verification.
 - [ ] **P2.2 — Verify agent create, configure, start, pause, resume, stop, restart, and delete flows.**
 - [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
