@@ -3,7 +3,7 @@ import os
 import sqlite3
 import threading
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from likepilot.core.paths import runtime_path
 
 DB_FILE = runtime_path("likepilot.db")
@@ -17,7 +17,7 @@ _DB_LOCK = threading.RLock()
 
 
 def _utc_now():
-    return datetime.utcnow().isoformat(timespec="seconds") + "Z"
+    return datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
 
 
 def _parse_date_boundary(value, end_of_day=False):
