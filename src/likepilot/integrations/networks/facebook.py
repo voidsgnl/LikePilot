@@ -90,7 +90,7 @@ class FacebookFollowBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     self.random_sleep(8, 12)
                     if not self.update_credits():
-                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
@@ -212,7 +212,7 @@ class FacebookCommentBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     self.random_sleep(8, 12)
                     if not self.update_credits():
-                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
@@ -310,7 +310,7 @@ class FacebookLikeBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     self.random_sleep(8, 12)
                     if not self.update_credits():
-                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
