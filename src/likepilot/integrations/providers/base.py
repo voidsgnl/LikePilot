@@ -5,6 +5,7 @@ import os
 from abc import ABC, abstractmethod
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from likepilot.core.paths import runtime_dir
 from likepilot.core.state import append_agent_log, get_agent, get_stats, heartbeat_agent, log_credit_update, update_agent
 
 class BaseBot(ABC):
@@ -300,8 +301,7 @@ class BaseBot(ABC):
     def record_page_diagnostics(self, label, selectors=None):
         if not self.driver:
             return
-        diagnostics_dir = os.path.join(os.getcwd(), "diagnostics")
-        os.makedirs(diagnostics_dir, exist_ok=True)
+        diagnostics_dir = runtime_dir("diagnostics")
         timestamp = int(time.time())
         safe_label = re.sub(r"[^a-zA-Z0-9_-]+", "_", label).strip("_") or "page"
         html_path = os.path.join(diagnostics_dir, f"{self.agent_name}_{safe_label}_{timestamp}.html")
