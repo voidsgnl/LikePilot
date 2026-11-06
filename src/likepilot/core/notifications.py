@@ -35,6 +35,11 @@ class NotificationManager:
 
     def notify(self, event_type, message, **kwargs):
         """Send notification for event"""
+        message = redact_sensitive_text(message)
+        kwargs = {
+            key: redact_sensitive_text(value) if isinstance(value, str) else value
+            for key, value in kwargs.items()
+        }
         if not self.enabled or not self.notify_on.get(event_type, False):
             return
 
