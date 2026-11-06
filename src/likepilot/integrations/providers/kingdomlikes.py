@@ -98,39 +98,47 @@ class KingdomLikesGenericBot(KingdomLikesBase):
                         raise RuntimeError("Popup did not open")
                     self.driver.switch_to.window(popup_handle)
                     
-                    # Perform the actual Social Media action (Like/Follow)
+                    # Perform the actual Social Media action (Like/Follow).
                     action_completed = self.perform_social_action()
-                    
-                    # Close popup and return
-                    if len(self.driver.window_handles) > 1:
-                        self.driver.close()
                 except Exception as e:
                     print(f"[WARNING] Popup did not behave as expected: {e}")
                     self.emit_log(f"KingdomLikes popup/action failure: {e}", level="WARNING")
                     self.log_blockers(f"KingdomLikes {self.PLATFORM_NAME} popup")
                     self.record_page_diagnostics(f"kingdomlikes_{self.PLATFORM_NAME.lower()}_{self.ACTION_TYPE.lower()}_popup_failure")
                 
+                # Keep the social task window open while the provider registers the action.
                 self.driver.switch_to.window(main_window)
 
                 if not action_completed:
-                    self.emit_log(f"KingdomLikes {self.PLATFORM_NAME} action was not verified.", level="WARNING")
+                    self.emit_log(
+                        f"KingdomLikes {self.PLATFORM_NAME} action was not verified; task window left open.",
+                        level="WARNING",
+                    )
                     self.log_blockers(f"KingdomLikes {self.PLATFORM_NAME} action verification")
-                    continue
+                    return
                 
-                # 4. COOL DOWN & UPDATE
-                # KingdomLikes is very sensitive to timing. 
-                # After closing the window, you MUST wait for their "Points added" notification.
+                # 4. COOL DOWN, COLLECT POINTS, THEN CLEAN UP.
                 print("[INFO] Waiting for KingdomLikes to register action...")
                 self.random_sleep(10, 15)
-                self.update_credits()
+                if not self.update_credits():
+                    self.emit_log(
+                        "KingdomLikes points could not be read; task window left open for recovery.",
+                        level="WARNING",
+                    )
+                    return
+                if not self.close_task_window(popup_handle, main_window):
+                    self.emit_log("KingdomLikes task window remains open because cleanup failed.", level="WARNING")
+                    return
 
             except Exception as e:
                 self.emit_log(f"KingdomLikes Runtime Error: {e}", level="ERROR")
                 self.random_sleep(5, 10)
-                if len(self.driver.window_handles) > 1:
-                    self.driver.switch_to.window(self.driver.window_handles[1])
-                    self.driver.close()
-                    self.driver.switch_to.window(main_window)
+                # Preserve any task window on an error; it may still be needed for recovery.
+                try:
+                    if main_window in self.driver.window_handles:
+                        self.driver.switch_to.window(main_window)
+                except Exception:
+                    pass
 
     def perform_social_action(self):
         """Platform specific logic."""
