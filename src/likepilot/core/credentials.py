@@ -1,6 +1,5 @@
 """Authenticated encryption for locally persisted LikePilot secrets."""
 import os
-import secrets
 import threading
 
 from cryptography.fernet import Fernet, InvalidToken
@@ -16,7 +15,7 @@ class CredentialEncryptionError(RuntimeError):
     """Raised when an encrypted credential cannot be safely recovered."""
 
 
-def _load_key():
+def _load_key(create=True):
     with _LOCK:
         configured = os.getenv(_KEY_ENV)
         key_path = runtime_path("credential.key")
@@ -44,6 +43,10 @@ def _load_key():
                 pass
             return key
 
+        if not create:
+            raise CredentialEncryptionError(
+                "The LikePilot credential key is missing; refusing to generate a replacement for existing encrypted credentials."
+            )
         key = Fernet.generate_key()
         flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
         descriptor = os.open(key_path, flags, 0o600)
@@ -82,7 +85,7 @@ def decrypt_secret(value):
         return value
     try:
         token = value[len(_PREFIX):].encode("ascii")
-        return Fernet(_load_key()).decrypt(token).decode("utf-8")
+        return Fernet(_load_key(create=False)).decrypt(token).decode("utf-8")
     except (InvalidToken, UnicodeError, ValueError, TypeError) as error:
         raise CredentialEncryptionError(
             "Unable to decrypt a LikePilot credential. Check that the original credential.key is present."
