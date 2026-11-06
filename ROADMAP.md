@@ -86,15 +86,15 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [ ] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
   - [ ] Verify Chrome regression and proxy behavior for both browsers.
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
-- [ ] **P2.6 — Centralize task-window lifecycle and point-collection sequencing.**
-  - [ ] Add shared window tracking for the provider's main window and each task window; preserve stable handles and recover focus if a window closes unexpectedly.
-  - [ ] Keep the task window open and avoid refreshing, navigating away, or closing it while the task is still active or its completion state is uncertain.
-  - [ ] Verify task completion in the social-network window before returning to the provider window.
-  - [ ] Collect/confirm the earned points or provider credit only after the task action is verified; do not close or refresh the task window before this collection step finishes.
-  - [ ] Close the task window only after task completion and point collection are confirmed, then restore focus to the main provider window.
-  - [ ] Add timeout/recovery handling for blocked tasks, missing confirmation, failed point collection, and unexpected window closure; never report a task or points as successful without confirmation.
-  - [ ] Add regression tests for window ordering, premature-close prevention, point-collection sequencing, and safe cleanup.
-  - **Acceptance:** task windows remain available until the social action and provider point collection are both confirmed; cleanup happens afterward without ending the main browser session.
+- [~] **P2.6 — Centralize task-window lifecycle and point-collection sequencing.**
+  - [x] Add shared window tracking and lifecycle helpers to the common provider base; identify newly-created windows and restore focus to the provider window.
+  - [x] Keep task windows open while social actions or provider confirmation are incomplete; avoid refreshing the task flow during recovery.
+  - [x] Verify the social action before attempting provider confirmation.
+  - [x] Read and persist the provider credit balance before allowing task-window closure; the shared close helper rejects calls without explicit credit-collection confirmation.
+  - [x] Close the task window only after credit collection succeeds, then restore focus to the provider window.
+  - [x] Add regression tests for new-window detection, premature-close prevention, and focus restoration.
+  - [ ] Verify the full task/confirmation/credit sequence live against each provider and supported browser; browser-dependent validation remains.
+  - **Acceptance:** task windows remain available until the social action and provider point collection are confirmed; cleanup happens afterward without ending the main browser session.
 - **Acceptance:** each advertised integration and agent transition is verified and failures are visible.
 
 - [~] **P2.5 — Add system-level provider login configuration.**
