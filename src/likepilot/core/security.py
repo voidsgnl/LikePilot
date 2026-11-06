@@ -34,3 +34,51 @@ def redact_sensitive_text(value):
     for pattern, replacement in _PATTERNS:
         text = pattern.sub(replacement, text)
     return text
+
+
+def sanitize_diagnostic_html(value):
+    """Remove sensitive form and CSRF values from captured page markup."""
+    html = redact_sensitive_text(value)
+    sensitive_names = re.compile(r"(?i)(password|passwd|token|secret|api[_-]?key|authorization|csrf|auth)")
+    input_pattern = re.compile(r"<input\\b[^>]*>", re.IGNORECASE)
+    textarea_pattern = re.compile(
+        r"(<textarea\\b[^>]*(?:name|id)\\s*=\\s*[\"'][^\"']*(?:password|passwd|token|secret|api[_-]?key|authorization|csrf|auth)[^\"']*[\"'][^>]*>).*?(</textarea\\s*>)",
+        re.IGNORECASE | re.DOTALL,
+    )
+    meta_pattern = re.compile(
+        r"(<meta\\b[^>]*(?:name|property)\\s*=\\s*[\"'][^\"']*(?:token|csrf|auth|secret)[^\"']*[\"'][^>]*>)",
+        re.IGNORECASE,
+    )
+
+    def mask_input(match):
+        tag = match.group(0)
+        attrs = {
+            key.lower(): (quoted or unquoted or "")
+            for key, quoted, unquoted in re.findall(
+                r"([\\w:-]+)\\s*=\\s*(?:[\"']([^\"']*)[\"']|([^\\s>]+))",
+                tag,
+            )
+        }
+        if attrs.get("type", "").lower() in {"password", "hidden"} or any(
+            sensitive_names.search(attrs.get(key, "")) for key in ("name", "id", "autocomplete")
+        ):
+            tag = re.sub(
+                r"\\svalue\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s>]+)",
+                ' value="[REDACTED]"',
+                tag,
+                flags=re.IGNORECASE,
+            )
+        return tag
+
+    html = input_pattern.sub(mask_input, html)
+    html = textarea_pattern.sub(r"\\1[REDACTED]\\2", html)
+    html = meta_pattern.sub(
+        lambda match: re.sub(
+            r"\\scontent\\s*=\\s*(?:\"[^\"]*\"|'[^']*'|[^\\s>]+)",
+            ' content="[REDACTED]"',
+            match.group(0),
+            flags=re.IGNORECASE,
+        ),
+        html,
+    )
+    return html
