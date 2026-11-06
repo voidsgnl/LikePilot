@@ -73,9 +73,10 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - **Acceptance:** existing user data is discovered and preserved after upgrade; collision cases remain recoverable. User confirmed the migrated application starts successfully.
 - [~] **P1.5 — Resolve redundancy and legacy code.**
   - [x] Remove obsolete `index.html` and `settings.html` templates after tracing active Flask routes to their dedicated replacements.
-  - [ ] Compare `core/state.py` and `core/database.py` schema and callers.
-  - [ ] Review agent/statistics facades and both supervisor implementations.
-  - [ ] Review `legacy/advanced_bot.py`; retain or remove based on an explicit usage decision.
+  - [x] Compare `core/state.py` and `core/database.py` schema and callers: `state.py` is the active application persistence layer; `database.py` owns a separate sessions/error/snapshot schema and has no active application callers. Do not delete until compatibility and schema/data implications are decided.
+  - [x] Review agent/statistics facades: `agents.py` is used by the dashboard as a thin state facade; `stats.py` has no active internal callers and is a thin wrapper. Keep the agent facade; consider retiring the statistics wrapper with compatibility coverage.
+  - [x] Review both supervisors: the server explicitly starts the threaded supervisor. The multiprocessing selector/helper is not wired into server startup; the multiprocessing implementation also has lifecycle/control gaps. Keep threaded execution canonical and do not expose multiprocessing as a working option until repaired and tested.
+  - [x] Review `legacy/advanced_bot.py`: standalone, old Like4Like/Twitter prototype; no active imports or launcher references. Retain in `legacy/` as historical reference unless the user explicitly requests deletion.
   - **Acceptance:** each consolidation/removal has traced callers and regression coverage.
 
 ## Phase 2 — Integration and agent reliability
@@ -218,13 +219,14 @@ LikePilot is a multi-platform automation and agent-management application. It co
 |---|---|---|---|
 | A-001 | Runtime integration imports must resolve after the package move. | [~] Static class mapping passed; post-move import test pending | Run clean-install import and runtime smoke tests |
 | A-002 | Original root had mixed source, launchers, runtime data, and docs. | [~] Source moved into src layout; runtime paths target data/ with first-use legacy migration; CI passes (39 tests) | Verify migrated runtime operations locally |
-| A-003 | State and secondary database responsibilities need reconciliation. | [ ] Open | Compare schema, path, callers, and migrations |
-| A-004 | Runtime and multiprocessing supervisors overlap. | [ ] Open | Trace active selection and lifecycle |
+| A-003 | State and secondary database responsibilities need reconciliation. | [~] Audit complete: `state.py` is canonical and `database.py` has no active application callers; separate session/error/snapshot schema remains isolated. | Decide whether to retire the unused database layer after compatibility/data review; add regression coverage before removal |
+| A-004 | Runtime and multiprocessing supervisors overlap. | [~] Server starts threaded supervisor directly; multiprocessing selector is not wired into startup and its process lifecycle/control path is incomplete. | Keep threaded runtime canonical; either repair and explicitly integrate multiprocessing or remove its dormant option and implementation after a product decision |
 | A-005 | Desktop wrappers and executable build path were unrelated to web operation. | [x] Removed from the supported architecture and repository migration | Keep the web install free of desktop-only dependencies |
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Added non-destructive migration; tracked JSON seeds are copied, untracked data is moved, and collisions are preserved; CI passes (39 tests) | Verify real upgrade and backup/restore behavior |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
 | A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
 | A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, and manual fallback for verification; local provider-specific validation pending | Verify all provider login forms and complete credential-at-rest hardening |
+| A-011 | Legacy `advanced_bot.py` may be mistaken for supported runtime code. | [x] No active imports or launcher references; retained as historical prototype under `legacy/` | Keep isolated; delete only on explicit request |
 | A-010 | Local checkout retains legacy root directories after the src-layout migration. | [~] User inspection found `web/` and `modules/` contain only `__pycache__`, and `tools/` contains the retired `build/` directory; browser profiles are persistent data. Driver now routes profiles to `data/profiles/` and migrates each legacy profile on first use without overwriting a collision; CI verification pending. | Verify migration tests and both browser paths; remove only confirmed cache/build leftovers locally. |
 
 ## Change tracking
