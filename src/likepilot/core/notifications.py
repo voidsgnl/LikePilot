@@ -6,13 +6,13 @@ import requests
 import json
 import time
 from datetime import datetime
-from likepilot.core.config import get_config_value
+from likepilot.core.config import get_config_value, get_notification_secret
 
 class NotificationManager:
     def __init__(self):
         self.enabled = get_config_value("notifications.enabled", False)
-        self.discord_webhook = get_config_value("notifications.discord_webhook", "")
-        self.telegram_bot_token = get_config_value("notifications.telegram_bot_token", "")
+        self.discord_webhook = get_notification_secret("discord_webhook")
+        self.telegram_bot_token = get_notification_secret("telegram_bot_token")
         self.telegram_chat_id = get_config_value("notifications.telegram_chat_id", "")
         self.email_enabled = get_config_value("notifications.email_enabled", False)
         self.email_smtp = get_config_value("notifications.email_smtp", "")
