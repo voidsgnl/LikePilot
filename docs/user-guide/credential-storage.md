@@ -10,7 +10,7 @@ Legacy plaintext provider and agent passwords are encrypted automatically during
 
 Authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens are also encrypted in SQLite. Legacy values are migrated on first access and cleared from config.json; subsequent proxy-list changes remain encrypted.
 
-The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column. Runtime log output applies secret redaction to registered credentials and common credential-bearing URL, authorization, and query-string formats. This reduces accidental disclosure but does not make it safe to include credentials in log messages. Existing console log files are not rewritten retroactively.
+The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column. Runtime log output and outbound notification payloads apply secret redaction to registered credentials and common credential-bearing URL, authorization, and query-string formats. This reduces accidental disclosure but does not make it safe to include credentials in log messages. Existing console log files are not rewritten retroactively.
 
 ## Backups and restores
 
