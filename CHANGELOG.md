@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added dashboard API regression coverage for agent creation and configuration, valid and invalid lifecycle transitions, pause/resume, stop/restart, missing-agent responses, and deletion shutdown conflicts. Live worker race checks and browser verification remain outstanding.
+
 - Implemented the shared provider pause operation. It halts task execution, records the paused exit state, and retains the authenticated browser session for supervisor-driven resume. Added lifecycle regression tests for pause semantics, stopped-worker prevention, and joined shutdown.
 
 - Hardened agent lifecycle transitions: worker startup now rechecks persisted state under the supervisor lock; stop signals and joins the worker before deletion or restart; deletion no longer removes an active agent row while leaving its browser worker behind. Added an explicit clean Restart action and HTTP conflict responses for invalid state transitions. Automated lifecycle and live dashboard verification remain in progress.
