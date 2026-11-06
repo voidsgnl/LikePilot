@@ -153,7 +153,7 @@ function initializeSidebar() {
     const appShell = document.getElementById('app-shell');
     const collapseBtn = document.getElementById('sidebar-collapse-btn');
     const savedState = localStorage.getItem('sidebarCollapsed');
-    const savedCollapsed = savedState === null ? true : savedState === 'true';
+    const savedCollapsed = savedState === null ? false : savedState === 'true';
     
     if (savedCollapsed && sidebar) {
         sidebar.classList.add('collapsed');
