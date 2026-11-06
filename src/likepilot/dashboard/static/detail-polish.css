@@ -274,3 +274,91 @@ button:not(.btn-primary):not(.btn-secondary):not(.btn-danger):hover{
   .agent-quick-switch{max-width:52vw}
   .reference-overview .overview-agent-panel{padding:16px}
 }
+
+
+/* Retire the legacy near-black (#0d1117 / #111820) component surfaces.
+   These shared classes are used across the directory, agent workspace,
+   provider catalog, settings and overview. Use the reference surface tokens. */
+.table-wrap{
+  border-color:var(--border);
+  border-radius:11px;
+  background:transparent;
+}
+.data-table thead th{
+  background:var(--surface-strong);
+  color:var(--text-soft);
+}
+.data-table tbody tr,
+.data-table tbody td{background:transparent}
+.data-table tbody tr:hover,
+.data-table tbody tr:hover td{background:rgba(7,156,240,.045)}
+.inset-panel,.focus-stat,.focus-advanced,.focus-meta-static,
+.event-row,.event-item,.overview-shortcut{
+  border-color:var(--border);
+  border-radius:11px;
+  background:var(--surface-strong);
+  color:var(--text-muted);
+  box-shadow:none;
+}
+.overview-shortcut:hover{
+  border-color:var(--border-strong);
+  background:var(--surface-soft);
+  color:var(--accent-strong);
+}
+.integration-mark{
+  border-color:rgba(7,156,240,.18);
+  border-radius:10px;
+  background:var(--accent-soft);
+  color:var(--accent-strong);
+}
+.focus-card{
+  border-color:var(--border);
+  border-radius:14px;
+  background:var(--surface);
+  box-shadow:none;
+  backdrop-filter:none;
+  animation:none;
+}
+.focus-card:hover{
+  border-color:var(--border-strong);
+  box-shadow:none;
+}
+.focus-meta-static{background:var(--surface-muted)}
+.switch-notice{
+  border-color:rgba(228,179,78,.25);
+  border-radius:10px;
+  background:var(--warning-soft);
+  color:var(--warning);
+}
+.page-agent-detail .workspace-hero{
+  background:var(--surface);
+  box-shadow:none;
+}
+.page-agent-detail .workspace-metrics .stat-card{
+  background:var(--surface-strong);
+  box-shadow:none;
+}
+.page-agents .directory-toolbar,
+.page-agents .content-wrapper>.panel{
+  background:var(--surface);
+}
+.page-agents .directory-table thead th{background:var(--surface-strong)}
+.page-agents .directory-table tbody tr:hover td{background:rgba(7,156,240,.045)}
+/* Preserve semantic status colors, but remove the old GitHub-dark base fill. */
+.status-badge{
+  background:var(--surface-soft);
+  color:var(--text-muted);
+}
+.status-running,.status-available{background:var(--success-soft);color:var(--success)}
+.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-switch{background:var(--warning-soft);color:var(--warning)}
+.status-stopped,.status-not-found{background:var(--surface-soft);color:var(--text-soft)}
+/* Flat action controls across all page-specific workspaces. */
+.page-dashboard button,.page-agents button,.page-agent-detail button,
+.page-settings button,.page-analytics button,.page-operations button,
+.page-providers button,.page-platforms button{
+  box-shadow:none;
+  text-shadow:none;
+}
+@media(prefers-reduced-motion:reduce){
+  .focus-card,.overview-shortcut,.integration-mark{animation:none;transition:none}
+}
