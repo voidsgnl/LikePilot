@@ -167,6 +167,8 @@ def _read_encrypted_config_secret(name, path):
 
     legacy = get_config_value(path, "")
     if legacy:
+        from likepilot.core.security import register_secret
+        register_secret(legacy)
         set_secret(name, legacy)
         set_config_value(path, "")
         return legacy
@@ -202,7 +204,10 @@ def get_proxy_list():
 def _save_proxy_list(proxies):
     import json
     from likepilot.core.state import set_secret
+    from likepilot.core.security import register_secret
 
+    for proxy in proxies:
+        register_secret(proxy)
     set_secret("config.proxy.proxy_list", json.dumps(proxies))
 
 
@@ -259,6 +264,8 @@ def get_captcha_api_key():
 
     legacy = get_config_value("captcha.api_key", "")
     if legacy:
+        from likepilot.core.security import register_secret
+        register_secret(legacy)
         set_secret("captcha.api_key", legacy)
         set_config_value("captcha.api_key", "")
         return legacy
