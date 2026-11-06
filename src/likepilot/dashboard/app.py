@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from dotenv import load_dotenv
 from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
 from likepilot.dashboard.auth import resolve_dashboard_password, resolve_flask_secret_key
+from likepilot.core.security import redact_sensitive_text, sanitize_diagnostic_html
 from likepilot.core.config import get_config_value, set_config_value
 from likepilot.core.agents import add_agent, remove_agent
 from likepilot.core.runtime import supervisor
@@ -45,6 +46,14 @@ app.config.update(
 PROJECT_ROOT = RUNTIME_ROOT
 LOGS_DIR = runtime_dir("logs")
 DIAGNOSTICS_DIR = runtime_dir("diagnostics")
+for _private_dir in (LOGS_DIR, DIAGNOSTICS_DIR):
+    try:
+        os.chmod(_private_dir, 0o700)
+        for _entry in os.scandir(_private_dir):
+            if _entry.is_file():
+                os.chmod(_entry.path, 0o600)
+    except OSError:
+        pass
 BRAND_DIR = os.path.join(os.path.dirname(__file__), "favicon")
 LOG_TAIL_LIMIT = 400
 
@@ -181,7 +190,7 @@ def _read_log_file(name, tail=LOG_TAIL_LIMIT):
     tail = max(20, min(int(tail or LOG_TAIL_LIMIT), 2000))
     with open(path, "r", encoding="utf-8", errors="replace") as handle:
         lines = handle.readlines()
-    content = "".join(lines[-tail:])
+    content = redact_sensitive_text("".join(lines[-tail:]))
     return {
         "name": filename,
         "tail": tail,
@@ -755,6 +764,14 @@ def operations_diagnostics_file(filename):
     safe_name = os.path.basename(filename)
     if not safe_name:
         return jsonify({"message": "File not found"}), 404
+    if safe_name.lower().endswith(".html"):
+        path = os.path.join(DIAGNOSTICS_DIR, safe_name)
+        try:
+            with open(path, "r", encoding="utf-8", errors="replace") as stream:
+                content = sanitize_diagnostic_html(stream.read())
+        except OSError:
+            return jsonify({"message": "File not found"}), 404
+        return Response(content, mimetype="text/html")
     return send_from_directory(DIAGNOSTICS_DIR, safe_name, as_attachment=False)
 
 
