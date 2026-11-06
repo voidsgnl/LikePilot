@@ -190,7 +190,7 @@ def _import_legacy_data():
                     (
                         agent["name"],
                         agent.get("chrome_profile", "Default"),
-                        agent.get("proxy"),
+                        encrypt_secret(agent.get("proxy")),
                         1 if agent.get("enabled") else 0,
                         now,
                         now,
@@ -374,7 +374,7 @@ def add_agent(
             (
                 name,
                 profile,
-                proxy,
+                encrypt_secret(proxy),
                 login_user,
                 encrypt_secret(login_password),
                 1 if enabled else 0,
