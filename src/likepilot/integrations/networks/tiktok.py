@@ -122,7 +122,7 @@ class TikTokFollowBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     print(f"[SUCCESS] Confirm button found. Clicking...")
                     self.random_sleep(8, 12)
-                    if not self.update_credits():
+                    if not self.wait_for_credit_increase(timeout_seconds=20):
                         self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
@@ -231,7 +231,7 @@ class TikTokLikePostBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     print(f"[SUCCESS] Confirm button found. Clicking...")
                     self.random_sleep(8, 12)
-                    if not self.update_credits():
+                    if not self.wait_for_credit_increase(timeout_seconds=20):
                         self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
