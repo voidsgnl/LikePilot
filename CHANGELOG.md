@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits. Each provider has independent credentials and an Auto login switch inherited by all assigned agents; disabled mode remains manual, and verification challenges fall back to manual completion. Removed per-agent provider credential controls and refreshed the service-worker cache to v1.0.15.
+- Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits. Each provider has independent credentials and an Auto login switch inherited by all assigned agents; disabled mode remains manual, and verification challenges fall back to manual completion. Removed per-agent provider credential controls and refreshed the service-worker cache to v1.0.15. Added provider-settings persistence and dashboard regression tests; GitHub Actions passed (24 tests).
 
 - Fixed Firefox agent startup by skipping the Chrome-only CDP stealth injection for Firefox; added regression coverage for Firefox and Chrome. Firefox continues through Selenium WebDriver without CDP commands.
 
