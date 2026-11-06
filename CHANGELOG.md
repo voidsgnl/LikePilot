@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Centralized runtime storage beneath `data/`: configuration and environment files, agent/statistics/timing state, SQLite databases, browser profiles, logs, diagnostics, backups, runtime metadata, and updater temporary files now have dedicated locations. Added first-use legacy migration that moves files/directories without overwriting destination collisions; updated backup/restore, dashboard operations, provider diagnostics, console logging, and smart-timing paths. Added migration regression tests; full CI and local backup/restore validation remain pending.
+- Centralized runtime storage beneath `data/`: configuration and environment files, agent/statistics/timing state, SQLite databases, browser profiles, logs, diagnostics, backups, runtime metadata, and updater temporary files now have dedicated locations. Added first-use legacy migration that copies tracked JSON seed files and moves untracked files/directories without overwriting destination collisions; updated backup/restore, dashboard operations, provider diagnostics, console logging, and smart-timing paths. Added migration regression tests; full CI and local backup/restore validation remain pending.
 
 
 - Changed Chrome and Firefox persistent profile storage to `data/profiles/`. On first use, an existing matching profile under root `profiles/` is moved with an atomic same-filesystem rename, preserving cookies and session data. If both old and new profile directories exist, startup fails clearly without overwriting either copy. Added regression tests for new paths, legacy migration, and duplicate protection; CI verification pending.
