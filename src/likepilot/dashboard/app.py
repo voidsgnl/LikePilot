@@ -17,10 +17,12 @@ from likepilot.core.state import (
     append_agent_log,
     export_activity,
     get_agent,
+    get_provider_login_settings,
     get_stats,
     init_db,
     list_runtime_status,
     rename_agent,
+    set_provider_login_settings,
     toggle_auto_switch as toggle_auto_switch_setting,
     update_agent,
 )
@@ -294,6 +296,12 @@ def browser_settings():
     return render_template('settings_browser.html', page="settings", settings_view="browser")
 
 
+@app.route('/settings/providers')
+@login_required
+def provider_settings():
+    return render_template('settings_providers.html', page="settings", settings_view="providers")
+
+
 @app.route('/settings/agents/new')
 @login_required
 def create_agent_settings():
@@ -321,6 +329,58 @@ def api_browser_setting():
         return jsonify({'message': 'Browser must be chrome or firefox.'}), 400
     set_config_value('browser.default', browser)
     return jsonify({'message': f'Default browser set to {browser.title()}. New sessions will use this browser.', 'browser': browser})
+
+
+@app.route('/api/settings/providers', methods=['GET', 'POST'])
+@login_required
+def api_provider_settings():
+    provider_sites = ("Like4Like", "KingdomLikes", "YouLikeHits")
+    if request.method == 'GET':
+        providers = {}
+        for site in provider_sites:
+            config = get_provider_login_settings(site)
+            providers[site] = {
+                "enabled": config["enabled"],
+                "username": config["username"],
+                "has_password": bool(config["password"]),
+            }
+        return jsonify({"providers": providers})
+
+    data = request.get_json(silent=True) or {}
+    site = (data.get("site") or "").strip()
+    if site not in provider_sites:
+        return jsonify({"message": "Select a supported provider."}), 400
+    if not isinstance(data.get("enabled"), bool):
+        return jsonify({"message": "Auto login must be enabled or disabled."}), 400
+
+    current = get_provider_login_settings(site)
+    username = data.get("username", current["username"])
+    if not isinstance(username, str):
+        return jsonify({"message": "Username must be text."}), 400
+    username = username.strip()
+    password = data.get("password") if isinstance(data.get("password"), str) else None
+    clear_password = data.get("clear_password") is True
+    has_password = bool(password) or (bool(current["password"]) and not clear_password)
+    if data["enabled"] and (not username or not has_password):
+        return jsonify({"message": "Add the provider username and password before enabling Auto login."}), 400
+
+    set_provider_login_settings(
+        site,
+        data["enabled"],
+        username,
+        password=password if password else None,
+        clear_password=clear_password,
+    )
+    saved = get_provider_login_settings(site)
+    return jsonify({
+        "message": f"{site} login settings saved.",
+        "provider": {
+            "site": site,
+            "enabled": saved["enabled"],
+            "username": saved["username"],
+            "has_password": bool(saved["password"]),
+        },
+    })
 
 
 @app.route('/operations')
