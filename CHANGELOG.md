@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-11-07 — Shared legacy-surface replacement
+- Replaced remaining near-black legacy backgrounds across shared tables, inset panels, focus cards, event rows, shortcuts, integration marks, and agent/directory workspaces with the reference navy surface system.
+- Standardized status fills without losing semantic state colors and removed residual legacy control shadows. Cache version advanced to v1.0.21; no runtime/API behavior changed.
+- Firefox visual review is still required before marking the reference redesign complete.
+
 ## 2026-11-07 — Settings, Analytics and Operations detail pass
 - Refined actual Settings workflows: browser and appearance panels, create-agent form container and field grid, manage-agent cards, provider credential cards, feedback states, and form actions.
 - Refined Analytics subviews: summary metric cards, collapsible sections, export controls, chart panels, and heatmap framing.
