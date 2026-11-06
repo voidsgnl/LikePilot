@@ -1,5 +1,10 @@
 # LikePilot Roadmap
 
+## 2026-11-07 — Shared legacy-surface replacement
+- Replaced remaining legacy near-black component fills in table wrappers, inset panels, focus cards, event rows, overview shortcuts, integration marks, agent workspace metrics, and directory surfaces with the reference surface tokens.
+- Standardized status badge fills while preserving semantic running, waiting, and stopped colors; removed legacy glow/shadow treatment from shared action controls.
+- Refreshed service-worker caches to v1.0.21. Visual browser verification remains outstanding.
+
 ## 2026-11-07 — Agent overview and quick-switch correction
 - Removed the legacy dark nested table surface and decorative inventory eyebrow from the Agent overview; integrated its table directly into the navy workspace card.
 - Reworked the global agent quick switch as compact, flat navigation chips with a clear active state instead of inherited legacy button backgrounds.
