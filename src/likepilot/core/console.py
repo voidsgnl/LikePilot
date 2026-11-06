@@ -6,6 +6,7 @@ import threading
 from datetime import datetime
 
 from likepilot.core.paths import runtime_dir
+from likepilot.core.security import redact_sensitive_text
 
 
 class _MultiLogWriter:
@@ -77,10 +78,11 @@ class _FilteredConsoleStream(io.TextIOBase):
                 pass
 
     def _write_line(self, line):
-        self._log_writer.write(line)
-        if self._console_predicate(line):
+        safe_line = redact_sensitive_text(line)
+        self._log_writer.write(safe_line)
+        if self._console_predicate(safe_line):
             try:
-                self._original_stream.write(line)
+                self._original_stream.write(safe_line)
             except Exception:
                 pass
 
