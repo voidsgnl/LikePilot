@@ -5,6 +5,7 @@ import threading
 from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from likepilot.core.paths import runtime_path
+from likepilot.core.credentials import decrypt_secret, encrypt_secret, is_encrypted
 
 DB_FILE = runtime_path("likepilot.db")
 LEGACY_DB_FILE = runtime_path("likeit.db")
@@ -121,6 +122,7 @@ def init_db():
             """
         )
         _ensure_agent_columns(conn)
+        _migrate_credentials(conn)
     _import_legacy_data()
 
 
@@ -151,6 +153,22 @@ def _ensure_agent_columns(conn):
     if "session_started_at" not in existing_columns:
         conn.execute("ALTER TABLE agents ADD COLUMN session_started_at TEXT")
 
+
+
+def _migrate_credentials(conn):
+    """Encrypt legacy plaintext credentials in place without changing their values."""
+    rows = conn.execute(
+        "SELECT key, value FROM settings WHERE key LIKE 'provider_login.%.password' OR key LIKE 'secret.%'"
+    ).fetchall()
+    for row in rows:
+        if row["value"] and not is_encrypted(row["value"]):
+            conn.execute("UPDATE settings SET value = ? WHERE key = ?", (encrypt_secret(row["value"]), row["key"]))
+    agents = conn.execute(
+        "SELECT name, login_password FROM agents WHERE login_password IS NOT NULL AND login_password != ''"
+    ).fetchall()
+    for agent in agents:
+        if not is_encrypted(agent["login_password"]):
+            conn.execute("UPDATE agents SET login_password = ? WHERE name = ?", (encrypt_secret(agent["login_password"]), agent["name"]))
 
 def _import_legacy_data():
     with _DB_LOCK, _connect() as conn:
@@ -248,7 +266,7 @@ def get_provider_login_settings(site):
     return {
         "enabled": values.get(keys["enabled"], "0") == "1",
         "username": values.get(keys["username"], ""),
-        "password": values.get(keys["password"], ""),
+        "password": decrypt_secret(values.get(keys["password"], "")),
     }
 
 
@@ -280,6 +298,32 @@ def set_provider_login_settings(site, enabled, username, password=None, clear_pa
                 (password_key, password),
             )
 
+
+
+def get_secret(name, default=""):
+    """Read an encrypted application secret from the settings table."""
+    if not name or not isinstance(name, str):
+        raise ValueError("Secret name is required.")
+    init_db()
+    with _DB_LOCK, _connect() as conn:
+        row = conn.execute("SELECT value FROM settings WHERE key = ?", (f"secret.{name}",)).fetchone()
+    return decrypt_secret(row["value"]) if row else default
+
+
+def set_secret(name, value):
+    """Persist an application secret encrypted at rest; empty values clear it."""
+    if not name or not isinstance(name, str):
+        raise ValueError("Secret name is required.")
+    init_db()
+    key = f"secret.{name}"
+    with _DB_LOCK, _connect() as conn:
+        if value in (None, ""):
+            conn.execute("DELETE FROM settings WHERE key = ?", (key,))
+        else:
+            conn.execute(
+                "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+                (encrypt_secret(value), key),
+            )
 
 def get_agents():
     init_db()
@@ -320,7 +364,7 @@ def add_agent(
                 profile,
                 proxy,
                 login_user,
-                login_password,
+                encrypt_secret(login_password),
                 1 if enabled else 0,
                 site,
                 fallback_platform,
@@ -345,7 +389,11 @@ def get_agent(name):
     init_db()
     with _DB_LOCK, _connect() as conn:
         row = conn.execute("SELECT * FROM agents WHERE name = ?", (name,)).fetchone()
-        return dict(row) if row else None
+        if not row:
+            return None
+        result = dict(row)
+        result.pop("login_password", None)
+        return result
 
 
 def rename_agent(current_name, new_name):
@@ -387,6 +435,8 @@ def update_agent(name, **fields):
         if key not in allowed:
             continue
         assignments.append(f"{key} = ?")
+        if key == "login_password":
+            value = encrypt_secret(value)
         values.append(value)
     if not assignments:
         return
