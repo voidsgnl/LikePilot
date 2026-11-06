@@ -37,3 +37,19 @@ def test_agent_logs_are_redacted_before_persistence(tmp_path, monkeypatch):
     assert "registered-private-value" not in entries[0]
     assert "operator:proxy-pass" not in entries[0]
     assert "[REDACTED]" in entries[0]
+
+
+def test_notifications_redact_sensitive_error_details(monkeypatch):
+    from likepilot.core.notifications import NotificationManager
+
+    manager = NotificationManager()
+    manager.enabled = True
+    manager.notify_on = {"agent_crashed": True}
+    sent = []
+    monkeypatch.setattr(manager, "_send_telegram", lambda message, **kwargs: sent.append(message) or True)
+    manager.telegram_bot_token = "123456:abcdefghijklmnopqrstuvwxyzABCDE"
+    manager.telegram_chat_id = "chat"
+    manager.notify("agent_crashed", "Agent failed with https://user:proxy-pass@host:8080")
+
+    assert sent
+    assert "user:proxy-pass" not in sent[0]
