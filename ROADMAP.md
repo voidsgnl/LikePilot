@@ -172,11 +172,13 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P4.1 — Document persistence schemas and migration strategy.**
 - [~] **P4.2 — Verify backup, restore, and corruption recovery.**
   - [x] Trace backup/restore paths to the canonical `data/database/likepilot.db` and runtime config/state files.
-  - [x] Identify current reliability gaps: SQLite is copied as a raw file while potentially active; backup/restore helpers suppress errors, so callers can receive apparent success without a complete database operation.
+  - [x] Identify and correct the original reliability gaps: raw live-database copies and suppressed helper errors were replaced by checked, fail-closed backup operations.
   - [x] Replace raw SQLite file copies with SQLite's online backup API and integrity checks; restore through a validated temporary database and atomic replacement. Restore documentation warns that the server and agent workers must be stopped first.
   - [x] Add regression tests for a consistent backup, successful restore, and corrupt-backup rejection without overwriting live data.
-  - [x] GitHub Actions: 43 tests passed on Python 3.14 after the SQLite changes.
-  - [ ] Verify backup archive/config/log handling and full restore workflow locally.
+  - [x] Complete ZIP archive creation/verification and restore of `.env`, JSON configuration/state, SQLite data, and logs.
+  - [x] Reject unsafe ZIP paths and validate JSON/SQLite contents before replacing live data.
+  - [x] GitHub Actions: 46 tests passed on Python 3.14, including end-to-end archive/config/log restore and ZIP path-traversal rejection.
+  - [ ] Verify backup/restore against the user's existing local data directory while the server and agent workers are stopped.
 - [ ] **P4.3 — Secure credential storage and remove insecure defaults.**
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
@@ -255,6 +257,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Routed runtime configuration/state/database/logs/diagnostics/backups/profiles/runtime metadata and updater artifacts beneath `data/`; added non-destructive legacy migration and collision-preservation tests. | GitHub Actions passed (39 tests); local backup/restore/dashboard validation pending. |
 | 2026-11-06 | Removed the unused secondary database module and orphaned mock smart-timing module after tracing all imports. Both DB implementations had pointed to the same `data/database/likepilot.db`; no existing tables or timing-data files were deleted. | Static repository search found no remaining active imports; full test suite and local DB preservation checks pending. |
 | 2026-11-06 | Removed unused stats facade, dormant multiprocessing supervisor/configuration, and unreferenced performance-monitor prototype. The threaded supervisor and `state.py` remain the active implementations; removed unused `psutil`/`eventlet` dependencies and stale config-template options. | GitHub Actions: 43 tests passed on Python 3.14 after SQLite backup hardening; dependency cleanup CI caught and corrected a Python 3.14 `distutils` compatibility requirement in `undetected-chromedriver`; GitHub Actions now passes (43 tests). |
+| 2026-11-06 | Completed backup archive and restore hardening: atomic archive publication, ZIP integrity check, safe archive member validation, preflight JSON/SQLite integrity checks, atomic config/state replacement, and staged log-directory replacement. Added end-to-end regression coverage for database/config/`.env`/logs restore and ZIP path traversal. | GitHub Actions: 46 tests passed on Python 3.14; live-data restore validation remains pending. |
 
 
 ## Phase 8 — Dashboard visual system
