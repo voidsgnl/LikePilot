@@ -147,7 +147,7 @@ def test_firefox_driver_factory_uses_selected_browser_and_opens_startup_url(monk
 
     monkeypatch.setattr(driver, "get_config_value", lambda *_args: "firefox")
     monkeypatch.setattr(driver, "get_firefox_options", lambda *args, **kwargs: fake_options)
-    monkeypatch.setattr(driver.webdriver, "Firefox", lambda options: calls.setdefault("options", options) or fake_driver)
+    def create_firefox(options):\n        calls["options"] = options\n        return fake_driver\n\n    monkeypatch.setattr(driver.webdriver, "Firefox", create_firefox)
 
     created = driver.create_stealth_driver(profile_name="Agent A", startup_url="https://example.com")
 
