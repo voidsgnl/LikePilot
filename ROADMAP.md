@@ -307,6 +307,15 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 ## Phase 8 — Dashboard visual system
 
+- [~] **P8.3 — Rebuild the dashboard shell and Overview around the supplied visual reference.**
+  - [x] Add the persistent narrow icon rail and secondary navigation panel; preserve existing route destinations and page-specific navigation.
+  - [x] Introduce the reference's navy workspace palette, compact top toolbar, rounded surfaces, and responsive dual-navigation behavior.
+  - [x] Recompose Overview with a workspace welcome panel, live agent KPI cards, recorded credit trend, platform distribution, and agent snapshot.
+  - [x] Use live runtime and statistics APIs; do not substitute sample commerce metrics or fabricated chart values.
+  - [ ] Verify navigation, charts, and responsive behavior in Firefox and Chrome.
+  - [ ] Apply and tune the shared visual language across Agents, Analytics, Settings, and Operations.
+
+
 - [x] **P8.2 — Add adaptive workspace preferences.**
   - [x] Persist the user's compact or comfortable density preference locally.
   - [x] Keep page-specific information architecture while adapting shared spacing, tables, metrics, and panels.
