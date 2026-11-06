@@ -81,6 +81,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
         "agents.json": state_dir / "agents.json",
         "stats.json": state_dir / "stats.json",
         "credential.key": config_dir / "credential.key",
+        "dashboard-password": config_dir / "dashboard-password",
+        "dashboard-session.key": config_dir / "dashboard-session.key",
         "likepilot.db": database_dir / "likepilot.db",
     }
     paths[".env"].write_text("TOKEN=original\n", encoding="utf-8")
@@ -88,6 +90,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
     paths["agents.json"].write_text("[]", encoding="utf-8")
     paths["stats.json"].write_text("{}", encoding="utf-8")
     paths["credential.key"].write_text("test-encryption-key", encoding="utf-8")
+    paths["dashboard-password"].write_text("dashboard-secret", encoding="utf-8")
+    paths["dashboard-session.key"].write_text("session-secret", encoding="utf-8")
     _create_database(paths["likepilot.db"], "before")
     (logs_dir / "app.log").write_text("original log\n", encoding="utf-8")
 
@@ -109,7 +113,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
     with zipfile.ZipFile(archive_path) as archive:
         assert set(archive.namelist()) >= {
             ".env", "config.json", "agents.json", "stats.json",
-            "likepilot.db", "credential.key", "logs/app.log",
+            "likepilot.db", "credential.key", "dashboard-password",
+            "dashboard-session.key", "logs/app.log",
         }
         assert archive.testzip() is None
 
