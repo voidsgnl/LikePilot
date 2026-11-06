@@ -1,12 +1,12 @@
 # Credential storage and backup handling
 
-LikePilot encrypts provider passwords, legacy agent passwords, and CAPTCHA service API keys before storing them in SQLite. Encryption uses Fernet authenticated encryption.
+LikePilot encrypts provider passwords, legacy agent passwords, CAPTCHA service API keys, authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens before storing them in SQLite. Encryption uses Fernet authenticated encryption.
 
 ## Local key
 
 The first encryption or legacy-credential migration creates `data/config/credential.key` with owner-only file permissions where supported. Keep this file private and do not delete it. LikePilot deliberately refuses to generate a replacement key when encrypted values already exist but the key is missing; generating a new key would make the existing credentials unrecoverable.
 
-Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. A legacy CAPTCHA API key in `data/config/config.json` is moved into encrypted settings the first time the CAPTCHA integration loads it.
+Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. Legacy CAPTCHA API keys are moved from `data/config/config.json` into encrypted settings the first time the CAPTCHA integration loads them. Authenticated proxy entries are migrated the first time the proxy-list accessor is used; Discord webhook URLs and Telegram bot tokens are migrated when the notification manager initializes. The corresponding plaintext JSON values are cleared after successful migration. Proxy-list changes are persisted only in encrypted settings.
 
 The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column.
 
