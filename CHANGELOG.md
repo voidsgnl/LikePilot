@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Audited persistence and runtime redundancy. `core/state.py` is the active persistence layer; `core/database.py` has a separate unused sessions/errors/snapshots schema and no active application callers. The dashboard still uses the `agents.py` facade; `stats.py` has no active internal callers. The server explicitly starts the threaded supervisor; multiprocessing selection is not integrated and its implementation has lifecycle/control gaps. `legacy/advanced_bot.py` has no active imports or launcher references and remains isolated as a historical prototype. No runtime code was removed during this audit.
+
+
 - Centralized runtime storage beneath `data/`: configuration and environment files, agent/statistics/timing state, SQLite databases, browser profiles, logs, diagnostics, backups, runtime metadata, and updater temporary files now have dedicated locations. Added first-use legacy migration that copies archived compatibility seeds from `legacy/runtime-seed/` and moves untracked files/directories without overwriting destination collisions; removed `config.json`, `agents.json`, and `stats.json` from the repository root while preserving old-checkout migration fallback; updated backup/restore, dashboard operations, provider diagnostics, console logging, and smart-timing paths. Added migration regression tests; GitHub Actions passed (39 tests). Local backup/restore and dashboard validation remain pending.
 
 
