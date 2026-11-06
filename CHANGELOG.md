@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Recorded the remaining local-only legacy directories in the roadmap: cache-only `web/` and `modules/`, retired `tools/build/`, and persistent browser profiles reserved for the later `data/profiles/` migration. No local runtime data was moved or deleted.
+
 - Extracted `Like4LikeBase` into `src/likepilot/integrations/providers/like4like.py`. Shared browser/session lifecycle behavior remains in `providers/base.py`; Facebook, Instagram, TikTok, X, and YouTube now import the Like4Like foundation from its dedicated module.
 
 - Added shared task-window tracking and safe cleanup across Like4Like social-network tasks, KingdomLikes, and YouLikeHits YouTube tasks. Social task windows now remain open through provider confirmation and a confirmed credit increase (polled for up to 20 seconds); the shared close helper blocks premature closure and restores focus to the provider window. Failed or unverified tasks leave their task window open for recovery. Added regression tests for new-window detection, close gating, and focus restoration; live provider/browser validation remains pending.
