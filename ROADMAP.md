@@ -199,8 +199,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Disable in-place updater installation because release ZIPs are not signature-verified, path-validated, or atomically staged.
   - [x] Remove the archive extraction and direct source-overwrite implementation; retain release checking only. Manual installation is required until a verifiable, rollback-safe updater is designed.
   - [x] Add a regression test proving install requests do not download or execute release archives.
-- [ ] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
-  - [ ] Remove the built-in `admin` / `likepilot2026` fallback and require an explicitly configured dashboard password without locking out existing installations.
+- [~] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
+  - [x] Remove the built-in admin / likepilot2026 fallback. Preserve explicit strong DASHBOARD_PASS values; otherwise generate a unique local password file and print only its path at startup.
+  - [x] Persist the Flask session signing key locally and include both dashboard auth files in backup/restore.
+  - [x] Harden session cookies, rotate sessions after login, clear them on logout, and rate-limit failed login attempts.
+  - [x] Keep the default bind address local and document HTTPS/reverse-proxy requirements for deliberate remote access.
+  - [ ] Verify login, password recovery, and remote HTTPS cookie behavior against the user's running installation.
 
 ## Phase 5 — Web installation and portability
 
