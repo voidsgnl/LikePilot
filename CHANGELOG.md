@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added a persistent workspace density preference (Comfortable / Compact). Compact mode tightens shared panel, metric, table, and form spacing without forcing every page into the same layout; existing collapsible navigation, themes, and responsive page structures remain intact. Refreshed the service-worker cache to v1.0.16. Browser verification remains pending.
+
 - Completed P2.3 browser/profile/driver verification: Firefox and Chrome startup and agent launch were confirmed locally; proxy connectivity was checked in both browsers; focused driver tests passed (12 passed in 0.28s); GitHub Actions passed on Python 3.14.
 
 - Completed P2.2 agent lifecycle verification after live dashboard checks confirmed create/configure and lifecycle operations, including clean browser-process shutdown on stop, restart, and deletion. CI passed with 83 tests.
