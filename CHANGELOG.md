@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Disabled the in-place updater installer and removed its unverified ZIP extraction/direct source-overwrite path. Release checks remain available, but updates must be installed manually until signed package verification and atomic rollback-safe staging are implemented.
+
 - Migrated authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings. Plaintext config values are cleared after successful migration, and proxy-list updates remain encrypted. Added notification defaults so existing notification settings survive configuration merging; GitHub Actions passed 56 tests on Python 3.14.
 - Added centralized log redaction for registered runtime secrets, credential-bearing URLs, authorization headers, sensitive query parameters, Discord webhook URLs, and Telegram bot tokens. Applied it to console/file logs, persisted agent logs, agent error state, notification error details, and outbound notification payloads; older agent-log entries are scrubbed when read. GitHub Actions passed 60 tests on Python 3.14. New page diagnostics now mask password, hidden, token, CSRF, and API-key form values in HTML and screenshots, and use owner-only directory/file permissions where supported. Existing log and diagnostic files are not rewritten; review of legacy artifacts remains open.
 
