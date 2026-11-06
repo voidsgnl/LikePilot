@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Hardened agent lifecycle transitions: worker startup now rechecks persisted state under the supervisor lock; stop signals and joins the worker before deletion or restart; deletion no longer removes an active agent row while leaving its browser worker behind. Added an explicit clean Restart action and HTTP conflict responses for invalid state transitions. Automated lifecycle and live dashboard verification remain in progress.
+
 - Added the provider/network/action matrix and a registry consistency regression test. Registered the existing YouLikeHits YouTube Subscribe adapter in both the runtime bot registry and task URL map, making the already-implemented action selectable by agents. The matrix records 25 registered provider/task combinations and distinguishes code wiring from pending live-site verification.
 
 - Documented the canonical SQLite schema, runtime data layout, additive migration behavior, legacy import rules, credential/profile migrations, and backup/restore requirements in docs/architecture/persistence.md.
