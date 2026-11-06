@@ -200,6 +200,16 @@ class BaseBot(ABC):
             )
             return False
 
+    def pause(self):
+        """Pause task execution while preserving the authenticated browser session."""
+        if not self.is_running:
+            return False
+        self.is_running = False
+        self.exit_reason = "paused"
+        self.exit_detail = "Paused by operator."
+        self.emit_log("Agent paused; browser session retained for resume.", level="SYSTEM")
+        return True
+
     def stop(self):
         """Stops the bot safely."""
         self.is_running = False
