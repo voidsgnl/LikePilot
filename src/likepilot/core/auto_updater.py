@@ -9,7 +9,7 @@ import subprocess
 import time
 from datetime import datetime
 from likepilot.core.config import get_config_value
-from likepilot.core.paths import get_runtime_root
+from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
 
 class AutoUpdater:
     def __init__(self):
@@ -89,13 +89,13 @@ class AutoUpdater:
             response = requests.get(download_url, timeout=60)
             response.raise_for_status()
 
-            update_zip_path = os.path.join(get_runtime_root(), "update.zip")
+            update_zip_path = runtime_path("update.zip")
             with open(update_zip_path, 'wb') as f:
                 f.write(response.content)
 
             # Extract update
             import zipfile
-            update_dir = os.path.join(get_runtime_root(), "update_temp")
+            update_dir = runtime_dir("update_temp")
 
             with zipfile.ZipFile(update_zip_path, 'r') as zip_ref:
                 zip_ref.extractall(update_dir)
@@ -158,7 +158,7 @@ class AutoUpdater:
         """Create backup of current version"""
         try:
             import shutil
-            backup_dir = os.path.join(get_runtime_root(), f"backup_{self.current_version}_{int(time.time())}")
+            backup_dir = os.path.join(runtime_dir("backups"), f"updater_{self.current_version}_{int(time.time())}")
             shutil.copytree(get_runtime_root(), backup_dir,
                           ignore=shutil.ignore_patterns('backup_*', 'update_temp', '__pycache__', '*.pyc'))
             print(f"Backup created: {backup_dir}")
