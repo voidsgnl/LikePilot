@@ -132,6 +132,22 @@ function toggleSidebar() {
     }
 }
 
+function applyDensity(density, notify = true) {
+    const next = density === 'compact' ? 'compact' : 'comfortable';
+    document.documentElement.setAttribute('data-density', next);
+    localStorage.setItem('layoutDensity', next);
+    const select = document.getElementById('density-select');
+    if (select) select.value = next;
+    if (notify) showNotification(`Layout density: ${next}`, 'info', 1500);
+}
+
+function initializeDensity() {
+    const stored = localStorage.getItem('layoutDensity') || 'comfortable';
+    applyDensity(stored, false);
+    const select = document.getElementById('density-select');
+    select?.addEventListener('change', event => applyDensity(event.target.value));
+}
+
 function initializeSidebar() {
     const sidebar = document.getElementById('sidebar');
     const appShell = document.getElementById('app-shell');
@@ -459,6 +475,7 @@ function initializeCollapsibles(root = document) {
 // Initialize everything
 initializeTheme();
 initializeSidebar();
+initializeDensity();
 
 window.addEventListener('DOMContentLoaded', () => {
     initializeTabGroups();
