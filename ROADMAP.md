@@ -175,6 +175,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Identify current reliability gaps: SQLite is copied as a raw file while potentially active; backup/restore helpers suppress errors, so callers can receive apparent success without a complete database operation.
   - [x] Replace raw SQLite file copies with SQLite's online backup API and integrity checks; restore through a validated temporary database and atomic replacement. Restore documentation warns that the server and agent workers must be stopped first.
   - [x] Add regression tests for a consistent backup, successful restore, and corrupt-backup rejection without overwriting live data.
+  - [x] GitHub Actions: 43 tests passed on Python 3.14 after the SQLite changes.
   - [ ] Verify backup archive/config/log handling and full restore workflow locally.
 - [ ] **P4.3 — Secure credential storage and remove insecure defaults.**
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
