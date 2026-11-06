@@ -175,6 +175,15 @@ def test_agent_proxy_is_encrypted_at_rest_and_available_to_runtime(tmp_path, mon
     assert state.get_agents()[0]["proxy"] == proxy
     assert state.list_runtime_status()["agents"]["proxy-agent"]["proxy"] == proxy
 
+    updated_proxy = "http://new-user:new-password@127.0.0.1:8888"
+    state.update_agent("proxy-agent", proxy=updated_proxy)
+    with sqlite3.connect(state.DB_FILE) as conn:
+        updated = conn.execute(
+            "SELECT proxy FROM agents WHERE name = 'proxy-agent'"
+        ).fetchone()[0]
+    assert updated.startswith("enc:v1:")
+    assert state.get_agent("proxy-agent")["proxy"] == updated_proxy
+
 
 def test_legacy_agent_proxy_is_migrated_to_encrypted_storage(tmp_path, monkeypatch):
     import sqlite3
