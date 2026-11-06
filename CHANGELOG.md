@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Extended the reference-inspired visual system across the agent directory and detail workspace, Analytics, Settings, Providers, Platforms, and Operations. Updated shared cards, data tables, forms, status badges, subnavigation, integration cards, and responsive layouts; existing page templates, API calls, and actions remain intact.
+
 - Simplified the reference-inspired sidebar to navigation only. Removed theme and layout-density controls from the navigation panel and relocated both preferences to Settings → Browser → Appearance. Logout remains on the narrow icon rail.
 
 - Began the reference-driven dashboard redesign: added a two-level icon/navigation rail, navy workspace shell, compact toolbar, and an Overview composition with live agent KPIs, recorded credit trend, platform distribution, and agent snapshot. Existing routes and API-backed data are retained; browser verification and remaining page styling are pending.
