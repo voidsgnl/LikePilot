@@ -87,7 +87,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Register the existing YouLikeHits YouTube Subscribe adapter and its target URL; it was implemented but unreachable from agent configuration.
   - [x] Add regression coverage requiring exact key parity between the provider registry and task URL map.
   - [ ] Verify live selectors, login, social-action verification, and credit confirmation for each registered route/browser; registry coverage is not live-site verification.
-- [~] **P2.2 — Verify agent create, configure, start, pause, resume, stop, restart, and delete flows.**
+- [x] **P2.2 — Verify agent create, configure, start, pause, resume, stop, restart, and delete flows.**
   - [x] Prevent duplicate worker creation by re-checking persisted agent state under the supervisor lock before launching a worker.
   - [x] Add a coordinated stop operation that signals the browser, joins the worker, and only then permits deletion or restart; reject those operations while shutdown is still in progress.
   - [x] Route agent deletion through coordinated shutdown so removing a database row cannot leave an orphaned browser worker running.
@@ -97,7 +97,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add regression tests for pause semantics, stopped-worker prevention, and joined shutdown.
   - [x] Add dashboard/API regression coverage for create, configure, valid and invalid lifecycle transitions, pause/resume, stop/restart, missing agents, and delete shutdown conflicts.
   - [x] Run the full Python 3.14 CI suite after the API tests; GitHub Actions passed all 83 tests.
-  - [ ] Verify delete/restart races against a live worker in the running dashboard and confirm browser processes close cleanly.
+  - [x] Verify delete/restart behavior against a live worker in the running dashboard and confirm browser processes close cleanly.
   - [ ] Verify create/configure/start/login/ready/pause/resume/stop/restart/delete in the running dashboard and confirm browser processes close cleanly.
 - [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
