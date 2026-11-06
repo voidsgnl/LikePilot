@@ -198,12 +198,6 @@ def get_captcha_api_key():
     return config.get("captcha", {}).get("api_key", "")
 
 
-def is_multiprocessing_enabled():
-    """Check if multiprocessing mode is enabled."""
-    config = load_config()
-    return config.get("performance", {}).get("use_multiprocessing", False)
-
-
 def is_websocket_enabled():
     """Check if WebSocket mode is enabled for dashboard."""
     config = load_config()
