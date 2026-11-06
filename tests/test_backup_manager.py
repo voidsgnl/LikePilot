@@ -86,6 +86,7 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
     paths["config.json"].write_text(json.dumps({"theme": "dark"}), encoding="utf-8")
     paths["agents.json"].write_text("[]", encoding="utf-8")
     paths["stats.json"].write_text("{}", encoding="utf-8")
+    paths["credential.key"].write_text("test-encryption-key", encoding="utf-8")
     _create_database(paths["likepilot.db"], "before")
     (logs_dir / "app.log").write_text("original log\n", encoding="utf-8")
 
@@ -107,7 +108,7 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
     with zipfile.ZipFile(archive_path) as archive:
         assert set(archive.namelist()) >= {
             ".env", "config.json", "agents.json", "stats.json",
-            "likepilot.db", "logs/app.log",
+            "likepilot.db", "credential.key", "logs/app.log",
         }
         assert archive.testzip() is None
 
