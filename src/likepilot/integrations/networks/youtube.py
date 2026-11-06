@@ -1,4 +1,4 @@
-from likepilot.integrations.providers.base import Like4LikeBase
+from likepilot.integrations.providers.like4like import Like4LikeBase
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
