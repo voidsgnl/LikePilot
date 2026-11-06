@@ -122,7 +122,7 @@ class KingdomLikesGenericBot(KingdomLikesBase):
                 self.random_sleep(10, 15)
                 if not self.update_credits():
                     self.emit_log(
-                        "KingdomLikes points could not be read; task window left open for recovery.",
+                        "KingdomLikes point increase could not be confirmed; task window left open for recovery.",
                         level="WARNING",
                     )
                     return
