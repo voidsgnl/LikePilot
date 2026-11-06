@@ -53,3 +53,20 @@ def test_notifications_redact_sensitive_error_details(monkeypatch):
 
     assert sent
     assert "user:proxy-pass" not in sent[0]
+
+
+def test_diagnostic_html_masks_password_hidden_and_token_fields():
+    from likepilot.core.security import sanitize_diagnostic_html
+
+    source = (
+        '<input type="password" value="form-password">'
+        '<input type="hidden" name="csrf_token" value="csrf-secret">'
+        '<input type="text" name="username" value="visible-user">'
+        '<textarea name="api_key">api-secret</textarea>'
+        '<meta name="csrf-token" content="meta-secret">'
+    )
+    safe = sanitize_diagnostic_html(source)
+    for secret in ("form-password", "csrf-secret", "api-secret", "meta-secret"):
+        assert secret not in safe
+    assert "visible-user" in safe
+    assert safe.count("[REDACTED]") >= 4
