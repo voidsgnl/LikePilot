@@ -125,7 +125,7 @@ class TikTokFollowBot(Like4LikeBase):
                     if not self.update_credits():
                         self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
                         return
-                    if not self.close_task_window(popup_handle, main_window):
+                    if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
                         return
                 else:
@@ -234,7 +234,7 @@ class TikTokLikePostBot(Like4LikeBase):
                     if not self.update_credits():
                         self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
                         return
-                    if not self.close_task_window(popup_handle, main_window):
+                    if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
                         return
                 else:
