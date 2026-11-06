@@ -93,10 +93,10 @@ class BackupManager:
         """Restore a validated backup; stop the server and agents before calling."""
         extract_context = None
         try:
-            if not os.path.isfile(backup_path):
+            if not os.path.exists(backup_path) or not (os.path.isfile(backup_path) or os.path.isdir(backup_path)):
                 raise FileNotFoundError(f"Backup not found: {backup_path}")
 
-            if zipfile.is_zipfile(backup_path):
+            if os.path.isfile(backup_path) and zipfile.is_zipfile(backup_path):
                 extract_context = tempfile.TemporaryDirectory(prefix="likepilot-restore-")
                 with zipfile.ZipFile(backup_path, "r") as archive:
                     self._validate_archive_members(archive)
@@ -235,6 +235,12 @@ class BackupManager:
             source.close()
             source = None
             os.replace(temporary_path, db_path)
+            # A stale WAL/SHM belongs to the previous database and must not be
+            # replayed against the restored file. The application must be stopped.
+            for suffix in ("-wal", "-shm"):
+                sidecar = db_path + suffix
+                if os.path.exists(sidecar):
+                    os.remove(sidecar)
         finally:
             if destination is not None:
                 destination.close()
