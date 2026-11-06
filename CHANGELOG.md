@@ -1,5 +1,14 @@
 # Changelog
 
+## 2026-11-07 — Settings, Analytics and Operations detail pass
+- Refined actual Settings workflows: browser and appearance panels, create-agent form container and field grid, manage-agent cards, provider credential cards, feedback states, and form actions.
+- Refined Analytics subviews: summary metric cards, collapsible sections, export controls, chart panels, and heatmap framing.
+- Refined Operations subviews: database/log/diagnostic split panels, selectable file/table lists, schema canvas, log viewer, and capture viewer.
+- Refined provider/platform catalog intros and cards; added mobile layouts for settings forms, export controls, and operations workspaces.
+- Bumped service-worker asset cache to v1.0.19. No backend, route, API, or agent behavior changes.
+- CI verifies repository changes; visual sign-off still requires Firefox inspection of the rendered pages.
+
+
 ## 2026-11-07 — Reference redesign: component-level refinement
 - Added a final-layer stylesheet for nested dashboard UI: Settings, agent creation/editing fields, provider login cards, quick-agent switch, agent snapshot/directory tables, agent detail controls, dialogs, platform-chain picker, analytics, and operations surfaces.
 - Unified control dimensions, focus and disabled states, button hierarchy, table density, status pills, card borders, and responsive behavior with the navy/blue reference design.
