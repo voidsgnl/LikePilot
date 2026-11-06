@@ -82,7 +82,7 @@ def test_agent_lifecycle_api_runs_valid_transition_sequence(monkeypatch):
     monkeypatch.setattr(module, "update_agent", update_agent)
     monkeypatch.setattr(module, "append_agent_log", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(module.supervisor, "pause_agent", lambda _name: True)
-    monkeypatch.setattr(module.supervisor, "stop_agent", lambda _name: True)
+    monkeypatch.setattr(module.supervisor, "stop_agent", lambda _name: (agent.update({"status": "Stopped"}) or True))
 
     def action(name):
         return client.post("/api/control", json={"name": "worker", "action": name})
