@@ -87,43 +87,6 @@
                     </div>
                 </nav>
 
-                <div class="sidebar-footer">
-                    <div class="theme-panel">
-                        <label class="theme-panel-label" for="theme-select">
-                            <span class="button-icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" class="button-icon-svg">
-                                    <path d="M12 4.5a7.5 7.5 0 1 0 7.5 7.5c0-.7-.1-1.4-.3-2.1-.7 1.1-1.9 1.8-3.3 1.8-2.3 0-4.2-1.9-4.2-4.2 0-1.2.5-2.3 1.4-3.1-.4-.1-.8-.1-1.1-.1Z"></path>
-                                </svg>
-                            </span>
-                            <span id="theme-preview" class="theme-preview theme-preview-dark" aria-hidden="true"></span>
-                            <span class="button-label">Theme</span>
-                        </label>
-                        <select id="theme-select" class="theme-select" aria-label="Select theme">
-                            <option value="dark">Dark Grid</option>
-                            <option value="light">Light Ops</option>
-                            <option value="high-contrast">High Contrast</option>
-                        </select>
-                    </div>
-                    <div class="theme-panel layout-panel">
-                        <label class="theme-panel-label" for="density-select">
-                            <span class="button-label">Layout density</span>
-                        </label>
-                        <select id="density-select" class="theme-select" aria-label="Select layout density">
-                            <option value="comfortable">Comfortable</option>
-                            <option value="compact">Compact</option>
-                        </select>
-                    </div>
-                    <a href="/logout" class="btn-logout icon-button" id="logout-link" title="Log out" aria-label="Log out">
-                        <span class="button-icon" aria-hidden="true">
-                            <svg viewBox="0 0 24 24" class="button-icon-svg">
-                                <path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4"></path>
-                                <path d="M14 8l5 4-5 4"></path>
-                                <path d="M9 12h10"></path>
-                            </svg>
-                        </span>
-                        <span class="button-label">Logout</span>
-                    </a>
-                </div>
             </div>
         </aside>
 
@@ -177,23 +140,11 @@
 
     <script>
         (function () {
-            const storedDensity = localStorage.getItem('layoutDensity') || 'comfortable';
-            const density = ['comfortable', 'compact'].includes(storedDensity) ? storedDensity : 'comfortable';
+            const density = localStorage.getItem('layoutDensity') === 'compact' ? 'compact' : 'comfortable';
+            const theme = ['dark', 'light', 'high-contrast'].includes(localStorage.getItem('theme'))
+                ? localStorage.getItem('theme') : 'dark';
             document.documentElement.setAttribute('data-density', density);
-            const densitySelect = document.getElementById('density-select');
-            if (densitySelect) densitySelect.value = density;
-            const storedTheme = localStorage.getItem('theme') || 'dark';
-            const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'dark';
-            localStorage.setItem('theme', savedTheme);
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            const preview = document.getElementById('theme-preview');
-            if (preview) {
-                preview.className = 'theme-preview theme-preview-' + savedTheme;
-            }
-            const select = document.getElementById('theme-select');
-            if (select) {
-                select.value = savedTheme;
-            }
+            document.documentElement.setAttribute('data-theme', theme);
         })();
 
         (function () {
