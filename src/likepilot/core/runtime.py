@@ -1,4 +1,3 @@
-import os
 import threading
 import time
 
@@ -7,6 +6,7 @@ from likepilot.core.state import (
     get_agent,
     get_agents,
     get_auto_switch,
+    get_provider_login_settings,
     heartbeat_agent,
     update_agent,
 )
@@ -257,8 +257,14 @@ class AgentSupervisor:
                     update_agent(agent_name, status="Stopped", last_error=f"Unsupported platform: {site} - {platform}", session_started_at=None)
                     break
 
+                provider_login = get_provider_login_settings(site)
                 username, password = self._resolve_credentials(status)
-                bot = bot_cls(username, password, proxy=status.get("proxy"))
+                bot = bot_cls(
+                    username,
+                    password,
+                    proxy=status.get("proxy"),
+                    auto_login=provider_login["enabled"],
+                )
                 bot.agent_name = agent_name
                 runtime = self.active_agents.get(agent_name)
                 existing_bot = runtime.bot if runtime else None
@@ -415,23 +421,9 @@ class AgentSupervisor:
             self._set_runtime_bot(agent_name, None)
 
     def _resolve_credentials(self, agent_status):
-        login_user = (agent_status.get("login_user") or "").strip()
-        login_password = agent_status.get("login_password")
-        if login_user or login_password:
-            return login_user or None, login_password or None
-
         site = agent_status.get("site", "Like4Like")
-        site_prefix = {
-            "Like4Like": "LIKE4LIKE",
-            "KingdomLikes": "KINGDOMLIKES",
-            "YouLikeHits": "YOULIKEHITS",
-        }.get(site, "")
-        if site_prefix:
-            env_user = os.getenv(f"{site_prefix}_USERNAME")
-            env_pass = os.getenv(f"{site_prefix}_PASSWORD")
-            if env_user or env_pass:
-                return env_user, env_pass
-        return os.getenv("TWITTER_USERNAME"), os.getenv("TWITTER_PASSWORD")
+        settings = get_provider_login_settings(site)
+        return settings["username"] or None, settings["password"] or None
 
     def _next_platform(self, current_platform):
         try:
