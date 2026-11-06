@@ -24,6 +24,19 @@ def test_tracked_runtime_file_is_copied_without_dirtying_checkout(tmp_path, monk
     assert legacy.read_text(encoding="utf-8") == expected
 
 
+def test_runtime_seed_fallback_survives_root_cleanup(tmp_path, monkeypatch):
+    monkeypatch.setenv("LIKEPILOT_DATA_DIR", str(tmp_path))
+    seed_dir = tmp_path / "legacy" / "runtime-seed"
+    seed_dir.mkdir(parents=True)
+    expected = '[{"name":"AGENT_01"}]'
+    (seed_dir / "agents.json").write_text(expected, encoding="utf-8")
+
+    destination = runtime_path("agents.json")
+
+    assert open(destination, encoding="utf-8").read() == expected
+    assert (seed_dir / "agents.json").read_text(encoding="utf-8") == expected
+
+
 def test_runtime_file_collision_preserves_both_copies(tmp_path, monkeypatch):
     monkeypatch.setenv("LIKEPILOT_DATA_DIR", str(tmp_path))
     legacy = tmp_path / "agents.json"
