@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% block body_class %}page-settings{% endblock %}
+{% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
+{% block title %}Provider login{% endblock %}
+{% block subtitle %}{% endblock %}
+{% block content %}
+<section class="panel panel-pad stack-sm page-section console-shell">
+    <div class="surface-header">
+        <div>
+            <h2 class="section-heading">Provider login</h2>
+            <div class="section-subtle">Configure each provider once. Agents assigned to it inherit these settings.</div>
+        </div>
+    </div>
+    <div class="section-subtle" aria-live="polite" id="provider-login-feedback"></div>
+    <div class="stack-sm">
+        {% for site, key in [('Like4Like', 'like4like'), ('KingdomLikes', 'kingdomlikes'), ('YouLikeHits', 'youlikehits')] %}
+        <article class="event-item provider-login-card" data-provider-login="{{ site }}">
+            <div class="surface-header">
+                <div>
+                    <h3 class="section-heading">{{ site }}</h3>
+                    <div class="section-subtle" data-provider-login-status="{{ site }}">Manual login</div>
+                </div>
+                <label class="inline-row" for="provider-login-enabled-{{ key }}">
+                    <input type="checkbox" id="provider-login-enabled-{{ key }}" data-provider-login-enabled>
+                    <span>Auto login</span>
+                </label>
+            </div>
+            <div class="form-grid">
+                <div class="field-stack">
+                    <label class="section-subtle field-label" for="provider-login-username-{{ key }}">Username or email</label>
+                    <input type="text" id="provider-login-username-{{ key }}" autocomplete="username" data-provider-login-username>
+                </div>
+                <div class="field-stack">
+                    <label class="section-subtle field-label" for="provider-login-password-{{ key }}">Password</label>
+                    <input type="password" id="provider-login-password-{{ key }}" autocomplete="new-password" placeholder="Not saved" data-provider-login-password>
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn-primary btn-compact" type="button" data-save-provider-login="{{ site }}">Save</button>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+    <div class="section-subtle">If a provider requires CAPTCHA, two-factor authentication, or another verification step, LikePilot leaves the browser open for manual completion. Credentials are stored in the local LikePilot database.</div>
+</section>
+{% endblock %}
