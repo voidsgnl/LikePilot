@@ -292,6 +292,7 @@ def set_provider_login_settings(site, enabled, username, password=None, clear_pa
         if clear_password:
             conn.execute("DELETE FROM settings WHERE key = ?", (password_key,))
         elif password is not None:
+            register_secret(password)
             conn.execute(
                 """
                 INSERT INTO settings (key, value) VALUES (?, ?)
@@ -324,6 +325,7 @@ def set_secret(name, value):
         if value in (None, ""):
             conn.execute("DELETE FROM settings WHERE key = ?", (key,))
         else:
+            register_secret(value)
             conn.execute(
                 "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
                 (key, encrypt_secret(value)),
@@ -439,6 +441,8 @@ def update_agent(name, **fields):
     for key, value in fields.items():
         if key not in allowed:
             continue
+        if key == "proxy":
+            register_secret(value)
         assignments.append(f"{key} = ?")
         if key == "login_password":
             value = encrypt_secret(value)
