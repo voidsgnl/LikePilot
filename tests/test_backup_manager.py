@@ -120,6 +120,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
 
     paths[".env"].write_text("TOKEN=changed\n", encoding="utf-8")
     paths["config.json"].write_text(json.dumps({"theme": "light"}), encoding="utf-8")
+    paths["dashboard-password"].write_text("changed-password", encoding="utf-8")
+    paths["dashboard-session.key"].write_text("changed-session-key", encoding="utf-8")
     (logs_dir / "app.log").write_text("changed log\n", encoding="utf-8")
     (logs_dir / "new.log").write_text("new log\n", encoding="utf-8")
     with sqlite3.connect(paths["likepilot.db"]) as conn:
@@ -129,6 +131,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
     assert manager.restore_backup(archive_path) is True
     assert paths[".env"].read_text(encoding="utf-8") == "TOKEN=original\n"
     assert json.loads(paths["config.json"].read_text(encoding="utf-8")) == {"theme": "dark"}
+    assert paths["dashboard-password"].read_text(encoding="utf-8") == "dashboard-secret"
+    assert paths["dashboard-session.key"].read_text(encoding="utf-8") == "session-secret"
     assert (logs_dir / "app.log").read_text(encoding="utf-8") == "original log\n"
     assert not (logs_dir / "new.log").exists()
     with sqlite3.connect(paths["likepilot.db"]) as conn:
