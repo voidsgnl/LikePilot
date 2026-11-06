@@ -19,6 +19,7 @@ class BaseBot(ABC):
         self.agent_name = "Unknown" 
         self.exit_reason = None
         self.exit_detail = None
+        self._known_window_handles = set()
 
     @property
     @abstractmethod
@@ -84,6 +85,7 @@ class BaseBot(ABC):
             else:
                 time.sleep(1.0)
             
+            self._known_window_handles = set(self.driver.window_handles)
             self._attempt_auto_login()
             self.prepare()
         except Exception as e:
@@ -411,7 +413,7 @@ class Like4LikeBase(BaseBot):
 
     def wait_for_popup(self, main_window, timeout_seconds=15, handles_before=None):
         """Return only a newly-created task window, never an existing unrelated window."""
-        original_handles = set(handles_before or [main_window])
+        original_handles = set(handles_before or self._known_window_handles or [main_window])
         deadline = time.time() + timeout_seconds
         while time.time() < deadline:
             try:
@@ -420,6 +422,7 @@ class Like4LikeBase(BaseBot):
                     if handle not in original_handles and handle != main_window
                 ]
                 if new_handles:
+                    self._known_window_handles = set(handles)
                     return new_handles[-1]
             except Exception:
                 return None
@@ -439,6 +442,7 @@ class Like4LikeBase(BaseBot):
             self.driver.switch_to.window(task_window)
             self.driver.close()
             remaining = list(self.driver.window_handles)
+            self._known_window_handles = set(remaining)
             if main_window in remaining:
                 self.driver.switch_to.window(main_window)
             elif remaining:
