@@ -227,6 +227,59 @@ def toggle_auto_switch():
     set_auto_switch(enabled)
     return enabled
 
+PROVIDER_SITES = ("Like4Like", "KingdomLikes", "YouLikeHits")
+
+
+def get_provider_login_settings(site):
+    if site not in PROVIDER_SITES:
+        raise ValueError(f"Unsupported provider: {site}")
+    init_db()
+    keys = {
+        "enabled": f"provider_login.{site}.enabled",
+        "username": f"provider_login.{site}.username",
+        "password": f"provider_login.{site}.password",
+    }
+    with _DB_LOCK, _connect() as conn:
+        rows = conn.execute(
+            "SELECT key, value FROM settings WHERE key IN (?, ?, ?)",
+            tuple(keys.values()),
+        ).fetchall()
+    values = {row["key"]: row["value"] for row in rows}
+    return {
+        "enabled": values.get(keys["enabled"], "0") == "1",
+        "username": values.get(keys["username"], ""),
+        "password": values.get(keys["password"], ""),
+    }
+
+
+def set_provider_login_settings(site, enabled, username, password=None, clear_password=False):
+    if site not in PROVIDER_SITES:
+        raise ValueError(f"Unsupported provider: {site}")
+    init_db()
+    values = {
+        f"provider_login.{site}.enabled": "1" if enabled else "0",
+        f"provider_login.{site}.username": (username or "").strip(),
+    }
+    with _DB_LOCK, _connect() as conn:
+        conn.executemany(
+            """
+            INSERT INTO settings (key, value) VALUES (?, ?)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value
+            """,
+            values.items(),
+        )
+        password_key = f"provider_login.{site}.password"
+        if clear_password:
+            conn.execute("DELETE FROM settings WHERE key = ?", (password_key,))
+        elif password is not None:
+            conn.execute(
+                """
+                INSERT INTO settings (key, value) VALUES (?, ?)
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """,
+                (password_key, password),
+            )
+
 
 def get_agents():
     init_db()
@@ -403,7 +456,7 @@ def list_runtime_status():
     with _DB_LOCK, _connect() as conn:
         rows = conn.execute(
             """
-            SELECT name, chrome_profile, proxy, login_user, login_password, status, credits, site, platform, fallback_platform, fallback_chain, switch_pending, switch_reason, last_error, heartbeat_at, session_started_at
+            SELECT name, chrome_profile, proxy, status, credits, site, platform, fallback_platform, fallback_chain, switch_pending, switch_reason, last_error, heartbeat_at, session_started_at
                  , comment_templates
             FROM agents
             ORDER BY created_at, name
@@ -445,8 +498,6 @@ def list_runtime_status():
             "platform": row["platform"],
             "chrome_profile": row["chrome_profile"],
             "proxy": row["proxy"] or "",
-            "login_user": row["login_user"] or "",
-            "has_login_password": bool(row["login_password"]),
             "fallback_platform": row["fallback_platform"],
             "fallback_chain": row["fallback_chain"] or "",
             "comment_templates": row["comment_templates"] or "",
