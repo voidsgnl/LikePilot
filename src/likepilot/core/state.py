@@ -165,11 +165,13 @@ def _migrate_credentials(conn):
         if row["value"] and not is_encrypted(row["value"]):
             conn.execute("UPDATE settings SET value = ? WHERE key = ?", (encrypt_secret(row["value"]), row["key"]))
     agents = conn.execute(
-        "SELECT name, login_password FROM agents WHERE login_password IS NOT NULL AND login_password != ''"
+        "SELECT name, login_password, proxy FROM agents"
     ).fetchall()
     for agent in agents:
-        if not is_encrypted(agent["login_password"]):
+        if agent["login_password"] and not is_encrypted(agent["login_password"]):
             conn.execute("UPDATE agents SET login_password = ? WHERE name = ?", (encrypt_secret(agent["login_password"]), agent["name"]))
+        if agent["proxy"] and not is_encrypted(agent["proxy"]):
+            conn.execute("UPDATE agents SET proxy = ? WHERE name = ?", (encrypt_secret(agent["proxy"]), agent["name"]))
 
 def _import_legacy_data():
     with _DB_LOCK, _connect() as conn:
@@ -341,7 +343,11 @@ def get_agents():
             ORDER BY created_at, name
             """
         ).fetchall()
-        return [dict(row) for row in rows]
+        agents = [dict(row) for row in rows]
+        for agent in agents:
+            agent["proxy"] = decrypt_secret(agent["proxy"]) if agent["proxy"] else None
+            register_secret(agent["proxy"])
+        return agents
 
 
 def add_agent(
@@ -399,6 +405,7 @@ def get_agent(name):
             return None
         result = dict(row)
         result.pop("login_password", None)
+        result["proxy"] = decrypt_secret(result["proxy"]) if result.get("proxy") else None
         register_secret(result.get("proxy"))
         return result
 
@@ -444,7 +451,7 @@ def update_agent(name, **fields):
         if key == "proxy":
             register_secret(value)
         assignments.append(f"{key} = ?")
-        if key == "login_password":
+        if key in {"login_password", "proxy"}:
             value = encrypt_secret(value)
         elif key == "last_error":
             value = redact_sensitive_text(value)
@@ -543,7 +550,8 @@ def list_runtime_status():
     agents = {}
     for row in rows:
         name = row["name"]
-        register_secret(row["proxy"])
+        proxy_value = decrypt_secret(row["proxy"]) if row["proxy"] else None
+        register_secret(proxy_value)
         session = session_map.get(name, {})
         min_credits = session.get("min_credits")
         max_credits = session.get("max_credits")
@@ -560,7 +568,7 @@ def list_runtime_status():
             "site": row["site"],
             "platform": row["platform"],
             "chrome_profile": row["chrome_profile"],
-            "proxy": row["proxy"] or "",
+            "proxy": proxy_value or "",
             "fallback_platform": row["fallback_platform"],
             "fallback_chain": row["fallback_chain"] or "",
             "comment_templates": row["comment_templates"] or "",
