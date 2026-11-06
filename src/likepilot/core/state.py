@@ -295,7 +295,7 @@ def set_provider_login_settings(site, enabled, username, password=None, clear_pa
                 INSERT INTO settings (key, value) VALUES (?, ?)
                 ON CONFLICT(key) DO UPDATE SET value = excluded.value
                 """,
-                (password_key, password),
+                (password_key, encrypt_secret(password)),
             )
 
 
