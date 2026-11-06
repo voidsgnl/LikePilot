@@ -78,19 +78,23 @@ class FacebookFollowBot(Like4LikeBase):
                     self.emit_log(f"Facebook follow popup action failed: {e}", level="WARNING")
                     self.log_blockers("Facebook follow popup exception")
 
-                self.driver.close()
                 self.driver.switch_to.window(main_window)
 
                 if not action_completed:
                     self.log_blockers("Facebook follow action verification")
                     self.record_page_diagnostics("facebook_follow_unverified")
-                    continue
+                    return
 
                 print("[INFO] Polling for Confirm button...")
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
                 if confirm_btn and self.safe_click(confirm_btn):
-                    self.update_credits()
                     self.random_sleep(8, 12)
+                    if not self.update_credits():
+                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        return
+                    if not self.close_task_window(popup_handle, main_window):
+                        self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
+                        return
                 else:
                     print("[ERROR] Could not confirm task. Returning.")
                     self.log_blockers("Facebook follow confirm")
@@ -103,7 +107,6 @@ class FacebookFollowBot(Like4LikeBase):
                     for h in self.driver.window_handles:
                         if h != main_window:
                             self.driver.switch_to.window(h)
-                            self.driver.close()
                 self.driver.switch_to.window(main_window)
                 self.random_sleep(5, 10)
                 continue
@@ -196,14 +199,18 @@ class FacebookCommentBot(Like4LikeBase):
                     self.log_blockers("Facebook comment popup exception")
                 
                 # 4. Close and Switch Back
-                self.driver.close()
                 self.driver.switch_to.window(main_window)
                 
                 print("[INFO] Polling for Confirm button...")
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
                 if confirm_btn and self.safe_click(confirm_btn):
-                    self.update_credits()
                     self.random_sleep(8, 12)
+                    if not self.update_credits():
+                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        return
+                    if not self.close_task_window(popup_handle, main_window):
+                        self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
+                        return
                 else:
                     print("[ERROR] Could not confirm task. Returning.")
                     self.log_blockers("Facebook comment confirm")
@@ -216,7 +223,6 @@ class FacebookCommentBot(Like4LikeBase):
                     for h in self.driver.window_handles:
                         if h != main_window:
                             self.driver.switch_to.window(h)
-                            self.driver.close()
                 self.driver.switch_to.window(main_window)
                 self.random_sleep(5, 10)
                 continue
@@ -286,19 +292,23 @@ class FacebookLikeBot(Like4LikeBase):
                     self.emit_log(f"Facebook like popup action failed: {e}", level="WARNING")
                     self.log_blockers("Facebook like popup exception")
 
-                self.driver.close()
                 self.driver.switch_to.window(main_window)
 
                 if not action_completed:
                     self.log_blockers("Facebook like action verification")
                     self.record_page_diagnostics("facebook_like_unverified")
-                    continue
+                    return
 
                 print("[INFO] Polling for Confirm button...")
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
                 if confirm_btn and self.safe_click(confirm_btn):
-                    self.update_credits()
                     self.random_sleep(8, 12)
+                    if not self.update_credits():
+                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        return
+                    if not self.close_task_window(popup_handle, main_window):
+                        self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
+                        return
                 else:
                     print("[ERROR] Could not confirm task. Returning.")
                     self.log_blockers("Facebook like confirm")
@@ -311,7 +321,6 @@ class FacebookLikeBot(Like4LikeBase):
                     for h in self.driver.window_handles:
                         if h != main_window:
                             self.driver.switch_to.window(h)
-                            self.driver.close()
                 self.driver.switch_to.window(main_window)
                 self.random_sleep(5, 10)
                 continue
