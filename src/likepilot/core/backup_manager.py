@@ -253,7 +253,7 @@ class BackupManager:
         """Validate and atomically replace backed-up configuration/state files."""
         staged = []
         try:
-            for filename in (".env", "config.json", "agents.json", "stats.json"):
+            for filename in (".env", "credential.key", "config.json", "agents.json", "stats.json"):
                 source = os.path.join(backup_path, filename)
                 if not os.path.isfile(source):
                     continue
@@ -273,6 +273,11 @@ class BackupManager:
 
             for temporary, destination in staged:
                 os.replace(temporary, destination)
+                if os.path.basename(destination) == "credential.key":
+                    try:
+                        os.chmod(destination, 0o600)
+                    except OSError:
+                        pass
         finally:
             for temporary, _ in staged:
                 if os.path.exists(temporary):
@@ -300,7 +305,7 @@ class BackupManager:
     @staticmethod
     def _validate_backup_directory(backup_path):
         """Validate supported backup files before modifying runtime data."""
-        allowed_files = {".env", "config.json", "agents.json", "stats.json", "likepilot.db"}
+        allowed_files = {".env", "credential.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
         entries = set(os.listdir(backup_path))
         unsupported = entries - allowed_files - {"logs"}
         if unsupported:
