@@ -79,3 +79,78 @@ def test_profile_directory_refuses_to_overwrite_duplicate_legacy_profile(tmp_pat
 
     assert (legacy / "legacy-marker").read_text() == "legacy"
     assert (current / "current-marker").read_text() == "current"
+
+
+def test_chrome_options_apply_proxy_and_persistent_profile(tmp_path, monkeypatch):
+    monkeypatch.setattr(driver, "_profile_directory", lambda browser, profile: str(tmp_path / "chrome-profile"))
+
+    options = driver.get_chrome_options(
+        profile_name="Agent A",
+        proxy="http://proxy.example:8080",
+        startup_url="https://example.com",
+    )
+
+    assert "--proxy-server=http://proxy.example:8080" in options.arguments
+    assert f"--user-data-dir={tmp_path / 'chrome-profile'}" in options.arguments
+    assert "https://example.com" in options.arguments
+
+
+def test_firefox_options_apply_http_proxy_and_persistent_profile(tmp_path, monkeypatch):
+    monkeypatch.setattr(driver, "_profile_directory", lambda browser, profile: str(tmp_path / "firefox-profile"))
+    monkeypatch.delenv("LIKEPILOT_FIREFOX_BINARY", raising=False)
+
+    options = driver.get_firefox_options(
+        profile_name="Agent A",
+        proxy="http://proxy.example:8080",
+    )
+    capabilities = options.to_capabilities()
+    firefox_options = capabilities["moz:firefoxOptions"]
+
+    assert "-profile" in firefox_options["args"]
+    assert str(tmp_path / "firefox-profile") in firefox_options["args"]
+    assert firefox_options["prefs"]["network.proxy.type"] == 1
+    assert firefox_options["prefs"]["network.proxy.http"] == "proxy.example"
+    assert firefox_options["prefs"]["network.proxy.http_port"] == 8080
+    assert firefox_options["prefs"]["network.proxy.ssl"] == "proxy.example"
+    assert firefox_options["prefs"]["network.proxy.ssl_port"] == 8080
+
+
+def test_firefox_options_apply_socks5_proxy(tmp_path, monkeypatch):
+    monkeypatch.setattr(driver, "_profile_directory", lambda browser, profile: str(tmp_path / "firefox-profile"))
+    monkeypatch.delenv("LIKEPILOT_FIREFOX_BINARY", raising=False)
+
+    options = driver.get_firefox_options(proxy="socks5://proxy.example:1080")
+    prefs = options.to_capabilities()["moz:firefoxOptions"]["prefs"]
+
+    assert prefs["network.proxy.type"] == 1
+    assert prefs["network.proxy.socks"] == "proxy.example"
+    assert prefs["network.proxy.socks_port"] == 1080
+    assert prefs["network.proxy.socks_version"] == 5
+
+
+@pytest.mark.parametrize("proxy", [
+    "http://user:password@proxy.example:8080",
+    "socks5://user:password@proxy.example:1080",
+])
+def test_firefox_rejects_authenticated_proxy_with_clear_error(tmp_path, monkeypatch, proxy):
+    monkeypatch.setattr(driver, "_profile_directory", lambda browser, profile: str(tmp_path / "firefox-profile"))
+    monkeypatch.delenv("LIKEPILOT_FIREFOX_BINARY", raising=False)
+
+    with pytest.raises(ValueError, match="unauthenticated proxies only"):
+        driver.get_firefox_options(proxy=proxy)
+
+
+def test_firefox_driver_factory_uses_selected_browser_and_opens_startup_url(monkeypatch):
+    calls = {}
+    fake_driver = type("FakeDriver", (), {"get": lambda self, url: calls.setdefault("url", url)})()
+    fake_options = object()
+
+    monkeypatch.setattr(driver, "get_config_value", lambda *_args: "firefox")
+    monkeypatch.setattr(driver, "get_firefox_options", lambda *args, **kwargs: fake_options)
+    monkeypatch.setattr(driver.webdriver, "Firefox", lambda options: calls.setdefault("options", options) or fake_driver)
+
+    created = driver.create_stealth_driver(profile_name="Agent A", startup_url="https://example.com")
+
+    assert calls["options"] is fake_options
+    assert calls["url"] == "https://example.com"
+    assert created is not None
