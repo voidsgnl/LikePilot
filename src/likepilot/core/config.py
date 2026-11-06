@@ -141,37 +141,77 @@ def reset_to_defaults():
     return DEFAULT_CONFIG.copy()
 
 
+def _read_encrypted_config_secret(name, path):
+    """Read a config-backed secret, migrating its legacy JSON value once."""
+    from likepilot.core.state import get_secret, set_secret
+
+    stored = get_secret(name)
+    if stored:
+        return stored
+
+    legacy = get_config_value(path, "")
+    if legacy:
+        set_secret(name, legacy)
+        set_config_value(path, "")
+        return legacy
+    return ""
+
+
 def get_proxy_list():
-    """Get the configured proxy list."""
-    config = load_config()
-    return config.get("proxy", {}).get("proxy_list", [])
+    """Return proxy entries from encrypted storage, migrating legacy JSON entries."""
+    import json
+    from likepilot.core.state import get_secret, set_secret
+
+    stored = get_secret("config.proxy.proxy_list")
+    if stored:
+        try:
+            return json.loads(stored)
+        except (TypeError, json.JSONDecodeError):
+            raise ValueError("Stored proxy configuration is invalid; refusing to discard it.")
+
+    legacy = get_config_value("proxy.proxy_list", []) or []
+    if legacy:
+        set_secret("config.proxy.proxy_list", json.dumps(legacy))
+        set_config_value("proxy.proxy_list", [])
+    return legacy
+
+
+def _save_proxy_list(proxies):
+    import json
+    from likepilot.core.state import set_secret
+
+    set_secret("config.proxy.proxy_list", json.dumps(proxies))
 
 
 def add_proxy(proxy_string):
-    """Add a proxy to the proxy list."""
-    config = load_config()
-    if "proxy" not in config:
-        config["proxy"] = {"proxy_list": [], "enabled": False, "rotation_enabled": False}
-    
-    if "proxy_list" not in config["proxy"]:
-        config["proxy"]["proxy_list"] = []
-    
-    if proxy_string not in config["proxy"]["proxy_list"]:
-        config["proxy"]["proxy_list"].append(proxy_string)
-        save_config(config)
-        return True
-    return False
+    """Add a proxy entry to encrypted proxy storage."""
+    proxies = get_proxy_list()
+    if proxy_string in proxies:
+        return False
+    proxies.append(proxy_string)
+    _save_proxy_list(proxies)
+    return True
 
 
 def remove_proxy(proxy_string):
-    """Remove a proxy from the proxy list."""
-    config = load_config()
-    if "proxy" in config and "proxy_list" in config["proxy"]:
-        if proxy_string in config["proxy"]["proxy_list"]:
-            config["proxy"]["proxy_list"].remove(proxy_string)
-            save_config(config)
-            return True
-    return False
+    """Remove a proxy entry from encrypted proxy storage."""
+    proxies = get_proxy_list()
+    if proxy_string not in proxies:
+        return False
+    proxies.remove(proxy_string)
+    _save_proxy_list(proxies)
+    return True
+
+
+def get_notification_secret(name):
+    """Read and migrate a notification token from legacy JSON configuration."""
+    allowed = {
+        "discord_webhook": "notifications.discord_webhook",
+        "telegram_bot_token": "notifications.telegram_bot_token",
+    }
+    if name not in allowed:
+        raise ValueError(f"Unsupported notification secret: {name}")
+    return _read_encrypted_config_secret(f"config.notifications.{name}", allowed[name])
 
 
 def is_captcha_enabled():
