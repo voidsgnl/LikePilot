@@ -8,7 +8,9 @@ The first encryption or legacy-credential migration creates `data/config/credent
 
 Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. Legacy CAPTCHA API keys are moved from `data/config/config.json` into encrypted settings the first time the CAPTCHA integration loads them. Authenticated proxy entries are migrated the first time the proxy-list accessor is used; Discord webhook URLs and Telegram bot tokens are migrated when the notification manager initializes. The corresponding plaintext JSON values are cleared after successful migration. Proxy-list changes are persisted only in encrypted settings.
 
-The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column.
+Authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens are also encrypted in SQLite. Legacy values are migrated on first access and cleared from config.json; subsequent proxy-list changes remain encrypted.
+
+The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column. Runtime log output applies secret redaction to registered credentials and common credential-bearing URL, authorization, and query-string formats. This reduces accidental disclosure but does not make it safe to include credentials in log messages. Existing console log files are not rewritten retroactively.
 
 ## Backups and restores
 
