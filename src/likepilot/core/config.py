@@ -187,9 +187,19 @@ def get_captcha_service():
 
 
 def get_captcha_api_key():
-    """Get the CAPTCHA service API key."""
-    config = load_config()
-    return config.get("captcha", {}).get("api_key", "")
+    """Read the CAPTCHA key from encrypted storage, migrating legacy config values."""
+    from likepilot.core.state import get_secret, set_secret
+
+    stored = get_secret("captcha.api_key")
+    if stored:
+        return stored
+
+    legacy = get_config_value("captcha.api_key", "")
+    if legacy:
+        set_secret("captcha.api_key", legacy)
+        set_config_value("captcha.api_key", "")
+        return legacy
+    return ""
 
 
 def get_stealth_settings():
