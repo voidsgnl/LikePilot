@@ -109,7 +109,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Submit recognized provider login forms when enabled; retain manual login when disabled or when verification is required.
   - [x] Add persistence and dashboard-structure regression tests.
   - [ ] Verify login selectors and successful/manual fallback behavior against each provider in Firefox and Chrome; persistence and dashboard tests pass in CI (24 passed).
-  - [ ] Complete credential-at-rest hardening under P4.3.
+  - [x] Encrypt provider passwords at rest and keep them out of dashboard API responses; complete the remaining P4.3 credential audit before marking this item complete.
   - **Acceptance:** each provider can be independently configured once and every assigned agent follows that provider's login mode.
 
 ## Phase 3 — Browser dashboard
@@ -179,7 +179,15 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Reject unsafe ZIP paths and validate JSON/SQLite contents before replacing live data.
   - [x] GitHub Actions: 46 tests passed on Python 3.14, including end-to-end archive/config/log restore and ZIP path-traversal rejection.
   - [ ] Verify backup/restore against the user's existing local data directory while the server and agent workers are stopped.
-- [ ] **P4.3 — Secure credential storage and remove insecure defaults.**
+- [~] **P4.3 — Secure credential storage and remove insecure defaults.**
+  - [x] Add Fernet authenticated encryption with a dedicated local key at `data/config/credential.key` and owner-only file permissions where supported.
+  - [x] Encrypt provider passwords and legacy agent passwords in SQLite; migrate existing plaintext rows automatically during database initialization.
+  - [x] Remove legacy agent passwords from general agent read results and keep provider API responses limited to a `has_password` flag.
+  - [x] Move legacy CAPTCHA API keys from `config.json` into encrypted SQLite settings on first use.
+  - [x] Include the matching encryption key in backup/restore archives and document that backup archives must be protected as sensitive files.
+  - [x] Remove the obsolete `security.encrypt_credentials=false` setting; encryption is no longer an optional toggle.
+  - [ ] Audit and migrate remaining config-backed secrets, including authenticated proxy entries and notification service tokens.
+  - [ ] Verify migration and recovery against the user's existing local database and configuration.
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
 - [ ] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
@@ -233,7 +241,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Added non-destructive migration; tracked JSON seeds are copied, untracked data is moved, and collisions are preserved; CI passes (39 tests) | Verify real upgrade and backup/restore behavior |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
 | A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
-| A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, and manual fallback for verification; local provider-specific validation pending | Verify all provider login forms and complete credential-at-rest hardening |
+| A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, manual fallback for verification, and encrypted password storage with automatic plaintext migration. | Verify provider login forms locally; finish migrating other config-backed secrets under P4.3 |
 | A-011 | Legacy `advanced_bot.py` may be mistaken for supported runtime code. | [x] No active imports or launcher references; retained as historical prototype under `legacy/` | Keep isolated; delete only on explicit request |
 | A-012 | Dormant performance monitor implied unsupported system telemetry and recommended the removed multiprocessing runtime. | [x] Removed unreferenced `performance_monitor.py` and its sole `psutil` dependency; removed unused performance and smart-timing settings from default/seed configuration. | Reintroduce only with a defined UI/API consumer and tests |
 | A-013 | WebSocket configuration and `eventlet` dependency suggested a transport mode that the application did not implement. | [x] Removed the unused websocket config helper/option and unreferenced `eventlet` dependency; polling remains the supported dashboard transport. | Add realtime transport only with a concrete server/client implementation and tests |
@@ -257,6 +265,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Routed runtime configuration/state/database/logs/diagnostics/backups/profiles/runtime metadata and updater artifacts beneath `data/`; added non-destructive legacy migration and collision-preservation tests. | GitHub Actions passed (39 tests); local backup/restore/dashboard validation pending. |
 | 2026-11-06 | Removed the unused secondary database module and orphaned mock smart-timing module after tracing all imports. Both DB implementations had pointed to the same `data/database/likepilot.db`; no existing tables or timing-data files were deleted. | Static repository search found no remaining active imports; full test suite and local DB preservation checks pending. |
 | 2026-11-06 | Removed unused stats facade, dormant multiprocessing supervisor/configuration, and unreferenced performance-monitor prototype. The threaded supervisor and `state.py` remain the active implementations; removed unused `psutil`/`eventlet` dependencies and stale config-template options. | GitHub Actions: 43 tests passed on Python 3.14 after SQLite backup hardening; dependency cleanup CI caught and corrected a Python 3.14 `distutils` compatibility requirement in `undetected-chromedriver`; GitHub Actions now passes (43 tests). |
+| 2026-11-06 | Added authenticated credential encryption for provider and legacy agent passwords, migrated CAPTCHA API keys into encrypted SQLite settings, removed the obsolete encryption toggle, and protected the local key file with restrictive permissions. Backup archives preserve the matching key and are documented as sensitive. | GitHub Actions: encryption, migration, missing-key, and round-trip tests added; local migration against existing user data remains pending. |
 | 2026-11-06 | Completed backup archive and restore hardening: atomic archive publication, ZIP integrity check, safe archive member validation, preflight JSON/SQLite integrity checks, atomic config/state replacement, and staged log-directory replacement. Added end-to-end regression coverage for database/config/`.env`/logs restore and ZIP path traversal. | GitHub Actions: 46 tests passed on Python 3.14; live-data restore validation remains pending. |
 
 
