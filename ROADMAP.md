@@ -170,7 +170,10 @@ LikePilot is a multi-platform automation and agent-management application. It co
 ## Phase 4 — Security and operations
 
 - [ ] **P4.1 — Document persistence schemas and migration strategy.**
-- [ ] **P4.2 — Verify backup, restore, and corruption recovery.**
+- [~] **P4.2 — Verify backup, restore, and corruption recovery.**
+  - [x] Trace backup/restore paths to the canonical `data/database/likepilot.db` and runtime config/state files.
+  - [x] Identify current reliability gaps: SQLite is copied as a raw file while potentially active; backup/restore helpers suppress errors, so callers can receive apparent success without a complete database operation.
+  - [ ] Replace raw SQLite copies with SQLite's online backup API, validate restore integrity, make restore atomic, and add tests. Require the application to be stopped before replacing its live database.
 - [ ] **P4.3 — Secure credential storage and remove insecure defaults.**
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
@@ -246,7 +249,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Changed Chrome and Firefox profile storage to `data/profiles/`; added first-use atomic migration from the matching legacy root profile and a fail-safe collision check that preserves both copies. Added path, migration, and collision regression tests. | Implementation committed; GitHub Actions verification pending. |
 | 2026-11-06 | Routed runtime configuration/state/database/logs/diagnostics/backups/profiles/runtime metadata and updater artifacts beneath `data/`; added non-destructive legacy migration and collision-preservation tests. | GitHub Actions passed (39 tests); local backup/restore/dashboard validation pending. |
 | 2026-11-06 | Removed the unused secondary database module and orphaned mock smart-timing module after tracing all imports. Both DB implementations had pointed to the same `data/database/likepilot.db`; no existing tables or timing-data files were deleted. | Static repository search found no remaining active imports; full test suite and local DB preservation checks pending. |
-| 2026-11-06 | Removed unused stats facade, dormant multiprocessing supervisor/configuration, and unreferenced performance-monitor prototype. The threaded supervisor and `state.py` remain the active implementations; removed the unused `psutil` dependency and stale config-template options. | Static caller/config audit complete; CI and local runtime validation pending. |
+| 2026-11-06 | Removed unused stats facade, dormant multiprocessing supervisor/configuration, and unreferenced performance-monitor prototype. The threaded supervisor and `state.py` remain the active implementations; removed the unused `psutil` dependency and stale config-template options. | GitHub Actions: 40 tests passed on Python 3.14; follow-up commits are running CI. |
 
 
 ## Phase 8 — Dashboard visual system
