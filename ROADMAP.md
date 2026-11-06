@@ -90,7 +90,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add shared window tracking and lifecycle helpers to the common provider base; identify newly-created windows and restore focus to the provider window.
   - [x] Keep task windows open while social actions or provider confirmation are incomplete; avoid refreshing the task flow during recovery.
   - [x] Verify the social action before attempting provider confirmation.
-  - [x] Read and persist the provider credit balance before allowing task-window closure; the shared close helper rejects calls without explicit credit-collection confirmation.
+  - [x] Read and persist the provider credit balance, and require an actual credit increase, before allowing task-window closure; the shared close helper rejects calls without explicit credit-collection confirmation.
   - [x] Close the task window only after credit collection succeeds, then restore focus to the provider window.
   - [x] Add regression tests for new-window detection, premature-close prevention, and focus restoration.
   - [ ] Verify the full task/confirmation/credit sequence live against each provider and supported browser; browser-dependent validation remains.
