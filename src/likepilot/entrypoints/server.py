@@ -13,7 +13,7 @@ from werkzeug.serving import make_server
 
 RUNTIME_ROOT = get_runtime_root()
 
-load_dotenv(dotenv_path=runtime_path(".env"), override=True)
+load_dotenv(dotenv_path=runtime_path(".env"), override=False)
 
 
 def bootstrap_agents():
