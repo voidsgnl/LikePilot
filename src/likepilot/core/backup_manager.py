@@ -174,7 +174,7 @@ class BackupManager:
 
     def _backup_config(self, backup_path):
         """Copy supported configuration/state files; fail the backup on I/O errors."""
-        for config_file in (".env", "credential.key", "config.json", "agents.json", "stats.json"):
+        for config_file in (".env", "credential.key", "dashboard-password", "dashboard-session.key", "config.json", "agents.json", "stats.json"):
             source = runtime_path(config_file)
             if os.path.isfile(source):
                 shutil.copy2(source, os.path.join(backup_path, config_file))
@@ -253,7 +253,7 @@ class BackupManager:
         """Validate and atomically replace backed-up configuration/state files."""
         staged = []
         try:
-            for filename in (".env", "credential.key", "config.json", "agents.json", "stats.json"):
+            for filename in (".env", "credential.key", "dashboard-password", "dashboard-session.key", "config.json", "agents.json", "stats.json"):
                 source = os.path.join(backup_path, filename)
                 if not os.path.isfile(source):
                     continue
@@ -273,7 +273,7 @@ class BackupManager:
 
             for temporary, destination in staged:
                 os.replace(temporary, destination)
-                if os.path.basename(destination) == "credential.key":
+                if os.path.basename(destination) in {"credential.key", "dashboard-password", "dashboard-session.key"}:
                     try:
                         os.chmod(destination, 0o600)
                     except OSError:
@@ -286,7 +286,7 @@ class BackupManager:
     @staticmethod
     def _validate_archive_members(archive):
         """Reject archive paths that could escape the extraction directory."""
-        allowed_files = {".env", "credential.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
+        allowed_files = {".env", "credential.key", "dashboard-password", "dashboard-session.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
         for member in archive.infolist():
             name = member.filename
             path = PurePosixPath(name)
@@ -305,7 +305,7 @@ class BackupManager:
     @staticmethod
     def _validate_backup_directory(backup_path):
         """Validate supported backup files before modifying runtime data."""
-        allowed_files = {".env", "credential.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
+        allowed_files = {".env", "credential.key", "dashboard-password", "dashboard-session.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
         entries = set(os.listdir(backup_path))
         unsupported = entries - allowed_files - {"logs"}
         if unsupported:
