@@ -104,7 +104,7 @@ class YouTubeBase(Like4LikeBase):
         if confirm_btn and self.safe_click(confirm_btn):
             print("[SUCCESS] Confirm found. Waiting for provider credit collection...")
             self.random_sleep(8, 12)
-            if not self.update_credits():
+            if not self.wait_for_credit_increase(timeout_seconds=20):
                 self.emit_log(
                     f"{platform_name} provider credit increase could not be confirmed; task window left open.",
                     level="WARNING",
