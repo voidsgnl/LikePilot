@@ -189,12 +189,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Include the matching encryption key in backup/restore archives and document that backup archives must be protected as sensitive files.
   - [x] Remove the obsolete `security.encrypt_credentials=false` setting; encryption is no longer an optional toggle.
   - [x] Encrypt per-agent proxy credentials in SQLite and migrate existing plaintext proxy columns automatically; migrate authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings.
-  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 56 tests on Python 3.14.
+  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 68 tests on Python 3.14.
   - [ ] Verify migration and recovery against the user's existing local database and configuration.
 - [~] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
   - [x] Add centralized redaction for registered runtime secrets, credential-bearing URLs, bearer/basic authorization, sensitive query parameters, Discord webhook URLs, and Telegram bot tokens.
   - [x] Apply redaction to console/file logs, persisted agent logs, agent error state, and notification error details and outbound payloads; scrub older agent-log entries when read.
-  - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking.
+  - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking; the full suite passed 68 tests on Python 3.14.
   - [x] Mask password, hidden, token, CSRF, and API-key form values in new HTML/screenshot diagnostics; restrict diagnostic directory/files to owner-only permissions where supported.
   - [ ] Audit remaining exception and diagnostic surfaces, and assess existing log/diagnostic files for safe cleanup or migration.
 - [x] **P4.5 — Harden or disable unsafe updater installation behavior.**
