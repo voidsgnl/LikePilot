@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Changed Chrome and Firefox persistent profile storage to `data/profiles/`. On first use, an existing matching profile under root `profiles/` is moved with an atomic same-filesystem rename, preserving cookies and session data. If both old and new profile directories exist, startup fails clearly without overwriting either copy. Added regression tests for new paths, legacy migration, and duplicate protection; CI verification pending.
+
 - Recorded user confirmation that the migrated `python farm.py` startup path launches the dashboard successfully. Clean shutdown and clean-install verification remain pending.
 
 - Recorded the remaining local-only legacy directories in the roadmap: cache-only `web/` and `modules/`, retired `tools/build/`, and persistent browser profiles reserved for the later `data/profiles/` migration. No local runtime data was moved or deleted.
