@@ -40,13 +40,13 @@ The `farm.py` command is a small compatibility launcher. The installed package a
 - `src/likepilot/dashboard/` — Flask application, templates, static assets, and favicon resources.
 - `src/likepilot/entrypoints/` — supported web-server entrypoint.
 - `config/` — sanitized configuration examples.
-- `data/` — reserved for runtime data as its migration is completed; existing user data is not moved automatically.
+- `data/` — runtime configuration, state, database, browser profiles, logs, diagnostics, backups, and temporary files.
 - `docs/` — architecture, development, and user documentation.
 - `tests/` — automated checks.
 
 ## Configuration and data
 
-The application currently reads `config.json`, `.env`, agent state, and other runtime files from the repository/runtime root. Existing files are intentionally preserved during the source-layout migration. A later data-path migration will move runtime-generated data into `data/` with compatibility handling; do not move or delete existing databases, profiles, logs, or configuration files manually as part of this code migration.
+Runtime-generated files are stored under `data/`: configuration in `data/config/`, agent/statistics/timing state in `data/state/`, SQLite databases in `data/database/`, browser profiles in `data/profiles/`, logs in `data/logs/`, diagnostics in `data/diagnostics/`, backups in `data/backups/`, and transient updater/runtime files in `data/runtime/` or `data/tmp/`. On first access, LikePilot non-destructively migrates matching root-level legacy files and directories. If both legacy and destination copies exist, it preserves the legacy copy rather than overwriting either. Set `LIKEPILOT_DATA_DIR` to choose the runtime root; the same `data/` layout is used beneath it.
 
 Do not expose the development server to an untrusted network. Configure unique dashboard credentials and a stable secret key before use.
 
