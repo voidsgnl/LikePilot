@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Removed the built-in dashboard password fallback. Existing strong DASHBOARD_PASS overrides remain supported; otherwise a unique password and persistent Flask session key are created under data/config with owner-only permissions. Included both files in backup/restore, hardened session cookies and rotation, added failed-login throttling, and kept the default dashboard bind address local. Added dashboard security and recovery documentation; local login and HTTPS validation remain pending.
+
 - Disabled the in-place updater installer and removed its unverified ZIP extraction/direct source-overwrite path. Release checks remain available, but updates must be installed manually until signed package verification and atomic rollback-safe staging are implemented.
 
 - Migrated authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings. Plaintext config values are cleared after successful migration, and proxy-list updates remain encrypted. Added notification defaults so existing notification settings survive configuration merging; GitHub Actions passed 56 tests on Python 3.14.
