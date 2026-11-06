@@ -120,7 +120,7 @@ class KingdomLikesGenericBot(KingdomLikesBase):
                 # 4. COOL DOWN, COLLECT POINTS, THEN CLEAN UP.
                 print("[INFO] Waiting for KingdomLikes to register action...")
                 self.random_sleep(10, 15)
-                if not self.update_credits():
+                if not self.wait_for_credit_increase(timeout_seconds=20):
                     self.emit_log(
                         "KingdomLikes point increase could not be confirmed; task window left open for recovery.",
                         level="WARNING",
