@@ -158,9 +158,9 @@ class AutoUpdater:
         """Create backup of current version"""
         try:
             import shutil
-            backup_dir = os.path.join(runtime_dir("backups"), f"updater_{self.current_version}_{int(time.time())}")
+            backup_dir = os.path.join(runtime_dir("backups"), f"backup_{self.current_version}_{int(time.time())}")
             shutil.copytree(get_runtime_root(), backup_dir,
-                          ignore=shutil.ignore_patterns('backup_*', 'update_temp', '__pycache__', '*.pyc'))
+                          ignore=shutil.ignore_patterns('data', '.git', '.venv', 'backup_*', 'update_temp', '__pycache__', '*.pyc'))
             print(f"Backup created: {backup_dir}")
         except Exception as e:
             print(f"Backup failed: {e}")
