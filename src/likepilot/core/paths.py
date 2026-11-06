@@ -15,6 +15,8 @@ _DATA_FILES = {
     "runtime_port.txt": ("runtime", "runtime_port.txt"),
     "update.zip": ("tmp", "update.zip"),
     "credential.key": ("config", "credential.key"),
+    "dashboard-password": ("config", "dashboard-password"),
+    "dashboard-session.key": ("config", "dashboard-session.key"),
 }
 _TRACKED_LEGACY_FILES = {"config.json", "agents.json", "stats.json"}
 _DATA_DIRS = {
