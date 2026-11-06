@@ -429,8 +429,14 @@ class Like4LikeBase(BaseBot):
             time.sleep(0.5)
         return None
 
-    def close_task_window(self, task_window, main_window):
-        """Close a task window only when its caller has verified task and credit completion."""
+    def close_task_window(self, task_window, main_window, *, credits_collected=False):
+        """Close a task window only after the provider credit balance was read successfully."""
+        if not credits_collected:
+            self.emit_log(
+                "Task window close was blocked because provider credit collection was not confirmed.",
+                level="WARNING",
+            )
+            return False
         if not self.driver or not task_window or task_window == main_window:
             return False
         try:
