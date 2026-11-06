@@ -129,3 +129,14 @@ def test_generic_secret_storage_encrypts_and_round_trips(tmp_path, monkeypatch):
         ).fetchone()[0]
     assert stored.startswith("enc:v1:")
     assert "captcha-secret" not in stored
+
+
+
+def test_decrypt_does_not_generate_replacement_when_key_is_missing(tmp_path, monkeypatch):
+    import pytest
+    from likepilot.core.credentials import CredentialEncryptionError, decrypt_secret
+
+    monkeypatch.setattr(credentials, "runtime_path", lambda name: str(tmp_path / name))
+    with pytest.raises(CredentialEncryptionError, match="key is missing"):
+        decrypt_secret("enc:v1:unreadable-token")
+    assert not (tmp_path / "credential.key").exists()
