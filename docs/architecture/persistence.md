@@ -41,7 +41,7 @@ Known key families include auto_switch, provider_login.<provider>.*, and secret.
 | --- | --- | --- |
 | name | TEXT PRIMARY KEY | Agent identifier |
 | chrome_profile | TEXT NOT NULL | Persistent browser profile name |
-| proxy | TEXT | Agent proxy configuration |
+| proxy | TEXT | Agent proxy configuration; encrypted at rest when non-empty |
 | login_user | TEXT | Legacy per-agent login username |
 | login_password | TEXT | Legacy per-agent password; encrypted at rest and omitted from general agent reads |
 | enabled | INTEGER NOT NULL DEFAULT 0 | Saved enabled flag |
@@ -88,7 +88,7 @@ Logs are capped per agent by the state layer. Existing log rows are scrubbed whe
 
 1. Path resolution creates the target data directories. Legacy root-level runtime files are moved or copied on first access. Tracked compatibility seeds are copied rather than removed; destination collisions are preserved.
 2. If data/database/likepilot.db is absent and data/database/likeit.db exists, the legacy database is moved to the canonical filename.
-3. Database initialization creates missing tables and adds missing agent columns. It then encrypts plaintext provider and legacy agent passwords already in SQLite.
+3. Database initialization creates missing tables and adds missing agent columns. It then encrypts plaintext provider passwords, legacy agent passwords, and per-agent proxy credentials already in SQLite.
 4. Legacy agents.json and stats.json are imported only when their corresponding SQLite tables are empty.
 5. CAPTCHA API keys, authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens are migrated lazily when their respective configuration accessors are first used. The old JSON values are cleared after the encrypted SQLite value is written.
 6. Browser profiles are migrated individually to data/profiles/ when first opened. A destination collision stops migration rather than overwriting either copy.
