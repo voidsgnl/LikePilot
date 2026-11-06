@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- Planned centralized task-window management: keep each task window open until the social action is complete and provider points/credit have been collected and confirmed; only then close the task window and return to the provider window.
+- Added shared task-window tracking and safe cleanup across Like4Like social-network tasks, KingdomLikes, and YouLikeHits YouTube tasks. Social task windows now remain open through provider confirmation and credit-balance collection; the shared close helper blocks premature closure and restores focus to the provider window. Failed or unverified tasks leave their task window open for recovery. Added regression tests for new-window detection, close gating, and focus restoration; live provider/browser validation remains pending.
 
 - Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits. Each provider has independent credentials and an Auto login switch inherited by all assigned agents; disabled mode remains manual, and verification challenges fall back to manual completion. Removed per-agent provider credential controls and refreshed the service-worker cache to v1.0.15. Added provider-settings persistence and dashboard regression tests; GitHub Actions passed (24 tests).
 
