@@ -5,7 +5,6 @@ import os
 from abc import ABC, abstractmethod
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from likepilot.core.state import append_agent_log, get_agent, get_stats, heartbeat_agent, log_credit_update, update_agent
 
 class BaseBot(ABC):
