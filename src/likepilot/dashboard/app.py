@@ -498,8 +498,10 @@ def api_add_agent():
 def api_remove_agent():
     name = request.json.get("name")
     if get_agent(name):
+        if not supervisor.stop_agent(name):
+            return jsonify({"message": "Agent is still shutting down. Try again after its worker exits."}), 409
         remove_agent(name)
-        return jsonify({"message": f"Agent {name} terminated."})
+        return jsonify({"message": f"Agent {name} deleted."})
     return jsonify({"message": "Agent not found"}), 404
 
 
@@ -566,6 +568,8 @@ def control_agent():
         return jsonify({"message": "Invalid Agent"}), 404
     
     if action == 'start':
+        if current["status"] != "Stopped":
+            return jsonify({"message": "Stop the agent before starting a new session."}), 409
         update_agent(
             name,
             status="Awaiting Login",
@@ -575,29 +579,47 @@ def control_agent():
             session_started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         )
         append_agent_log(name, "Start requested by operator.", level="SYSTEM")
+    elif action == 'restart':
+        if not supervisor.stop_agent(name):
+            return jsonify({"message": "Agent is still shutting down. Try again after its worker exits."}), 409
+        update_agent(
+            name,
+            status="Awaiting Login",
+            last_error=None,
+            switch_pending=0,
+            switch_reason=None,
+            session_started_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        )
+        append_agent_log(name, "Restart requested by operator.", level="SYSTEM")
     elif action == 'initialize':
-        if current["status"] == "Login Success":
-            update_agent(name, status="Running")
-            append_agent_log(name, "Initialize received. Automation may proceed.", level="SYSTEM")
+        if current["status"] != "Login Success":
+            return jsonify({"message": "Initialize is only available after login is detected."}), 409
+        update_agent(name, status="Running")
+        append_agent_log(name, "Initialize received. Automation may proceed.", level="SYSTEM")
     elif action == 'ready':
-        if current["status"] in {"Awaiting Login", "Login Success"}:
-            update_agent(name, status="Running")
-            append_agent_log(name, "Ready received. Automation may proceed.", level="SYSTEM")
+        if current["status"] not in {"Awaiting Login", "Login Success"}:
+            return jsonify({"message": "Ready is not available in the current agent state."}), 409
+        update_agent(name, status="Running")
+        append_agent_log(name, "Ready received. Automation may proceed.", level="SYSTEM")
     elif action == 'pause':
-        if current["status"] == "Running":
-            update_agent(name, status="Paused")
-            pause_sent = supervisor.pause_agent(name)
-            append_agent_log(name, "Pause requested by operator.", level="SYSTEM")
-            if not pause_sent:
-                append_agent_log(name, "Pause request reached the API, but the active bot was not available for interruption.", level="WARNING")
+        if current["status"] != "Running":
+            return jsonify({"message": "Only a running agent can be paused."}), 409
+        update_agent(name, status="Paused")
+        pause_sent = supervisor.pause_agent(name)
+        append_agent_log(name, "Pause requested by operator.", level="SYSTEM")
+        if not pause_sent:
+            append_agent_log(name, "Pause is queued; no active browser task was available to interrupt.", level="WARNING")
     elif action == 'resume':
-        if current["status"] == "Paused":
-            update_agent(name, status="Running")
-            append_agent_log(name, "Resume requested by operator.", level="SYSTEM")
+        if current["status"] != "Paused":
+            return jsonify({"message": "Only a paused agent can be resumed."}), 409
+        update_agent(name, status="Running")
+        append_agent_log(name, "Resume requested by operator.", level="SYSTEM")
     elif action == 'stop':
-        update_agent(name, status="Stopped", session_started_at=None)
-        append_agent_log(name, "Stop requested by operator.", level="SYSTEM")
-        
+        if not supervisor.stop_agent(name):
+            return jsonify({"message": "Agent is still shutting down. Try again after its worker exits."}), 409
+    else:
+        return jsonify({"message": "Unsupported agent action."}), 400
+
     return jsonify({"message": f"Agent {name} command: {action}"})
 
 @app.route('/api/platform', methods=['POST'])
