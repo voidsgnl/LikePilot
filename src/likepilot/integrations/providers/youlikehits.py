@@ -322,7 +322,7 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
                         if not self.update_credits():
                             self.emit_log("YouLikeHits points could not be read; task window left open.", level="WARNING")
                             return
-                        if not self.close_task_window(popup_handle, main_window):
+                        if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                             self.emit_log("YouLikeHits task window remains open because cleanup failed.", level="WARNING")
                             return
                     else:
@@ -617,7 +617,7 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
                 if not self.update_credits():
                     self.emit_log("YouLikeHits subscription points could not be read; task window left open.", level="WARNING")
                     return
-                if not self.close_task_window(popup_handle, main_window):
+                if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                     self.emit_log("YouLikeHits subscription task window remains open because cleanup failed.", level="WARNING")
                     return
                 self.random_sleep(2, 4)
