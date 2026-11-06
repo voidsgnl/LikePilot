@@ -88,6 +88,16 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
 - **Acceptance:** each advertised integration and agent transition is verified and failures are visible.
 
+- [~] **P2.5 — Add system-level provider login configuration.**
+  - [x] Store independent Auto login mode and credentials for Like4Like, KingdomLikes, and YouLikeHits.
+  - [x] Add a shared Provider login settings page; agents inherit the setting from their assigned provider.
+  - [x] Remove provider credentials from agent creation and editing.
+  - [x] Submit recognized provider login forms when enabled; retain manual login when disabled or when verification is required.
+  - [x] Add persistence and dashboard-structure regression tests.
+  - [ ] Verify login selectors and successful/manual fallback behavior against each provider in Firefox and Chrome.
+  - [ ] Complete credential-at-rest hardening under P4.3.
+  - **Acceptance:** each provider can be independently configured once and every assigned agent follows that provider's login mode.
+
 ## Phase 3 — Browser dashboard
 
 - [~] **P3.1 — Restructure dashboard information architecture and page layout.**
@@ -200,6 +210,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-006 | Existing root-level config and runtime files may contain live state. | [~] Preserved intentionally | Migrate only with compatibility and backup tests |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
 | A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
+| A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, and manual fallback for verification; local provider-specific validation pending | Verify all provider login forms and complete credential-at-rest hardening |
 
 ## Change tracking
 
@@ -211,6 +222,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
 | 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
 | 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
+| 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | Persistence and dashboard regression tests added; live provider login validation and full suite execution pending. |
 
 
 ## Phase 8 — Dashboard visual system
