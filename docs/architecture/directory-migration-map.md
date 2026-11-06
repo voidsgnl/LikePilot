@@ -1,6 +1,6 @@
 # Directory Migration Map
 
-**Status:** Active src-layout migration  
+**Status:** Active source and runtime-data migration  
 **Branch:** `main`  
 **Delivery model:** One browser-accessed web application; no desktop application or executable build.
 
@@ -58,13 +58,21 @@ LikePilot/
 │   ├── development/
 │   └── user-guide/
 ├── tests/
-├── data/                           # reserved; runtime-data migration pending
-│   └── .gitkeep
+├── data/                           # generated runtime data; contents are not committed
+│   ├── config/                      # config.json and .env
+│   ├── state/                       # agents.json, stats.json, timing data
+│   ├── database/                    # SQLite databases
+│   ├── profiles/                    # persistent Chrome/Firefox profiles
+│   ├── logs/
+│   ├── diagnostics/
+│   ├── backups/
+│   ├── runtime/                     # runtime_port.txt
+│   └── tmp/                         # updater artifacts
 └── legacy/
     └── advanced_bot.py              # isolated prototype; review separately
 ```
 
-The future runtime-data directory is reserved but not yet activated. Existing root-level `config.json`, `agents.json`, `stats.json`, `runtime_port.txt`, databases, profiles, logs, and backups are preserved until the dedicated data migration is implemented.
+Runtime data is now routed beneath `data/`. On first access, known root-level legacy files and directories are migrated non-destructively. File migrations use atomic rename where possible; directory migrations move or merge non-conflicting entries. If a destination already exists, conflicting legacy entries remain at their original location and are never overwritten. Browser profiles retain their stricter duplicate-directory guard.
 
 ## Source migration mapping
 
@@ -97,14 +105,15 @@ The future runtime-data directory is reserved but not yet activated. Existing ro
 - The root launcher adds `src/` to the import path and delegates to `likepilot.entrypoints.server`.
 - Internal source imports use the `likepilot.*` namespace.
 - Flask templates and static assets remain package-relative to the dashboard module.
-- The runtime root remains the repository root in a source checkout so existing user data is not silently relocated. `LIKEPILOT_DATA_DIR` can explicitly override that root.
+- The runtime root remains the repository root in a source checkout; generated runtime files are placed under its `data/` child. `LIKEPILOT_DATA_DIR` overrides the runtime root and uses the same `data/` layout beneath it.
 
 ## Data-preservation rules
 
-1. Do not move or delete the existing root-level database, config, agents, stats, profiles, logs, or backups during source migration.
-2. Keep the current runtime root stable until configuration precedence and every data reader/writer are mapped.
-3. Before introducing `data/`, implement a one-time, non-destructive migration with backups and compatibility fallback.
-4. Verify database initialization, legacy JSON import, backup/restore, and dashboard operations after any data-path change.
+1. Runtime paths are centralized in `core/paths.py`; new runtime files belong beneath `data/`.
+2. Legacy root-level files and directories are migrated only when their destination is absent; collisions preserve both copies.
+3. Directory merges move only non-conflicting entries; conflicting files remain in the legacy directory for manual review.
+4. Browser profiles use their dedicated atomic-migration and collision-protection flow.
+5. Verify database initialization, legacy JSON import, backup/restore, and dashboard operations after any data-path change.
 
 ## Verification gates
 
@@ -116,7 +125,8 @@ The future runtime-data directory is reserved but not yet activated. Existing ro
 - [ ] Run the structural test suite.
 - [ ] Start the migrated server with `python farm.py` and verify browser login.
 - [ ] Verify dashboard assets, routes, and agent lifecycle.
-- [ ] Complete runtime-data migration separately, with backup/restore validation.
+- [x] Route runtime configuration, state, database, logs, diagnostics, backups, profiles, and transient files beneath `data/` with non-destructive legacy migration.
+- [ ] Run the full test suite and validate database initialization, backup/restore, and dashboard operations locally.
 
 ## Known architectural constraints
 
@@ -131,3 +141,4 @@ The future runtime-data directory is reserved but not yet activated. Existing ro
 | Date | Change | Verification |
 |---|---|---|
 | 2026-11-05 | Replaced the earlier mixed desktop/web target with a single web-only src-layout map. | Product decision confirmed; implementation and post-move runtime checks tracked in ROADMAP.md. |
+| 2026-11-06 | Centralized runtime paths beneath `data/` and added non-destructive migration of legacy files/directories, including collision preservation. | Regression tests added; full CI and local backup/restore validation pending. |
