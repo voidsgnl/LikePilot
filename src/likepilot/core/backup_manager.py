@@ -8,6 +8,7 @@ import json
 import sqlite3
 import time
 import zipfile
+import tempfile
 from datetime import datetime
 from likepilot.core.config import get_config_value
 from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
@@ -155,17 +156,24 @@ class BackupManager:
             return []
 
     def _backup_database(self, backup_path):
-        """Backup the SQLite database"""
+        """Create a consistent SQLite snapshot, including committed WAL content."""
+        db_path = runtime_path("likepilot.db")
+        if not os.path.exists(db_path):
+            print("Database file not found, skipping database backup")
+            return
+
+        backup_db_path = os.path.join(backup_path, "likepilot.db")
+        source = sqlite3.connect(db_path, timeout=30)
+        destination = sqlite3.connect(backup_db_path)
         try:
-            db_path = runtime_path("likepilot.db")
-            if os.path.exists(db_path):
-                backup_db_path = os.path.join(backup_path, "likepilot.db")
-                shutil.copy2(db_path, backup_db_path)
-                print("Database backup completed")
-            else:
-                print("Database file not found, skipping database backup")
-        except Exception as e:
-            print(f"Database backup failed: {e}")
+            source.backup(destination)
+            result = destination.execute("PRAGMA integrity_check").fetchone()
+            if not result or result[0] != "ok":
+                raise sqlite3.DatabaseError(f"Backup database integrity check failed: {result}")
+        finally:
+            destination.close()
+            source.close()
+        print("Database backup completed")
 
     def _backup_config(self, backup_path):
         """Backup configuration files"""
@@ -216,15 +224,48 @@ class BackupManager:
             return backup_path
 
     def _restore_database(self, backup_path):
-        """Restore the database from backup"""
+        """Validate and atomically restore SQLite data.
+
+        Stop the LikePilot server and agent workers before restoring so no
+        process continues writing to the previous database file.
+        """
+        backup_db_path = os.path.join(backup_path, "likepilot.db")
+        if not os.path.isfile(backup_db_path):
+            return
+
+        db_path = runtime_path("likepilot.db")
+        os.makedirs(os.path.dirname(db_path), exist_ok=True)
+        descriptor, temporary_path = tempfile.mkstemp(
+            prefix=".likepilot-restore-",
+            suffix=".db",
+            dir=os.path.dirname(db_path),
+        )
+        os.close(descriptor)
+
+        source = destination = None
         try:
-            backup_db_path = os.path.join(backup_path, "likepilot.db")
-            if os.path.exists(backup_db_path):
-                db_path = runtime_path("likepilot.db")
-                shutil.copy2(backup_db_path, db_path)
-                print("Database restoration completed")
-        except Exception as e:
-            print(f"Database restoration failed: {e}")
+            source = sqlite3.connect(
+                f"file:{os.path.abspath(backup_db_path)}?mode=ro",
+                uri=True,
+                timeout=30,
+            )
+            destination = sqlite3.connect(temporary_path)
+            source.backup(destination)
+            result = destination.execute("PRAGMA integrity_check").fetchone()
+            if not result or result[0] != "ok":
+                raise sqlite3.DatabaseError(f"Restore database integrity check failed: {result}")
+            destination.close()
+            destination = None
+            source.close()
+            source = None
+            os.replace(temporary_path, db_path)
+        finally:
+            if destination is not None:
+                destination.close()
+            if source is not None:
+                source.close()
+            if os.path.exists(temporary_path):
+                os.remove(temporary_path)
 
     def _restore_config(self, backup_path):
         """Restore configuration files from backup"""
