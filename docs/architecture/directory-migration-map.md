@@ -72,7 +72,7 @@ LikePilot/
     └── advanced_bot.py              # isolated prototype; review separately
 ```
 
-Runtime data is now routed beneath `data/`. On first access, known root-level legacy files and directories are migrated non-destructively. File migrations use atomic rename where possible; directory migrations move or merge non-conflicting entries. If a destination already exists, conflicting legacy entries remain at their original location and are never overwritten. Browser profiles retain their stricter duplicate-directory guard.
+Runtime data is now routed beneath `data/`. On first access, known root-level legacy files and directories are migrated non-destructively. Tracked compatibility seeds (`config.json`, `agents.json`, and `stats.json`) are copied so the Git checkout remains clean; untracked runtime files use atomic rename where possible. Directory migrations move or merge non-conflicting entries. If a destination already exists, conflicting legacy entries remain at their original location and are never overwritten. Browser profiles retain their stricter duplicate-directory guard.
 
 ## Source migration mapping
 
@@ -110,7 +110,7 @@ Runtime data is now routed beneath `data/`. On first access, known root-level le
 ## Data-preservation rules
 
 1. Runtime paths are centralized in `core/paths.py`; new runtime files belong beneath `data/`.
-2. Legacy root-level files and directories are migrated only when their destination is absent; collisions preserve both copies.
+2. Tracked root-level JSON compatibility seeds are copied into `data/` and left in place; other legacy files/directories are migrated only when their destination is absent. Collisions preserve both copies.
 3. Directory merges move only non-conflicting entries; conflicting files remain in the legacy directory for manual review.
 4. Browser profiles use their dedicated atomic-migration and collision-protection flow.
 5. Verify database initialization, legacy JSON import, backup/restore, and dashboard operations after any data-path change.
