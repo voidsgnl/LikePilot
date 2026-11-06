@@ -1,6 +1,6 @@
 # Credential storage and backup handling
 
-LikePilot encrypts provider passwords, legacy agent passwords, CAPTCHA service API keys, authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens before storing them in SQLite. Encryption uses Fernet authenticated encryption.
+LikePilot encrypts provider passwords, legacy agent passwords, per-agent proxy credentials, CAPTCHA service API keys, authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens before storing them in SQLite. Encryption uses Fernet authenticated encryption.
 
 ## Local key
 
@@ -8,7 +8,7 @@ The first encryption or legacy-credential migration creates `data/config/credent
 
 Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. Legacy CAPTCHA API keys are moved from `data/config/config.json` into encrypted settings the first time the CAPTCHA integration loads them. Authenticated proxy entries are migrated the first time the proxy-list accessor is used; Discord webhook URLs and Telegram bot tokens are migrated when the notification manager initializes. The corresponding plaintext JSON values are cleared after successful migration. Proxy-list changes are persisted only in encrypted settings.
 
-Authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens are also encrypted in SQLite. Legacy values are migrated on first access and cleared from config.json; subsequent proxy-list changes remain encrypted.
+Per-agent proxy credentials are encrypted in the agents table, including automatic migration of existing plaintext proxy values. Authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens are also encrypted in SQLite. Legacy values are migrated on first access and cleared from config.json; subsequent proxy-list changes remain encrypted.
 
 The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column. Runtime log output and outbound notification payloads apply secret redaction to registered credentials and common credential-bearing URL, authorization, and query-string formats. This reduces accidental disclosure but does not make it safe to include credentials in log messages. New page diagnostic captures mask password, hidden, token, CSRF, and API-key form values in HTML and screenshots; diagnostic files and their directory use owner-only permissions where supported. Existing console logs and diagnostic captures are not rewritten retroactively.
 
