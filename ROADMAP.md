@@ -307,6 +307,13 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 ## Phase 8 — Dashboard visual system
 
+- [x] **P8.2 — Add adaptive workspace preferences.**
+  - [x] Persist the user's compact or comfortable density preference locally.
+  - [x] Keep page-specific information architecture while adapting shared spacing, tables, metrics, and panels.
+  - [x] Retain the existing collapsible navigation and responsive breakpoints.
+  - [x] Refresh the service-worker cache for the updated assets.
+  - [ ] Verify density switching and responsive layouts in Firefox and Chrome.
+
 - [~] **P8.1 — Align the LikePilot dashboard with the msf-web-console visual language.**
   - [x] Add a shared console theme stylesheet with the charcoal/green palette, compact surfaces, borders, controls, and typography.
   - [x] Restyle the navigation shell, top bar, common panels, tables, forms, buttons, badges, and login page.
