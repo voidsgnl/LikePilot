@@ -17,3 +17,23 @@ def test_redactor_removes_common_credential_patterns():
     safe = redact_sensitive_text(raw)
     for secret in ("operator:proxy-pass", "api-secret", "abc.def.ghi", "discord-token", "abcdefghijklmnopqrstuvwxyzABCDE"):
         assert secret not in safe
+
+
+def test_agent_logs_are_redacted_before_persistence(tmp_path, monkeypatch):
+    from likepilot.core import credentials, state
+
+    monkeypatch.setattr(state, "DB_FILE", str(tmp_path / "likepilot.db"))
+    monkeypatch.setattr(state, "LEGACY_DB_FILE", str(tmp_path / "likeit.db"))
+    monkeypatch.setattr(state, "AGENTS_FILE", str(tmp_path / "agents.json"))
+    monkeypatch.setattr(state, "LEGACY_STATS_FILE", str(tmp_path / "stats.json"))
+    monkeypatch.setattr(credentials, "runtime_path", lambda name: str(tmp_path / name))
+    register_secret("registered-private-value")
+
+    state.append_agent_log(
+        "redaction-agent",
+        "Failure: registered-private-value at https://operator:proxy-pass@127.0.0.1:8080",
+    )
+    entries = state.list_agent_logs("redaction-agent", limit=1)
+    assert "registered-private-value" not in entries[0]
+    assert "operator:proxy-pass" not in entries[0]
+    assert "[REDACTED]" in entries[0]
