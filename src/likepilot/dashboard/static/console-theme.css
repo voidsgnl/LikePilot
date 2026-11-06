@@ -50,3 +50,26 @@ input:not([type=checkbox]):not([type=radio]),select,textarea{min-height:34px;pad
 .status-cluster{min-height:24px}
 #overview-updated{display:inline-block;min-width:118px;text-align:right;white-space:nowrap}
 @media(max-width:700px){.topbar-meta{width:100%;min-width:0}.agent-quick-switch{justify-content:flex-start}#overview-updated{min-width:0}}
+
+
+/* User-selectable workspace density. Structure and page-specific layouts remain independent. */
+html[data-density='compact'] .content-wrapper{gap:8px;padding-top:10px;padding-bottom:14px}
+html[data-density='compact'] .panel-pad{padding:10px}
+html[data-density='compact'] .panel{border-radius:6px}
+html[data-density='compact'] .workspace-metrics{gap:8px}
+html[data-density='compact'] .stat-card,
+html[data-density='compact'] .focus-card,
+html[data-density='compact'] .settings-agent-card{padding:10px}
+html[data-density='compact'] .data-table th,
+html[data-density='compact'] .data-table td{padding:7px 9px}
+html[data-density='compact'] .section-heading{font-size:12px}
+html[data-density='compact'] .section-subtle,
+html[data-density='compact'] .page-subtitle{font-size:10px}
+html[data-density='compact'] .form-grid,
+html[data-density='compact'] .settings-agent-fields{gap:8px}
+html[data-density='compact'] .event-list,
+html[data-density='compact'] .mini-list{gap:5px}
+html[data-density='comfortable'] .content-wrapper{padding-bottom:20px}
+.layout-panel{margin-top:0}
+.layout-panel .theme-panel-label{justify-content:space-between}
+@media(max-width:700px){.layout-panel{display:none}}
