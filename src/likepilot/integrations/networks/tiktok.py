@@ -123,7 +123,7 @@ class TikTokFollowBot(Like4LikeBase):
                     print(f"[SUCCESS] Confirm button found. Clicking...")
                     self.random_sleep(8, 12)
                     if not self.update_credits():
-                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
@@ -232,7 +232,7 @@ class TikTokLikePostBot(Like4LikeBase):
                     print(f"[SUCCESS] Confirm button found. Clicking...")
                     self.random_sleep(8, 12)
                     if not self.update_credits():
-                        self.emit_log("Provider credit balance could not be read; task window left open for recovery.", level="WARNING")
+                        self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                         self.emit_log("Task window remains open because safe cleanup could not be confirmed.", level="WARNING")
