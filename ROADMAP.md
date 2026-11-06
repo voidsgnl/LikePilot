@@ -173,7 +173,9 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [~] **P4.2 — Verify backup, restore, and corruption recovery.**
   - [x] Trace backup/restore paths to the canonical `data/database/likepilot.db` and runtime config/state files.
   - [x] Identify current reliability gaps: SQLite is copied as a raw file while potentially active; backup/restore helpers suppress errors, so callers can receive apparent success without a complete database operation.
-  - [ ] Replace raw SQLite copies with SQLite's online backup API, validate restore integrity, make restore atomic, and add tests. Require the application to be stopped before replacing its live database.
+  - [x] Replace raw SQLite file copies with SQLite's online backup API and integrity checks; restore through a validated temporary database and atomic replacement. Restore documentation warns that the server and agent workers must be stopped first.
+  - [x] Add regression tests for a consistent backup, successful restore, and corrupt-backup rejection without overwriting live data.
+  - [ ] Verify backup archive/config/log handling and full restore workflow locally.
 - [ ] **P4.3 — Secure credential storage and remove insecure defaults.**
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
