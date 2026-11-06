@@ -94,7 +94,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Remove provider credentials from agent creation and editing.
   - [x] Submit recognized provider login forms when enabled; retain manual login when disabled or when verification is required.
   - [x] Add persistence and dashboard-structure regression tests.
-  - [ ] Verify login selectors and successful/manual fallback behavior against each provider in Firefox and Chrome.
+  - [ ] Verify login selectors and successful/manual fallback behavior against each provider in Firefox and Chrome; persistence and dashboard tests pass in CI (24 passed).
   - [ ] Complete credential-at-rest hardening under P4.3.
   - **Acceptance:** each provider can be independently configured once and every assigned agent follows that provider's login mode.
 
@@ -222,7 +222,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
 | 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
 | 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
-| 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | Persistence and dashboard regression tests added; live provider login validation and full suite execution pending. |
+| 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | GitHub Actions: 24 tests passed; live provider login validation remains pending. |
 
 
 ## Phase 8 — Dashboard visual system
