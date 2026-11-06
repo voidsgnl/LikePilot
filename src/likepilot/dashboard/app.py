@@ -8,7 +8,7 @@ import sqlite3
 from functools import wraps
 from contextlib import contextmanager
 from dotenv import load_dotenv
-from likepilot.core.paths import get_runtime_root, runtime_path
+from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
 from likepilot.core.config import get_config_value, set_config_value
 from likepilot.core.agents import add_agent, remove_agent
 from likepilot.core.runtime import supervisor
@@ -34,8 +34,8 @@ load_dotenv(dotenv_path=runtime_path(".env"), override=True)
 app = Flask(__name__)
 app.secret_key = os.getenv("FLASK_SECRET_KEY") or os.urandom(24)
 PROJECT_ROOT = RUNTIME_ROOT
-LOGS_DIR = os.path.join(PROJECT_ROOT, "logs")
-DIAGNOSTICS_DIR = os.path.join(PROJECT_ROOT, "diagnostics")
+LOGS_DIR = runtime_dir("logs")
+DIAGNOSTICS_DIR = runtime_dir("diagnostics")
 BRAND_DIR = os.path.join(os.path.dirname(__file__), "favicon")
 LOG_TAIL_LIMIT = 400
 
