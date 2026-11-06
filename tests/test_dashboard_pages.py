@@ -34,6 +34,8 @@ def test_dashboard_has_dedicated_workspace_routes():
         "/analytics",
         "/analytics/<analytics_view>",
         "/settings/browser",
+        "/settings/providers",
+        "/api/settings/providers",
         "/settings/agents/new",
         "/settings/agents/manage",
         "/operations/<operation_view>",
@@ -51,6 +53,7 @@ def test_dedicated_workspace_templates_exist():
         "platforms.html",
         "analytics.html",
         "settings_browser.html",
+        "settings_providers.html",
         "settings_create_agent.html",
         "settings_manage_agents.html",
         "operations.html",
@@ -206,3 +209,21 @@ def test_analytics_and_settings_pages_avoid_repeated_headings():
     assert "Default browser" not in browser
     assert "Browser used for new sessions" not in browser
     assert "restart running agents" in browser
+
+
+
+def test_provider_login_is_system_level_not_agent_level():
+    create_agent = (DASHBOARD / "templates" / "settings_create_agent.html").read_text(encoding="utf-8")
+    manage_script = (DASHBOARD / "static" / "settings.js").read_text(encoding="utf-8")
+    runtime = (ROOT / "src" / "likepilot" / "core" / "runtime.py").read_text(encoding="utf-8")
+    provider_template = (DASHBOARD / "templates" / "settings_providers.html").read_text(encoding="utf-8")
+
+    assert "new-agent-login-user" not in create_agent
+    assert "new-agent-login-password" not in create_agent
+    assert "edit-login-user-" not in manage_script
+    assert "edit-login-password-" not in manage_script
+    assert "get_provider_login_settings(site)" in runtime
+    assert 'auto_login=provider_login["enabled"]' in runtime
+    assert 'data-provider-login-enabled' in provider_template
+    assert 'data-provider-login-username' in provider_template
+    assert 'data-provider-login-password' in provider_template
