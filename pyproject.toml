@@ -15,6 +15,7 @@ dependencies = [
     "undetected-chromedriver",
     "flask",
     "requests",
+    "cryptography>=42",
 ]
 
 [project.optional-dependencies]
