@@ -28,7 +28,9 @@ def test_authenticated_proxy_entries_migrate_to_encrypted_storage(tmp_path, monk
 
     assert config.get_proxy_list() == proxies
     assert _read_config(config_path)["proxy"]["proxy_list"] == []
-    stored = state.get_secret("config.proxy.proxy_list")
+    import sqlite3
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute("SELECT value FROM settings WHERE key = ?", ("secret.config.proxy.proxy_list",)).fetchone()[0]
     assert stored.startswith("enc:v1:")
     assert "proxy-secret" not in stored
     assert config.get_proxy_list() == proxies
@@ -61,8 +63,11 @@ def test_notification_tokens_migrate_and_clear_legacy_config(tmp_path, monkeypat
     saved = _read_config(config_path)["notifications"]
     assert saved["discord_webhook"] == ""
     assert saved["telegram_bot_token"] == ""
-    assert state.get_secret("config.notifications.discord_webhook").startswith("enc:v1:")
-    assert state.get_secret("config.notifications.telegram_bot_token").startswith("enc:v1:")
+    import sqlite3
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = dict(conn.execute("SELECT key, value FROM settings WHERE key LIKE 'secret.config.notifications.%'"))
+    assert stored["secret.config.notifications.discord_webhook"].startswith("enc:v1:")
+    assert stored["secret.config.notifications.telegram_bot_token"].startswith("enc:v1:")
     raw = config_path.read_text(encoding="utf-8")
     assert "webhook-secret" not in raw
     assert "telegram-secret" not in raw
