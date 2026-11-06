@@ -87,29 +87,41 @@ class YouTubeBase(Like4LikeBase):
             self.emit_log(f"{platform_name} popup action failed: {e}", level="WARNING")
             self.log_blockers(f"{platform_name} popup exception")
 
-        self.driver.close()
+        # Keep the social-network task window alive while confirming the provider task.
         self.driver.switch_to.window(main_window)
 
         if not action_completed:
-            self.emit_log(f"{platform_name} action was not verified, so confirm was skipped.", level="WARNING")
+            self.emit_log(
+                f"{platform_name} action was not verified; its task window was left open.",
+                level="WARNING",
+            )
             self.log_blockers(f"{platform_name} action verification")
             self.record_page_diagnostics(f"{platform_name.lower().replace(' ', '_')}_action_unverified")
-            return True
+            return False
 
         print("[INFO] Polling for Confirm button...")
         confirm_btn = self.find_confirm_button(task_num, attempts=15)
         if confirm_btn and self.safe_click(confirm_btn):
-            print(f"[SUCCESS] Confirm found. Clicking...")
-            self.update_credits()
+            print("[SUCCESS] Confirm found. Waiting for provider credit collection...")
             self.random_sleep(8, 12)
+            if not self.update_credits():
+                self.emit_log(
+                    f"{platform_name} provider credits could not be read; task window left open.",
+                    level="WARNING",
+                )
+                return False
+            if not self.close_task_window(popup_handle, main_window):
+                self.emit_log(f"{platform_name} task window remains open because cleanup failed.", level="WARNING")
+                return False
             return True
-        else:
-            print("[ERROR] Confirmation failed. Skipping.")
-            self.emit_log(f"{platform_name} confirm button was not found or clickable.", level="WARNING")
-            self.log_blockers(f"{platform_name} confirm")
-            self.record_page_diagnostics(f"{platform_name.lower().replace(' ', '_')}_confirm_missing")
-            time.sleep(5)
-            return True
+
+        self.emit_log(
+            f"{platform_name} provider confirmation was not found; task window left open.",
+            level="WARNING",
+        )
+        self.log_blockers(f"{platform_name} confirm")
+        self.record_page_diagnostics(f"{platform_name.lower().replace(' ', '_')}_confirm_missing")
+        return False
 
 class YouTubeSubscribeBot(YouTubeBase):
     def run(self):
