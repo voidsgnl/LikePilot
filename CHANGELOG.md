@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Simplified the reference-inspired sidebar to navigation only. Removed theme and layout-density controls from the navigation panel and relocated both preferences to Settings → Browser → Appearance. Logout remains on the narrow icon rail.
+
 - Began the reference-driven dashboard redesign: added a two-level icon/navigation rail, navy workspace shell, compact toolbar, and an Overview composition with live agent KPIs, recorded credit trend, platform distribution, and agent snapshot. Existing routes and API-backed data are retained; browser verification and remaining page styling are pending.
 
 - Added a persistent workspace density preference (Comfortable / Compact). Compact mode tightens shared panel, metric, table, and form spacing without forcing every page into the same layout; existing collapsible navigation, themes, and responsive page structures remain intact. Refreshed the service-worker cache to v1.0.16. Browser verification remains pending.
