@@ -94,6 +94,8 @@ def runtime_path(*parts):
     if mapped:
         destination = root / "data" / mapped[0] / mapped[1]
         legacy = root / first
+        if not legacy.exists() and first in _TRACKED_LEGACY_FILES:
+            legacy = root / "legacy" / "runtime-seed" / first
         destination.parent.mkdir(parents=True, exist_ok=True)
         if legacy.exists() and not destination.exists() and legacy.is_file():
             if first in _TRACKED_LEGACY_FILES:
