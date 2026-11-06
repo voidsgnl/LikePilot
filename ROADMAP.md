@@ -313,6 +313,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Introduce the reference's navy workspace palette, compact top toolbar, rounded surfaces, and responsive dual-navigation behavior.
   - [x] Recompose Overview with a workspace welcome panel, live agent KPI cards, recorded credit trend, platform distribution, and agent snapshot.
   - [x] Use live runtime and statistics APIs; do not substitute sample commerce metrics or fabricated chart values.
+  - [x] Apply the shared navy/blue surfaces, typography, tables, forms, badges, subnavigation, and responsive grid treatment across Agents, Analytics, Settings, Providers, Platforms, and Operations.
   - [ ] Verify navigation, charts, and responsive behavior in Firefox and Chrome.
   - [ ] Apply and tune the shared visual language across Agents, Analytics, Settings, and Operations.
 
