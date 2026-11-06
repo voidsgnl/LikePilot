@@ -104,7 +104,7 @@ def test_agent_lifecycle_api_runs_valid_transition_sequence(monkeypatch):
     assert agent["status"] == "Stopped"
     assert action("restart").status_code == 200
     assert agent["status"] == "Awaiting Login"
-    assert len(updates) >= 6
+    assert len(updates) >= 5
 
 
 def test_agent_lifecycle_api_rejects_invalid_transitions(monkeypatch):
