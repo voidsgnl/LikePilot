@@ -7,6 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from likepilot.core.paths import runtime_dir
 from likepilot.core.state import append_agent_log, get_agent, get_stats, heartbeat_agent, log_credit_update, update_agent
+from likepilot.core.security import sanitize_diagnostic_html
 
 class BaseBot(ABC):
     def __init__(self, username, password, proxy=None, auto_login=False):
@@ -302,19 +303,53 @@ class BaseBot(ABC):
         if not self.driver:
             return
         diagnostics_dir = runtime_dir("diagnostics")
+        os.makedirs(diagnostics_dir, mode=0o700, exist_ok=True)
+        try:
+            os.chmod(diagnostics_dir, 0o700)
+        except OSError:
+            pass
         timestamp = int(time.time())
         safe_label = re.sub(r"[^a-zA-Z0-9_-]+", "_", label).strip("_") or "page"
         html_path = os.path.join(diagnostics_dir, f"{self.agent_name}_{safe_label}_{timestamp}.html")
         screenshot_path = os.path.join(diagnostics_dir, f"{self.agent_name}_{safe_label}_{timestamp}.png")
         try:
-            with open(html_path, "w", encoding="utf-8") as f:
-                f.write(self.driver.page_source)
+            descriptor = os.open(html_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+                stream.write(sanitize_diagnostic_html(self.driver.page_source))
+            os.chmod(html_path, 0o600)
         except Exception:
             html_path = None
         try:
+            self.driver.execute_script("""
+                window.__likepilotDiagnosticMask = [];
+                document.querySelectorAll('input, textarea').forEach((element) => {
+                    const label = [element.type, element.name, element.id, element.autocomplete].join(' ');
+                    if (element.type === 'password' || element.type === 'hidden' ||
+                        /(password|passwd|token|secret|api[_-]?key|authorization|csrf|auth)/i.test(label)) {
+                        window.__likepilotDiagnosticMask.push([
+                            element, element.value, element.getAttribute('value')
+                        ]);
+                        element.value = '';
+                        element.setAttribute('value', '');
+                    }
+                });
+            """)
             self.driver.save_screenshot(screenshot_path)
+            os.chmod(screenshot_path, 0o600)
         except Exception:
             screenshot_path = None
+        finally:
+            try:
+                self.driver.execute_script("""
+                    (window.__likepilotDiagnosticMask || []).forEach(([element, value, attribute]) => {
+                        element.value = value;
+                        if (attribute === null) element.removeAttribute('value');
+                        else element.setAttribute('value', attribute);
+                    });
+                    delete window.__likepilotDiagnosticMask;
+                """)
+            except Exception:
+                pass
         self.emit_log(
             f"Diagnostics captured for {label}. HTML: {html_path or 'n/a'} Screenshot: {screenshot_path or 'n/a'}",
             level="SYSTEM",
