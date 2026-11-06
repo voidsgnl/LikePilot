@@ -4,7 +4,7 @@
 **Branch:** `main`  
 **Delivery model:** One browser-accessed web application; no desktop application or executable build.
 
-This map describes the target source layout and the migration status. Runtime data is deliberately not moved as part of the source-code move.
+This map describes the source layout and runtime-data migration status. Runtime-generated data is stored beneath `data/`; legacy seed templates are isolated under `legacy/runtime-seed/`.
 
 ## Target directory tree
 
@@ -72,7 +72,7 @@ LikePilot/
     └── advanced_bot.py              # isolated prototype; review separately
 ```
 
-Runtime data is now routed beneath `data/`. On first access, known root-level legacy files and directories are migrated non-destructively. Tracked compatibility seeds (`config.json`, `agents.json`, and `stats.json`) are copied so the Git checkout remains clean; untracked runtime files use atomic rename where possible. Directory migrations move or merge non-conflicting entries. If a destination already exists, conflicting legacy entries remain at their original location and are never overwritten. Browser profiles retain their stricter duplicate-directory guard.
+Runtime data is now routed beneath `data/`. On first access, known root-level legacy files and directories are migrated non-destructively. When a root-level file is absent, compatibility seeds in `legacy/runtime-seed/` provide a fallback for older checkouts; these are copied, never moved. Directory migrations move or merge non-conflicting entries. If a destination already exists, conflicting legacy entries remain at their original location and are never overwritten. Browser profiles retain their stricter duplicate-directory guard.
 
 ## Source migration mapping
 
@@ -110,7 +110,7 @@ Runtime data is now routed beneath `data/`. On first access, known root-level le
 ## Data-preservation rules
 
 1. Runtime paths are centralized in `core/paths.py`; new runtime files belong beneath `data/`.
-2. Tracked root-level JSON compatibility seeds are copied into `data/` and left in place; other legacy files/directories are migrated only when their destination is absent. Collisions preserve both copies.
+2. Legacy root-level JSON files are migrated when present; archived seeds under `legacy/runtime-seed/` are copied only when no user data exists. The repository root no longer contains runtime JSON state files.
 3. Directory merges move only non-conflicting entries; conflicting files remain in the legacy directory for manual review.
 4. Browser profiles use their dedicated atomic-migration and collision-protection flow.
 5. Verify database initialization, legacy JSON import, backup/restore, and dashboard operations after any data-path change.
