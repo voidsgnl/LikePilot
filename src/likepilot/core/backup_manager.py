@@ -174,7 +174,7 @@ class BackupManager:
 
     def _backup_config(self, backup_path):
         """Copy supported configuration/state files; fail the backup on I/O errors."""
-        for config_file in (".env", "config.json", "agents.json", "stats.json"):
+        for config_file in (".env", "credential.key", "config.json", "agents.json", "stats.json"):
             source = runtime_path(config_file)
             if os.path.isfile(source):
                 shutil.copy2(source, os.path.join(backup_path, config_file))
@@ -281,7 +281,7 @@ class BackupManager:
     @staticmethod
     def _validate_archive_members(archive):
         """Reject archive paths that could escape the extraction directory."""
-        allowed_files = {".env", "config.json", "agents.json", "stats.json", "likepilot.db"}
+        allowed_files = {".env", "credential.key", "config.json", "agents.json", "stats.json", "likepilot.db"}
         for member in archive.infolist():
             name = member.filename
             path = PurePosixPath(name)
