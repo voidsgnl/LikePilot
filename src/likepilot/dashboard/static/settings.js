@@ -370,6 +370,64 @@ function renderAgents(data) {
         }).finally(() => { if (button) button.disabled = false; });
     }
 
+    function loadProviderLoginSettings() {
+        const feedback = document.getElementById('provider-login-feedback');
+        if (!feedback) return;
+        fetchJson('/api/settings/providers').then((data) => {
+            Object.entries(data.providers || {}).forEach(([site, config]) => {
+                const card = document.querySelector(`[data-provider-login="${site}"]`);
+                if (!card) return;
+                const enabled = card.querySelector('[data-provider-login-enabled]');
+                const username = card.querySelector('[data-provider-login-username]');
+                const password = card.querySelector('[data-provider-login-password]');
+                const status = card.querySelector(`[data-provider-login-status="${site}"]`);
+                enabled.checked = Boolean(config.enabled);
+                username.value = config.username || '';
+                password.value = '';
+                password.placeholder = config.has_password ? 'Saved. Leave blank to keep it.' : 'Provider password';
+                status.textContent = config.enabled ? 'Auto login enabled' : 'Manual login';
+            });
+            feedback.textContent = '';
+        }).catch((error) => {
+            feedback.textContent = error.message || 'Unable to load provider login settings.';
+        });
+    }
+
+    function saveProviderLoginSettings(site) {
+        const card = document.querySelector(`[data-provider-login="${site}"]`);
+        const feedback = document.getElementById('provider-login-feedback');
+        if (!card || !feedback) return;
+        const enabled = card.querySelector('[data-provider-login-enabled]').checked;
+        const username = card.querySelector('[data-provider-login-username]').value.trim();
+        const password = card.querySelector('[data-provider-login-password]').value;
+        const button = card.querySelector('[data-save-provider-login]');
+        if (button) button.disabled = true;
+
+        fetchJson('/api/settings/providers', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                site,
+                enabled,
+                username,
+                ...(password ? { password } : {})
+            })
+        }).then((data) => {
+            card.querySelector('[data-provider-login-password]').value = '';
+            card.querySelector('[data-provider-login-password]').placeholder = data.provider.has_password
+                ? 'Saved. Leave blank to keep it.'
+                : 'Provider password';
+            card.querySelector(`[data-provider-login-status="${site}"]`).textContent = enabled
+                ? 'Auto login enabled'
+                : 'Manual login';
+            feedback.textContent = data.message || 'Provider login settings saved.';
+        }).catch((error) => {
+            feedback.textContent = error.message || 'Unable to save provider login settings.';
+        }).finally(() => {
+            if (button) button.disabled = false;
+        });
+    }
+
     function loadAgents() {
         fetchJson('/api/status')
             .then(renderAgents)
@@ -379,6 +437,12 @@ function renderAgents(data) {
     }
 
     document.addEventListener('click', (event) => {
+        const providerLoginButton = event.target.closest('[data-save-provider-login]');
+        if (providerLoginButton) {
+            saveProviderLoginSettings(providerLoginButton.getAttribute('data-save-provider-login'));
+            return;
+        }
+
         const browserButton = event.target.closest('[data-save-browser]');
         if (browserButton) { saveBrowserSetting(); return; }
 
@@ -407,6 +471,7 @@ function renderAgents(data) {
     });
 
     loadBrowserSetting();
+    loadProviderLoginSettings();
 
     if (document.getElementById('active-agents-list')) {
         createEventStream(
