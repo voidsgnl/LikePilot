@@ -10,7 +10,7 @@ import time
 import zipfile
 from datetime import datetime
 from likepilot.core.config import get_config_value
-from likepilot.core.paths import get_runtime_root
+from likepilot.core.paths import get_runtime_root, runtime_dir, runtime_path
 
 class BackupManager:
     def __init__(self):
@@ -20,7 +20,11 @@ class BackupManager:
         self.backup_path = get_config_value("backup.path", "backups")
 
         # Ensure backup directory exists
-        self.backup_dir = os.path.join(get_runtime_root(), self.backup_path)
+        self.backup_dir = (
+            runtime_dir("backups")
+            if self.backup_path == "backups"
+            else os.path.abspath(os.path.expanduser(self.backup_path))
+        )
         os.makedirs(self.backup_dir, exist_ok=True)
 
         self.last_backup = 0
@@ -153,7 +157,7 @@ class BackupManager:
     def _backup_database(self, backup_path):
         """Backup the SQLite database"""
         try:
-            db_path = os.path.join(get_runtime_root(), "likepilot.db")
+            db_path = runtime_path("likepilot.db")
             if os.path.exists(db_path):
                 backup_db_path = os.path.join(backup_path, "likepilot.db")
                 shutil.copy2(db_path, backup_db_path)
@@ -169,7 +173,7 @@ class BackupManager:
             config_files = ["config.json", "agents.json", "stats.json"]
 
             for config_file in config_files:
-                src_path = os.path.join(get_runtime_root(), config_file)
+                src_path = runtime_path(config_file)
                 if os.path.exists(src_path):
                     dst_path = os.path.join(backup_path, config_file)
                     shutil.copy2(src_path, dst_path)
@@ -181,7 +185,7 @@ class BackupManager:
     def _backup_logs(self, backup_path):
         """Backup log files"""
         try:
-            logs_dir = os.path.join(get_runtime_root(), "logs")
+            logs_dir = runtime_dir("logs")
             if os.path.exists(logs_dir):
                 backup_logs_dir = os.path.join(backup_path, "logs")
                 shutil.copytree(logs_dir, backup_logs_dir,
@@ -216,7 +220,7 @@ class BackupManager:
         try:
             backup_db_path = os.path.join(backup_path, "likepilot.db")
             if os.path.exists(backup_db_path):
-                db_path = os.path.join(get_runtime_root(), "likepilot.db")
+                db_path = runtime_path("likepilot.db")
                 shutil.copy2(backup_db_path, db_path)
                 print("Database restoration completed")
         except Exception as e:
@@ -230,7 +234,7 @@ class BackupManager:
             for config_file in config_files:
                 backup_config_path = os.path.join(backup_path, config_file)
                 if os.path.exists(backup_config_path):
-                    config_path = os.path.join(get_runtime_root(), config_file)
+                    config_path = runtime_path(config_file)
                     shutil.copy2(backup_config_path, config_path)
 
             print("Configuration restoration completed")
