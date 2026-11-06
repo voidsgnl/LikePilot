@@ -192,8 +192,9 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [~] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
   - [x] Add centralized redaction for registered runtime secrets, credential-bearing URLs, bearer/basic authorization, sensitive query parameters, Discord webhook URLs, and Telegram bot tokens.
   - [x] Apply redaction to console/file logs, persisted agent logs, agent error state, and notification error details and outbound payloads; scrub older agent-log entries when read.
-  - [x] Add regression tests for common credential formats, persisted agent-log redaction, and notification payload sanitization (60 tests passed on Python 3.14).
-  - [ ] Audit remaining exception and diagnostic surfaces, and verify existing log files are handled safely.
+  - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking.
+  - [x] Mask password, hidden, token, CSRF, and API-key form values in new HTML/screenshot diagnostics; restrict diagnostic directory/files to owner-only permissions where supported.
+  - [ ] Audit remaining exception and diagnostic surfaces, and assess existing log/diagnostic files for safe cleanup or migration.
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
 - [ ] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
   - [ ] Remove the built-in `admin` / `likepilot2026` fallback and require an explicitly configured dashboard password without locking out existing installations.
