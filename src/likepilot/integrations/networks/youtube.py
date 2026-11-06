@@ -110,7 +110,7 @@ class YouTubeBase(Like4LikeBase):
                     level="WARNING",
                 )
                 return False
-            if not self.close_task_window(popup_handle, main_window):
+            if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                 self.emit_log(f"{platform_name} task window remains open because cleanup failed.", level="WARNING")
                 return False
             return True
