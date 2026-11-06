@@ -180,6 +180,9 @@ class AgentSupervisor:
 
     def _start_worker(self, agent_name):
         with self.lock:
+            status = get_agent(agent_name)
+            if not status or status["status"] not in ACTIVE_STATUSES:
+                return
             runtime = self.active_agents.get(agent_name)
             if runtime and runtime.thread.is_alive():
                 return
@@ -187,12 +190,35 @@ class AgentSupervisor:
             self.active_agents[agent_name] = AgentRuntime(thread)
             thread.start()
 
+    def stop_agent(self, agent_name, timeout_seconds=10):
+        """Stop an agent and wait for its worker before allowing deletion/restart."""
+        if not get_agent(agent_name):
+            return False
+
+        update_agent(agent_name, status="Stopped", session_started_at=None)
+        append_agent_log(agent_name, "Supervisor requested stop.", level="SYSTEM")
+
+        with self.lock:
+            runtime = self.active_agents.get(agent_name)
+            if runtime and runtime.bot:
+                try:
+                    runtime.bot.stop()
+                except Exception as exc:
+                    append_agent_log(agent_name, f"Browser stop raised an error: {exc}", level="WARNING")
+
+        if runtime and runtime.thread is not threading.current_thread():
+            runtime.thread.join(timeout=max(0, timeout_seconds))
+            if runtime.thread.is_alive():
+                return False
+
+        with self.lock:
+            if self.active_agents.get(agent_name) is runtime:
+                self.active_agents.pop(agent_name, None)
+            self.cooldowns.pop(agent_name, None)
+        return True
+
     def _stop_worker(self, agent_name):
-        runtime = self.active_agents.get(agent_name)
-        if runtime and runtime.bot and runtime.bot.is_running:
-            runtime.bot.stop()
-            append_agent_log(agent_name, "Supervisor requested stop.", level="SYSTEM")
-        heartbeat_agent(agent_name, status="Stopped")
+        self.stop_agent(agent_name)
 
     def pause_agent(self, agent_name):
         runtime = self.active_agents.get(agent_name)
