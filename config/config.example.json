@@ -25,7 +25,6 @@
     "max_retries": 3
   },
   "dashboard": {
-    "use_websockets": true,
     "refresh_interval_seconds": 2,
     "chart_history_points": 200
   },
