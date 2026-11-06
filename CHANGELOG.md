@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits. Each provider has independent credentials and an Auto login switch inherited by all assigned agents; disabled mode remains manual, and verification challenges fall back to manual completion. Removed per-agent provider credential controls and refreshed the service-worker cache to v1.0.15.
+
 - Fixed Firefox agent startup by skipping the Chrome-only CDP stealth injection for Firefox; added regression coverage for Firefox and Chrome. Firefox continues through Selenium WebDriver without CDP commands.
 
 - Fixed Firefox startup on Ubuntu Snap installations by resolving the executable inside the mounted Firefox Snap; added `LIKEPILOT_FIREFOX_BINARY` for explicit executable overrides. Chrome startup behavior is unchanged.
