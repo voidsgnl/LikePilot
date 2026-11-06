@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='console-theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='workspace-pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='reference-layout.css') }}">
     <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
     <style>
         .notification-container {
@@ -37,13 +38,25 @@
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="notification-container" id="notification-container" aria-live="polite" aria-atomic="false"></div>
     <div class="app-shell" id="app-shell">
+        <nav class="icon-rail" aria-label="Workspace shortcuts">
+            <a class="rail-brand" href="/dashboard" aria-label="LikePilot overview">
+                <img src="{{ url_for('brand_asset', filename='192x192.png') }}" alt="">
+            </a>
+            <button type="button" id="sidebar-collapse-btn" class="rail-toggle" title="Collapse navigation" aria-label="Collapse navigation">
+                <span class="collapse-icon">◂</span>
+            </button>
+            <div class="rail-links">
+                <a href="/dashboard" class="rail-link {% if page == 'dashboard' %}active{% endif %}" title="Overview" aria-label="Overview">⌂</a>
+                <a href="/agents" class="rail-link {% if page == 'agents' %}active{% endif %}" title="Agents" aria-label="Agents">▤</a>
+                <a href="/analytics" class="rail-link {% if page == 'analytics' %}active{% endif %}" title="Analytics" aria-label="Analytics">⌁</a>
+                <a href="/settings/browser" class="rail-link {% if page == 'settings' %}active{% endif %}" title="Settings" aria-label="Settings">⚙</a>
+                <a href="/operations/database" class="rail-link {% if page == 'operations' %}active{% endif %}" title="Operations" aria-label="Operations">▣</a>
+            </div>
+            <a href="/logout" class="rail-logout" title="Log out" aria-label="Log out">↗</a>
+        </nav>
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-inner">
-                <button type="button" id="sidebar-collapse-btn" class="sidebar-collapse" title="Collapse navigation"
-                    aria-label="Collapse navigation">
-                    <span class="collapse-icon">◂</span>
-                </button>
-
+                <div class="sidebar-section-label">WORKSPACE</div>
                 <div class="brand-block">
                     <div class="brand-mark" aria-hidden="true">
                         <img src="{{ url_for('brand_asset', filename='192x192.png') }}" class="brand-mark-image" alt="">
@@ -54,6 +67,7 @@
                 </div>
 
                 <nav class="nav-group" aria-label="Primary">
+                    <div class="nav-section-title">Dashboards</div>
                     <a href="/dashboard" class="nav-link {% if page == 'dashboard' %}active{% endif %}"><span class="nav-icon">▦</span><span class="nav-copy"><span class="nav-title">Overview</span></span></a>
                     <a href="/agents" class="nav-link {% if page == 'agents' %}active{% endif %}"><span class="nav-icon">◉</span><span class="nav-copy"><span class="nav-title">Agents</span></span></a>
                     <a href="/analytics" class="nav-link {% if page == 'analytics' %}active{% endif %}"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">Analytics</span></span></a>
@@ -64,6 +78,7 @@
                         <a href="/settings/agents/new" class="nav-sublink {% if settings_view == 'create' %}active{% endif %}">Create agent</a>
                         <a href="/settings/agents/manage" class="nav-sublink {% if settings_view == 'manage' %}active{% endif %}">Manage agents</a>
                     </div>
+                    <div class="nav-section-title nav-section-apps">Management</div>
                     <a href="/operations/database" class="nav-link {% if page == 'operations' %}active{% endif %}"><span class="nav-icon">▤</span><span class="nav-copy"><span class="nav-title">Operations</span></span></a>
                     <div class="nav-subgroup {% if page == 'operations' %}nav-subgroup-active{% endif %}">
                         <a href="/operations/database" class="nav-sublink {% if operation_view == 'database' %}active{% endif %}">Database</a>
@@ -116,12 +131,17 @@
         <main class="main-content" id="main-content" role="main">
             <header class="topbar" role="banner">
                 <div class="topbar-main">
+                    <div class="reference-toolbar">
+                        <button type="button" class="toolbar-icon mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+                        <a href="/dashboard" class="toolbar-icon desktop-home" title="Overview" aria-label="Overview">▦</a>
+                        <span class="toolbar-divider"></span>
+                    </div>
                     <div class="topbar-heading-row">
                         <h1 class="page-title">{% block title %}{% endblock %}</h1>
                     </div>
                 </div>
                 <div class="topbar-meta">
-                    <button type="button" class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open navigation" aria-expanded="false">☰</button>
+                    <span class="topbar-live-label">SYSTEM STATUS</span>
                     <div class="status-cluster">
                         <div id="live-updates-pill" class="meta-pill compact-pill live-pill live-pill-warning"
                             title="Live updates" aria-label="Connection status">
