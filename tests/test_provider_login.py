@@ -140,3 +140,19 @@ def test_decrypt_does_not_generate_replacement_when_key_is_missing(tmp_path, mon
     with pytest.raises(CredentialEncryptionError, match="key is missing"):
         decrypt_secret("enc:v1:unreadable-token")
     assert not (tmp_path / "credential.key").exists()
+
+
+
+def test_user_secret_with_encryption_prefix_is_still_encrypted(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    literal = "enc:v1:this-is-the-user-password"
+    state.set_provider_login_settings("Like4Like", True, "operator", literal)
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT value FROM settings WHERE key = 'provider_login.Like4Like.password'"
+        ).fetchone()[0]
+    assert stored != literal
+    assert stored.startswith("enc:v1:")
+    assert state.get_provider_login_settings("Like4Like")["password"] == literal
