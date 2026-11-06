@@ -33,7 +33,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [~] **P0.2 — Establish the canonical web startup path.**
   - [x] Confirm `farm.py` starts the browser-accessed Flask server in the pre-migration checkout.
   - [x] Select `python farm.py` as the one documented launch command.
-  - [ ] Verify the new package-backed launcher after the src-layout migration.
+  - [x] Verify the new package-backed launcher after the src-layout migration; user confirms the dashboard starts successfully.
   - [ ] Verify clean shutdown and server error reporting.
   - **Acceptance:** a clean checkout installs and starts through the single documented command.
 - [~] **P0.3 — Dependency and import audit.**
@@ -231,7 +231,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-05 | Added the initial repository inventory and migration map. | Static inspection of tracked source, launchers, integrations, and runtime-data ownership. |
 | 2026-11-05 | Confirmed `python3 farm.py` starts the existing web server before the src-layout migration. | User-reported successful startup; post-migration verification remains pending. |
 | 2026-11-05 | Began src-layout migration and added package metadata, web-only setup documentation, and a structural smoke test. | Package-level checks are pending execution in a clean environment. |
-| 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
+| 2026-11-06 | User confirmed the dashboard starts successfully through the migrated package-backed launcher; clean shutdown and clean-install checks remain open. | Local startup confirmed by user; shutdown and fresh-environment validation pending. |\n| 2026-11-06 | Added a global dashboard browser setting and separate Chrome/Firefox driver paths; Chrome remains the default and its existing profile paths are preserved. | Static implementation complete; local API, Firefox startup, and browser lifecycle checks pending. |
 | 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
 | 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | GitHub Actions: 24 tests passed; live provider login validation remains pending. |
 | 2026-11-06 | Extracted `Like4LikeBase` into `providers/like4like.py`; updated Facebook, Instagram, TikTok, X, and YouTube adapters while keeping shared lifecycle behavior in `providers/base.py`. | Source/import mapping updated; CI and runtime import checks pending. |
