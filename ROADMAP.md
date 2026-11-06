@@ -1,5 +1,11 @@
 # LikePilot Roadmap
 
+## 2026-11-07 — Agent overview and quick-switch correction
+- Removed the legacy dark nested table surface and decorative inventory eyebrow from the Agent overview; integrated its table directly into the navy workspace card.
+- Reworked the global agent quick switch as compact, flat navigation chips with a clear active state instead of inherited legacy button backgrounds.
+- Normalized primary, secondary, and danger actions to the reference's flat blue/neutral treatment; removed glow, gradient, and hover-lift effects.
+- Refreshed service-worker caches to v1.0.20. Firefox/Chrome visual sign-off remains open.
+
 ## 2026-11-07 — Settings, Analytics and Operations detail pass
 - Refined actual Settings workflows: browser and appearance panels, create-agent form container and field grid, manage-agent cards, provider credential cards, feedback states, and form actions.
 - Refined Analytics subviews: summary metric cards, collapsible sections, export controls, chart panels, and heatmap framing.
