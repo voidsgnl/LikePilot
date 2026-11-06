@@ -83,7 +83,7 @@ class InstagramLikeBot(Like4LikeBase):
                 if confirm_btn and self.safe_click(confirm_btn):
                     print("[SUCCESS] Found Confirm button. Clicking...")
                     self.random_sleep(8, 12)
-                    if not self.update_credits():
+                    if not self.wait_for_credit_increase(timeout_seconds=20):
                         self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
@@ -183,7 +183,7 @@ class InstagramLikePostBot(Like4LikeBase):
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
                 if confirm_btn and self.safe_click(confirm_btn):
                     self.random_sleep(8, 12)
-                    if not self.update_credits():
+                    if not self.wait_for_credit_increase(timeout_seconds=20):
                         self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
@@ -468,7 +468,7 @@ class InstagramCommentBot(Like4LikeBase):
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
                 if confirm_btn and self.safe_click(confirm_btn):
                     self.random_sleep(8, 12)
-                    if not self.update_credits():
+                    if not self.wait_for_credit_increase(timeout_seconds=20):
                         self.emit_log("Provider credit increase could not be confirmed; task window left open for recovery.", level="WARNING")
                         return
                     if not self.close_task_window(popup_handle, main_window, credits_collected=True):
