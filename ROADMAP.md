@@ -169,7 +169,9 @@ LikePilot is a multi-platform automation and agent-management application. It co
 
 ## Phase 4 — Security and operations
 
-- [ ] **P4.1 — Document persistence schemas and migration strategy.**
+- [x] **P4.1 — Document persistence schemas and migration strategy.**
+  - [x] Document the canonical SQLite tables and columns, runtime data layout, legacy-file import rules, and additive schema migration behavior.
+  - [x] Document credential migration, browser-profile migration, backup contents, and restore prerequisites in docs/architecture/persistence.md.
 - [~] **P4.2 — Verify backup, restore, and corruption recovery.**
   - [x] Trace backup/restore paths to the canonical `data/database/likepilot.db` and runtime config/state files.
   - [x] Identify and correct the original reliability gaps: raw live-database copies and suppressed helper errors were replaced by checked, fail-closed backup operations.
