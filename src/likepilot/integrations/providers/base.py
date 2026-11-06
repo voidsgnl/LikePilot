@@ -318,6 +318,63 @@ class BaseBot(ABC):
             level="SYSTEM",
         )
 
+    def wait_for_popup(self, main_window, timeout_seconds=15, handles_before=None):
+        """Return only a newly-created task window, never an existing unrelated window."""
+        original_handles = set(handles_before or self._known_window_handles or [main_window])
+        deadline = time.time() + timeout_seconds
+        while time.time() < deadline:
+            try:
+                current_handles = list(self.driver.window_handles)
+                new_handles = [
+                    handle for handle in current_handles
+                    if handle not in original_handles and handle != main_window
+                ]
+                if new_handles:
+                    self._known_window_handles = set(current_handles)
+                    return new_handles[-1]
+            except Exception:
+                return None
+            time.sleep(0.5)
+        return None
+
+    def close_task_window(self, task_window, main_window, *, credits_collected=False):
+        """Close a task window only after the provider credit balance was read successfully."""
+        if not credits_collected:
+            self.emit_log(
+                "Task window close was blocked because provider credit collection was not confirmed.",
+                level="WARNING",
+            )
+            return False
+        if not self.driver or not task_window or task_window == main_window:
+            return False
+        try:
+            handles = list(self.driver.window_handles)
+            if task_window not in handles:
+                if main_window in handles:
+                    self.driver.switch_to.window(main_window)
+                return False
+            self.driver.switch_to.window(task_window)
+            self.driver.close()
+            remaining = list(self.driver.window_handles)
+            self._known_window_handles = set(remaining)
+            if main_window in remaining:
+                self.driver.switch_to.window(main_window)
+            elif remaining:
+                self.driver.switch_to.window(remaining[0])
+            return True
+        except Exception as exc:
+            self.emit_log(
+                f"Task window was not closed because its state could not be verified: {exc}",
+                level="WARNING",
+            )
+            try:
+                if main_window in self.driver.window_handles:
+                    self.driver.switch_to.window(main_window)
+            except Exception:
+                pass
+            return False
+
+
 class Like4LikeBase(BaseBot):
     SITE_NAME = "Like4Like"
     LOGIN_URL = "https://www.like4like.org/login/"
@@ -410,61 +467,6 @@ class Like4LikeBase(BaseBot):
             if match:
                 return match.group(0)
         return ""
-
-    def wait_for_popup(self, main_window, timeout_seconds=15, handles_before=None):
-        """Return only a newly-created task window, never an existing unrelated window."""
-        original_handles = set(handles_before or self._known_window_handles or [main_window])
-        deadline = time.time() + timeout_seconds
-        while time.time() < deadline:
-            try:
-                new_handles = [
-                    handle for handle in self.driver.window_handles
-                    if handle not in original_handles and handle != main_window
-                ]
-                if new_handles:
-                    self._known_window_handles = set(handles)
-                    return new_handles[-1]
-            except Exception:
-                return None
-            time.sleep(0.5)
-        return None
-
-    def close_task_window(self, task_window, main_window, *, credits_collected=False):
-        """Close a task window only after the provider credit balance was read successfully."""
-        if not credits_collected:
-            self.emit_log(
-                "Task window close was blocked because provider credit collection was not confirmed.",
-                level="WARNING",
-            )
-            return False
-        if not self.driver or not task_window or task_window == main_window:
-            return False
-        try:
-            handles = list(self.driver.window_handles)
-            if task_window not in handles:
-                if main_window in handles:
-                    self.driver.switch_to.window(main_window)
-                return False
-            self.driver.switch_to.window(task_window)
-            self.driver.close()
-            remaining = list(self.driver.window_handles)
-            self._known_window_handles = set(remaining)
-            if main_window in remaining:
-                self.driver.switch_to.window(main_window)
-            elif remaining:
-                self.driver.switch_to.window(remaining[0])
-            return True
-        except Exception as exc:
-            self.emit_log(
-                f"Task window was not closed because its state could not be verified: {exc}",
-                level="WARNING",
-            )
-            try:
-                if main_window in self.driver.window_handles:
-                    self.driver.switch_to.window(main_window)
-            except Exception:
-                pass
-            return False
 
     def find_confirm_button(self, task_num="", attempts=15):
         selectors = [
