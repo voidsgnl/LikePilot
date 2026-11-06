@@ -32,7 +32,7 @@ from likepilot.core.state import (
 
 RUNTIME_ROOT = get_runtime_root()
 
-load_dotenv(dotenv_path=runtime_path(".env"), override=True)
+load_dotenv(dotenv_path=runtime_path(".env"), override=False)
 
 app = Flask(__name__)
 app.secret_key = resolve_flask_secret_key()
