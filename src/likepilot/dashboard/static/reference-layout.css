@@ -67,7 +67,11 @@ body{background:linear-gradient(135deg,rgba(255,255,255,.012),transparent 45%),v
 @media(max-width:980px){
  .app-shell,.app-shell.sidebar-collapsed{grid-template-columns:58px minmax(0,1fr);padding:0}
  .sidebar{position:fixed;left:58px;top:0;bottom:0;width:min(280px,calc(100vw - 58px));height:100dvh;z-index:40;transform:translateX(-110%);transition:transform .2s ease;box-shadow:12px 0 35px rgba(0,0,0,.25)}
- .app-shell.mobile-nav-open .sidebar{transform:translateX(0);visibility:visible;opacity:1}
+ .app-shell.mobile-nav-open .sidebar{transform:translateX(0);visibility:visible!important;opacity:1!important}
+ .app-shell.mobile-nav-open .sidebar.collapsed .nav-copy{display:initial}
+ .app-shell.mobile-nav-open .sidebar.collapsed .nav-link{justify-content:flex-start;padding-inline:12px}
+ .app-shell.mobile-nav-open .sidebar.collapsed .theme-panel{display:grid}
+ .app-shell.mobile-nav-open .sidebar-backdrop{display:block!important;position:fixed;inset:0;z-index:39;background:rgba(5,12,25,.58);border:0}
  .sidebar-inner{height:100dvh}
  .icon-rail{width:58px}
  .topbar{padding:0 16px}
