@@ -89,14 +89,23 @@ class _FilteredConsoleStream(io.TextIOBase):
 
 def install_console_log_router(project_root):
     logs_dir = runtime_dir("logs")
-    os.makedirs(logs_dir, exist_ok=True)
+    os.makedirs(logs_dir, mode=0o700, exist_ok=True)
+    try:
+        os.chmod(logs_dir, 0o700)
+        for entry in os.scandir(logs_dir):
+            if entry.is_file():
+                os.chmod(entry.path, 0o600)
+    except OSError:
+        pass
 
     timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
     session_log_path = os.path.join(logs_dir, f"likepilot-{timestamp}.log")
     latest_log_path = os.path.join(logs_dir, "latest.log")
 
-    session_log = open(session_log_path, "a", encoding="utf-8")
-    latest_log = open(latest_log_path, "w", encoding="utf-8")
+    session_descriptor = os.open(session_log_path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+    latest_descriptor = os.open(latest_log_path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+    session_log = os.fdopen(session_descriptor, "a", encoding="utf-8")
+    latest_log = os.fdopen(latest_descriptor, "w", encoding="utf-8")
     writer = _MultiLogWriter(session_log, latest_log)
 
     def console_predicate(line):
