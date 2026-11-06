@@ -505,7 +505,7 @@ def list_agent_logs(name, limit=5):
         ).fetchall()
     formatted = []
     for row in reversed(rows):
-        formatted.append(f"{row['created_at']} [{row['level']}] {row['message']}")
+        formatted.append(redact_sensitive_text(f"{row['created_at']} [{row['level']}] {row['message']}"))
     return formatted
 
 
@@ -539,6 +539,7 @@ def list_runtime_status():
     agents = {}
     for row in rows:
         name = row["name"]
+        register_secret(row["proxy"])
         session = session_map.get(name, {})
         min_credits = session.get("min_credits")
         max_credits = session.get("max_credits")
@@ -561,7 +562,7 @@ def list_runtime_status():
             "comment_templates": row["comment_templates"] or "",
             "switch_pending": bool(row["switch_pending"]),
             "switch_reason": row["switch_reason"],
-            "last_error": row["last_error"],
+            "last_error": redact_sensitive_text(row["last_error"] or ""),
             "heartbeat_at": row["heartbeat_at"],
             "session_started_at": row["session_started_at"],
         }
