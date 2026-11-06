@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Completed P2.2 agent lifecycle verification after live dashboard checks confirmed create/configure and lifecycle operations, including clean browser-process shutdown on stop, restart, and deletion. CI passed with 83 tests.
+
 - Verified the expanded suite in GitHub Actions on Python 3.14: 83 tests passed, including the new dashboard lifecycle API coverage. Live browser-worker race checks remain open.
 
 - Added dashboard API regression coverage for agent creation and configuration, valid and invalid lifecycle transitions, pause/resume, stop/restart, missing-agent responses, and deletion shutdown conflicts. Live worker race checks and browser verification remain outstanding.
