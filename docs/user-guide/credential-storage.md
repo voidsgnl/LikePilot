@@ -1,0 +1,21 @@
+# Credential storage and backup handling
+
+LikePilot encrypts provider passwords, legacy agent passwords, and CAPTCHA service API keys before storing them in SQLite. Encryption uses Fernet authenticated encryption.
+
+## Local key
+
+The first credential write creates `data/config/credential.key` with owner-only file permissions where supported. Keep this file private and do not delete it. LikePilot deliberately refuses to generate a replacement key when encrypted values already exist but the key is missing; generating a new key would make the existing credentials unrecoverable.
+
+Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. A legacy CAPTCHA API key in `data/config/config.json` is moved into encrypted settings the first time the CAPTCHA integration loads it.
+
+The dashboard never returns saved passwords. Provider settings responses expose only whether a password is present. General agent reads omit the legacy agent password column.
+
+## Backups and restores
+
+Backup archives include the credential key because the database cannot be restored usefully without it. This means backup archives contain material capable of decrypting the credentials inside them. Store backup archives as sensitive files, restrict access, and do not upload or share them.
+
+Stop the LikePilot server and all agent workers before restoring. Restore the database, configuration, and credential key from the same backup set. Do not mix a database from one installation with another installation's key.
+
+## Recovery limitation
+
+If both the credential key and any independent copy of it are lost, encrypted credentials cannot be recovered. Restore the matching key from a protected backup. Do not delete or regenerate the key as a troubleshooting step.
