@@ -112,6 +112,11 @@ def write_runtime_port_file(port, urls):
 
 def main():
     install_console_log_router(RUNTIME_ROOT)
+    if app.config.get("LIKEPILOT_DASHBOARD_PASSWORD_GENERATED"):
+        print(
+            "A unique dashboard password was initialized. Read it from: "
+            + app.config["LIKEPILOT_DASHBOARD_PASSWORD_FILE"]
+        )
     host = os.getenv("DASHBOARD_HOST", "127.0.0.1")
     preferred_port = int(os.getenv("DASHBOARD_PORT", "5001"))
     bootstrap_agents()
