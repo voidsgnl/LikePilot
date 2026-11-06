@@ -23,7 +23,7 @@ class BackupManager:
         self.backup_dir = (
             runtime_dir("backups")
             if self.backup_path == "backups"
-            else os.path.abspath(os.path.expanduser(self.backup_path))
+            else os.path.abspath(os.path.join(get_runtime_root(), os.path.expanduser(self.backup_path)))
         )
         os.makedirs(self.backup_dir, exist_ok=True)
 
