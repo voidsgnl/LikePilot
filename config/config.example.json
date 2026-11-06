@@ -25,9 +25,6 @@
     "max_retries": 3
   },
   "performance": {
-    "use_multiprocessing": true,
-    "max_agents_per_process": 1,
-    "process_restart_on_crash": true,
     "monitoring_enabled": true,
     "metrics_window_minutes": 60,
     "cpu_alert_threshold": 90,
@@ -49,9 +46,6 @@
     "max_consecutive_failures": 10,
     "cooldown_on_failure_seconds": 60,
     "credit_verification_timeout": 12,
-    "smart_timing": false,
-    "analysis_window_hours": 24,
-    "min_timing_samples": 10,
     "rate_limit_detection": true,
     "rate_limit_window_minutes": 5,
     "rate_limit_failure_threshold": 3,
