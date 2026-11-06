@@ -30,5 +30,30 @@
         <button class="btn-primary" type="button" data-save-browser>Save browser setting</button>
     </div>
 </section>
+<section class="panel panel-pad stack-sm page-section console-shell appearance-settings">
+    <div class="surface-header">
+        <div>
+            <h2 class="section-heading">Appearance</h2>
+            <div class="section-subtle">Adjust the dashboard presentation. These preferences are saved in this browser.</div>
+        </div>
+    </div>
+    <div class="form-grid">
+        <div class="field-stack">
+            <label class="section-subtle field-label" for="theme-select">Color theme</label>
+            <select id="theme-select" class="theme-select" aria-label="Select color theme">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="high-contrast">High contrast</option>
+            </select>
+        </div>
+        <div class="field-stack">
+            <label class="section-subtle field-label" for="density-select">Content density</label>
+            <select id="density-select" class="theme-select" aria-label="Select content density">
+                <option value="comfortable">Comfortable</option>
+                <option value="compact">Compact</option>
+            </select>
+        </div>
+    </div>
+</section>
 <div class="settings-page-links"><a class="btn-secondary" href="/settings/agents/manage">Manage agents</a></div>
 {% endblock %}
