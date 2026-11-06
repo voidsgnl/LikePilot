@@ -99,13 +99,15 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Run the full Python 3.14 CI suite after the API tests; GitHub Actions passed all 83 tests.
   - [x] Verify delete/restart behavior against a live worker in the running dashboard and confirm browser processes close cleanly.
   - [ ] Verify create/configure/start/login/ready/pause/resume/stop/restart/delete in the running dashboard and confirm browser processes close cleanly.
-- [~] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
+- [x] **P2.3 — Verify browser/profile/driver lifecycle and task result validation.**
   - [x] Add global dashboard browser selection (Chrome/Firefox), defaulting to Chrome for existing installations.
   - [x] Add separate Chrome and Firefox driver construction with browser-specific persistent profiles.
   - [x] Detect the executable inside Ubuntu's Firefox Snap and support `LIKEPILOT_FIREFOX_BINARY` as an explicit override.
   - [x] Restrict the existing CDP stealth injection to Chrome; Firefox skips CDP-only commands.
-  - [ ] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
-  - [ ] Verify Chrome regression and proxy behavior for both browsers.
+  - [x] Verify Firefox startup with local Firefox/GeckoDriver and agent lifecycle on the user machine.
+  - [x] Verify Chrome startup regression and proxy connectivity for both browsers; user confirmed both browser paths and proxy checks.
+  - [x] Run focused driver tests locally: 12 passed in 0.28s.
+  - [x] Confirm GitHub Actions passed for the driver test changes (Python 3.14).
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
 - [~] **P2.6 — Centralize task-window lifecycle and point-collection sequencing.**
   - [x] Add shared window tracking and lifecycle helpers to the common provider base; identify newly-created windows and restore focus to the provider window.
