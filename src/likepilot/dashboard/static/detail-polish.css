@@ -138,3 +138,139 @@ html[data-density='compact'] .data-table tbody td{padding:9px 12px}html[data-den
 .directory-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
 @media(max-width:900px){.ops-grid{grid-template-columns:1fr}.ops-grid>.panel{min-height:0}.export-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:700px){.page-settings .form-grid,.page-settings .agent-form .form-grid{grid-template-columns:1fr}.page-settings .agent-form{padding:14px}.page-settings .agent-form .form-grid-wide{grid-column:auto}.export-grid{grid-template-columns:1fr}.collapsible-header{align-items:flex-start;padding:13px}.collapsible-body{padding:0 13px 13px}.ops-log-view{min-height:300px}.ops-schema-stage{min-height:240px}}
+
+
+/* Reference-match correction: remove the legacy charcoal controls and nested
+   black surfaces that survived beneath the newer navy workspace shell. */
+.agent-quick-switch{
+  max-width:min(52vw,680px);
+  min-height:30px;
+  max-height:30px;
+  gap:5px;
+  padding:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  scrollbar-width:none;
+}
+.agent-quick-switch::-webkit-scrollbar{display:none}
+.agent-quick-switch .quick-agent{
+  min-height:28px;
+  padding:0 10px;
+  border:1px solid transparent;
+  border-radius:7px;
+  background:transparent;
+  color:var(--text-muted);
+  box-shadow:none;
+  font-size:11px;
+  font-weight:550;
+}
+.agent-quick-switch .quick-agent:hover{
+  transform:none;
+  border-color:var(--border);
+  background:var(--surface-soft);
+  color:var(--text);
+}
+.agent-quick-switch .quick-agent.active{
+  border-color:rgba(7,156,240,.22);
+  background:rgba(7,156,240,.12);
+  color:var(--accent-strong);
+}
+.agent-quick-switch .quick-dot.running{box-shadow:none}
+.agent-quick-switch .quick-dot.waiting{box-shadow:none}
+.agent-quick-switch .quick-dot.stopped{box-shadow:none}
+
+/* The overview snapshot is one surface, not a dark card nested inside
+   another dark card. Keep the table integrated with its parent. */
+.reference-overview .overview-agent-panel{
+  padding:21px;
+  gap:14px;
+  border:1px solid var(--border);
+  border-radius:15px;
+  background:var(--surface);
+  box-shadow:none;
+}
+.reference-overview .overview-agent-panel .surface-header{
+  padding:0 0 13px;
+  border-bottom:1px solid var(--border);
+}
+.reference-overview .overview-agent-panel .overview-eyebrow{display:none}
+.reference-overview .overview-agent-panel .section-heading{
+  margin:0;
+  font-size:15px;
+  font-weight:650;
+}
+.reference-overview .overview-agent-panel .table-wrap{
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.reference-overview .overview-table{
+  min-width:640px;
+}
+.reference-overview .overview-table thead th{
+  background:transparent;
+  color:var(--text-soft);
+  border-bottom:1px solid var(--border);
+}
+.reference-overview .overview-table tbody td{
+  padding-top:12px;
+  padding-bottom:12px;
+  background:transparent;
+}
+.reference-overview .overview-table tbody tr:hover td{
+  background:rgba(7,156,240,.045);
+}
+
+/* Keep actions flat and deliberate; no legacy glow, lift, or gradient. */
+.btn-primary,.btn-secondary,.btn-danger,
+.overview-primary-action,.overview-secondary-action{
+  min-height:36px;
+  border-radius:8px;
+  box-shadow:none;
+  transform:none;
+  animation:none;
+  font-size:11px;
+  font-weight:600;
+}
+.btn-primary,.overview-primary-action{
+  border:1px solid #079cf0;
+  background:#079cf0;
+  color:#fff;
+}
+.btn-primary:hover,.overview-primary-action:hover{
+  border-color:#21aaff;
+  background:#21aaff;
+  color:#fff;
+  box-shadow:none;
+  transform:none;
+}
+.btn-secondary,.overview-secondary-action{
+  border:1px solid var(--border-strong);
+  background:var(--surface-soft);
+  color:var(--text);
+}
+.btn-secondary:hover,.overview-secondary-action:hover{
+  border-color:rgba(7,156,240,.45);
+  background:rgba(7,156,240,.10);
+  color:var(--accent-strong);
+  box-shadow:none;
+  transform:none;
+}
+.btn-danger{
+  border:1px solid rgba(228,108,134,.28);
+  background:var(--danger-soft);
+  color:var(--danger);
+}
+.btn-danger:hover{
+  background:rgba(228,108,134,.2);
+  box-shadow:none;
+  transform:none;
+}
+button:not(.btn-primary):not(.btn-secondary):not(.btn-danger):hover{
+  transform:none;
+  box-shadow:none;
+}
+@media(max-width:700px){
+  .agent-quick-switch{max-width:52vw}
+  .reference-overview .overview-agent-panel{padding:16px}
+}
