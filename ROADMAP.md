@@ -67,7 +67,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Centralize file/directory paths and add non-destructive first-use migration from legacy root locations.
   - [x] Preserve destination/legacy collisions without overwriting either copy; keep the stricter browser-profile duplicate guard.
   - [x] Route backup/restore, dashboard operations, provider diagnostics, console logs, smart-timing state, and updater artifacts through the data layout.
-  - [ ] Run the full suite and verify database initialization, backup/restore, and dashboard operations locally.
+  - [x] Run the full Python 3.14 CI suite (39 tests passed, including runtime path and collision cases).
+  - [ ] Verify database initialization, backup/restore, and dashboard operations locally.
   - **Acceptance:** existing user data is discovered and preserved after upgrade; collision cases remain recoverable.
 - [~] **P1.5 — Resolve redundancy and legacy code.**
   - [x] Remove obsolete `index.html` and `settings.html` templates after tracing active Flask routes to their dedicated replacements.
@@ -215,11 +216,11 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | ID | Finding | Status | Next action |
 |---|---|---|---|
 | A-001 | Runtime integration imports must resolve after the package move. | [~] Static class mapping passed; post-move import test pending | Run clean-install import and runtime smoke tests |
-| A-002 | Original root had mixed source, launchers, runtime data, and docs. | [~] Source moved into src layout; runtime paths now target data/ with first-use legacy migration | Run full tests and verify migrated runtime operations |
+| A-002 | Original root had mixed source, launchers, runtime data, and docs. | [~] Source moved into src layout; runtime paths target data/ with first-use legacy migration; CI passes (39 tests) | Verify migrated runtime operations locally |
 | A-003 | State and secondary database responsibilities need reconciliation. | [ ] Open | Compare schema, path, callers, and migrations |
 | A-004 | Runtime and multiprocessing supervisors overlap. | [ ] Open | Trace active selection and lifecycle |
 | A-005 | Desktop wrappers and executable build path were unrelated to web operation. | [x] Removed from the supported architecture and repository migration | Keep the web install free of desktop-only dependencies |
-| A-006 | Existing root-level config and runtime files may contain live state. | [~] Added non-destructive file/directory migration; conflicting copies are preserved | Verify real upgrade and backup/restore behavior |
+| A-006 | Existing root-level config and runtime files may contain live state. | [~] Added non-destructive migration; tracked JSON seeds are copied, untracked data is moved, and collisions are preserved; CI passes (39 tests) | Verify real upgrade and backup/restore behavior |
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
 | A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
 | A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, and manual fallback for verification; local provider-specific validation pending | Verify all provider login forms and complete credential-at-rest hardening |
@@ -239,7 +240,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Extracted `Like4LikeBase` into `providers/like4like.py`; updated Facebook, Instagram, TikTok, X, and YouTube adapters while keeping shared lifecycle behavior in `providers/base.py`. | Source/import mapping updated; CI and runtime import checks pending. |
 | 2026-11-06 | Recorded the remaining local-only legacy directories: `web/` and `modules/` contain only Python cache files, `tools/` contains the retired build directory, and browser profiles remain persistent runtime data. | Findings reported from the user's local checkout; no local files or runtime data were changed. |
 | 2026-11-06 | Changed Chrome and Firefox profile storage to `data/profiles/`; added first-use atomic migration from the matching legacy root profile and a fail-safe collision check that preserves both copies. Added path, migration, and collision regression tests. | Implementation committed; GitHub Actions verification pending. |
-| 2026-11-06 | Routed runtime configuration/state/database/logs/diagnostics/backups/profiles/runtime metadata and updater artifacts beneath `data/`; added non-destructive legacy migration and collision-preservation tests. | Implementation committed; full CI and local backup/restore/dashboard validation pending. |
+| 2026-11-06 | Routed runtime configuration/state/database/logs/diagnostics/backups/profiles/runtime metadata and updater artifacts beneath `data/`; added non-destructive legacy migration and collision-preservation tests. | GitHub Actions passed (39 tests); local backup/restore/dashboard validation pending. |
 
 
 ## Phase 8 — Dashboard visual system
