@@ -322,7 +322,7 @@ def set_secret(name, value):
         else:
             conn.execute(
                 "INSERT INTO settings (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value",
-                (encrypt_secret(value), key),
+                (key, encrypt_secret(value)),
             )
 
 def get_agents():
