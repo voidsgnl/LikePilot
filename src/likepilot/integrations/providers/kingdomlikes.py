@@ -126,7 +126,7 @@ class KingdomLikesGenericBot(KingdomLikesBase):
                         level="WARNING",
                     )
                     return
-                if not self.close_task_window(popup_handle, main_window):
+                if not self.close_task_window(popup_handle, main_window, credits_collected=True):
                     self.emit_log("KingdomLikes task window remains open because cleanup failed.", level="WARNING")
                     return
 
