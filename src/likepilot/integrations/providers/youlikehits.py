@@ -319,7 +319,7 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
                     if confirmed:
                         self.emit_log("YouLikeHits confirm clicked successfully.", level="INFO")
                         self.random_sleep(7, 12)
-                        if not self.update_credits():
+                        if not self.wait_for_credit_increase(timeout_seconds=20):
                             self.emit_log("YouLikeHits point increase could not be confirmed; task window left open.", level="WARNING")
                             return
                         if not self.close_task_window(popup_handle, main_window, credits_collected=True):
@@ -618,7 +618,7 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
                     return
 
                 self.random_sleep(4, 7)
-                if not self.update_credits():
+                if not self.wait_for_credit_increase(timeout_seconds=20):
                     self.emit_log("YouLikeHits subscription point increase could not be confirmed; task window left open.", level="WARNING")
                     return
                 if not self.close_task_window(popup_handle, main_window, credits_collected=True):
