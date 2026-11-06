@@ -264,14 +264,13 @@ def get_provider_login_settings(site):
             tuple(keys.values()),
         ).fetchall()
     values = {row["key"]: row["value"] for row in rows}
-    return {
+    result = {
         "enabled": values.get(keys["enabled"], "0") == "1",
         "username": values.get(keys["username"], ""),
         "password": decrypt_secret(values.get(keys["password"], "")),
     }
     register_secret(result["password"])
     return result
-
 
 def set_provider_login_settings(site, enabled, username, password=None, clear_password=False):
     if site not in PROVIDER_SITES:
