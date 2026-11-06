@@ -115,8 +115,6 @@
         const name = document.getElementById('new-agent-name').value.trim();
         const profile = document.getElementById('new-agent-profile').value.trim();
         const proxy = document.getElementById('new-agent-proxy').value.trim();
-        const loginUser = document.getElementById('new-agent-login-user').value.trim();
-        const loginPassword = document.getElementById('new-agent-login-password').value;
         const site = document.getElementById('new-agent-site').value.trim();
         const fallback = document.getElementById('new-agent-fallback').value.trim();
         const chain = document.getElementById('new-agent-chain').value.trim();
@@ -137,8 +135,6 @@
                 name: name,
                 profile: profile,
                 proxy: proxy || null,
-                login_user: loginUser || null,
-                login_password: loginPassword || null,
                 site: site,
                 fallback_platform: fallback || null,
                 fallback_chain: chain || null,
@@ -148,8 +144,6 @@
             document.getElementById('new-agent-name').value = '';
             document.getElementById('new-agent-profile').value = '';
             document.getElementById('new-agent-proxy').value = '';
-            document.getElementById('new-agent-login-user').value = '';
-            document.getElementById('new-agent-login-password').value = '';
             document.getElementById('new-agent-fallback').value = '';
             document.getElementById('new-agent-chain').value = '';
             document.getElementById('new-agent-comment-templates').value = DEFAULT_IG_COMMENT_TEMPLATES;
@@ -193,8 +187,6 @@
         const nameInput = document.getElementById(`edit-name-${currentName}`);
         const profileInput = document.getElementById(`edit-profile-${currentName}`);
         const proxyInput = document.getElementById(`edit-proxy-${currentName}`);
-        const loginUserInput = document.getElementById(`edit-login-user-${currentName}`);
-        const loginPasswordInput = document.getElementById(`edit-login-password-${currentName}`);
         const siteInput = document.getElementById(`edit-site-${currentName}`);
         const fallbackInput = document.getElementById(`edit-fallback-${currentName}`);
         const chainInput = document.getElementById(`edit-chain-${currentName}`);
@@ -202,8 +194,6 @@
         const name = nameInput.value.trim();
         const profile = profileInput.value.trim();
         const proxy = proxyInput.value.trim();
-        const loginUser = loginUserInput.value.trim();
-        const loginPassword = loginPasswordInput.value;
         const site = siteInput.value.trim();
         const fallback = fallbackInput.value.trim();
         const chain = chainInput.value.trim();
@@ -222,8 +212,6 @@
                 name: name,
                 profile: profile,
                 proxy: proxy || null,
-                login_user: loginUser || null,
-                login_password: loginPassword,
                 site: site,
                 fallback_platform: fallback || null,
                 fallback_chain: chain || null,
@@ -280,8 +268,6 @@ function renderAgents(data) {
             status: status.status,
             chrome_profile: status.chrome_profile,
             proxy: status.proxy || '',
-            login_user: status.login_user || '',
-            has_login_password: Boolean(status.has_login_password),
             site: status.site || 'Like4Like',
             fallback_platform: status.fallback_platform || '',
             fallback_chain: status.fallback_chain || '',
@@ -311,14 +297,6 @@ function renderAgents(data) {
                         <div>
                             <label class="section-subtle field-label" for="edit-proxy-${escapeHtml(name)}">Proxy</label>
                             <input type="text" id="edit-proxy-${escapeHtml(name)}" value="${escapeHtml(status.proxy || '')}" placeholder="Optional proxy" ${status.status !== 'Stopped' ? 'disabled' : ''}>
-                        </div>
-                        <div>
-                            <label class="section-subtle field-label" for="edit-login-user-${escapeHtml(name)}">Login user</label>
-                            <input type="text" id="edit-login-user-${escapeHtml(name)}" value="${escapeHtml(status.login_user || '')}" placeholder="Optional agent override" ${status.status !== 'Stopped' ? 'disabled' : ''}>
-                        </div>
-                        <div>
-                            <label class="section-subtle field-label" for="edit-login-password-${escapeHtml(name)}">Login password</label>
-                            <input type="password" id="edit-login-password-${escapeHtml(name)}" value="" placeholder="${status.has_login_password ? 'Stored password set. Enter new value to replace or leave blank.' : 'Optional agent override'}" ${status.status !== 'Stopped' ? 'disabled' : ''}>
                         </div>
                         <div>
                             <label class="section-subtle field-label" for="edit-site-${escapeHtml(name)}">Site</label>
