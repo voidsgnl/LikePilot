@@ -17,7 +17,6 @@ dependencies = [
     "undetected-chromedriver",
     "flask",
     "requests",
-    "psutil",
     "eventlet",
 ]
 
