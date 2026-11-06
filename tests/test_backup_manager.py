@@ -80,6 +80,7 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
         "config.json": config_dir / "config.json",
         "agents.json": state_dir / "agents.json",
         "stats.json": state_dir / "stats.json",
+        "credential.key": config_dir / "credential.key",
         "likepilot.db": database_dir / "likepilot.db",
     }
     paths[".env"].write_text("TOKEN=original\n", encoding="utf-8")
