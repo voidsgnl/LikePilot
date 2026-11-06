@@ -29,7 +29,7 @@ def test_authenticated_proxy_entries_migrate_to_encrypted_storage(tmp_path, monk
     assert config.get_proxy_list() == proxies
     assert _read_config(config_path)["proxy"]["proxy_list"] == []
     stored = state.get_secret("config.proxy.proxy_list")
-    assert stored.startswith("[")
+    assert stored.startswith("enc:v1:")
     assert "proxy-secret" not in stored
     assert config.get_proxy_list() == proxies
 
