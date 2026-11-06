@@ -18,6 +18,7 @@ const STATIC_ASSETS = [
     '/static/agents-directory.js',
     '/static/overview.js',
     '/static/workspace-pages.css',
+    '/static/reference-layout.css',
     'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 ];
 
