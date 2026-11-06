@@ -4,14 +4,16 @@ import re
 import os
 from abc import ABC, abstractmethod
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 from likepilot.core.state import append_agent_log, get_agent, get_stats, heartbeat_agent, log_credit_update, update_agent
 
 class BaseBot(ABC):
-    def __init__(self, username, password, proxy=None):
+    def __init__(self, username, password, proxy=None, auto_login=False):
         self.username = username
         self.password = password
         self.proxy = proxy
+        self.auto_login_enabled = bool(auto_login)
         self.driver = None
         self.is_running = False
         self.agent_name = "Unknown" 
@@ -82,11 +84,118 @@ class BaseBot(ABC):
             else:
                 time.sleep(1.0)
             
+            self._attempt_auto_login()
             self.prepare()
         except Exception as e:
             print(f"Failed to start browser: {e}")
             self.emit_log(f"Failed to start browser: {e}", level="ERROR")
             raise e
+
+    def _attempt_auto_login(self):
+        """Submit provider credentials when enabled; leave verification to the user."""
+        if not self.auto_login_enabled:
+            self.emit_log("Auto login is disabled for this provider. Complete login manually.", level="INFO")
+            return False
+        if not self.username or not self.password:
+            self.emit_log("Auto login is enabled but provider credentials are incomplete. Continue with manual login.", level="WARNING")
+            return False
+
+        try:
+            body_text = self.driver.execute_script(
+                "return document.body ? document.body.innerText : '';"
+            ).lower()
+            verification_markers = (
+                "captcha",
+                "verify you are human",
+                "security verification",
+                "two-factor",
+                "two factor",
+                "verification code",
+                "one-time password",
+            )
+            if any(marker in body_text for marker in verification_markers):
+                self.emit_log(
+                    "Provider verification detected. Automatic submission was skipped; complete verification manually.",
+                    level="WARNING",
+                )
+                return False
+
+            username_selectors = (
+                "input[name='username']",
+                "input[name='email']",
+                "input[name='login']",
+                "input[id*='username' i]",
+                "input[id*='email' i]",
+                "input[type='email']",
+                "form input[type='text']",
+            )
+            username_field = None
+            for selector in username_selectors:
+                for element in self.driver.find_elements(By.CSS_SELECTOR, selector):
+                    if element.is_displayed() and element.is_enabled():
+                        username_field = element
+                        break
+                if username_field:
+                    break
+
+            password_fields = [
+                element for element in self.driver.find_elements(By.CSS_SELECTOR, "input[type='password']")
+                if element.is_displayed() and element.is_enabled()
+            ]
+            if not username_field or not password_fields:
+                self.emit_log(
+                    "Provider login form was not recognized. Continue with manual login.",
+                    level="WARNING",
+                )
+                return False
+
+            username_field.clear()
+            username_field.send_keys(self.username)
+            password_fields[0].clear()
+            password_fields[0].send_keys(self.password)
+
+            submit_button = None
+            submit_selectors = (
+                "form button[type='submit']",
+                "form input[type='submit']",
+                "button[type='submit']",
+                "input[type='submit']",
+            )
+            for selector in submit_selectors:
+                for element in self.driver.find_elements(By.CSS_SELECTOR, selector):
+                    if element.is_displayed() and element.is_enabled():
+                        submit_button = element
+                        break
+                if submit_button:
+                    break
+
+            if submit_button:
+                submit_button.click()
+            else:
+                password_fields[0].send_keys(Keys.ENTER)
+
+            time.sleep(3)
+            page_text = self.driver.execute_script(
+                "return document.body ? document.body.innerText : '';"
+            ).lower()
+            if any(marker in page_text for marker in verification_markers):
+                self.emit_log(
+                    "Provider requested additional verification. Finish it manually in the browser.",
+                    level="WARNING",
+                )
+                return False
+
+            self.emit_log(
+                "Provider login form submitted. Waiting for the provider session to be confirmed.",
+                level="SYSTEM",
+            )
+            return True
+        except Exception as exc:
+            self.emit_log(
+                f"Automatic provider login could not be completed: {exc}. Continue manually.",
+                level="WARNING",
+            )
+            return False
 
     def stop(self):
         """Stops the bot safely."""
