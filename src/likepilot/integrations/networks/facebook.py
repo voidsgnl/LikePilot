@@ -171,6 +171,7 @@ class FacebookCommentBot(Like4LikeBase):
                 self.driver.switch_to.window(popup_handle)
                 
                 # 3. Handle Facebook Comment Action
+                action_completed = False
                 try:
                     WebDriverWait(self.driver, 15).until(lambda d: "facebook.com" in d.current_url)
                     time.sleep(5) 
@@ -198,8 +199,13 @@ class FacebookCommentBot(Like4LikeBase):
                     print(f"[ERROR] Facebook comment action failed: {e}")
                     self.log_blockers("Facebook comment popup exception")
                 
-                # 4. Close and Switch Back
+                # Keep the task window open until provider confirmation and credit collection.
                 self.driver.switch_to.window(main_window)
+
+                if not action_completed:
+                    self.emit_log("Facebook comment was not verified; task window left open.", level="WARNING")
+                    self.record_page_diagnostics("facebook_comment_unverified")
+                    return
                 
                 print("[INFO] Polling for Confirm button...")
                 confirm_btn = self.find_confirm_button(task_num, attempts=15)
