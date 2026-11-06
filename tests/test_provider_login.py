@@ -1,4 +1,4 @@
-from likepilot.core import state
+from likepilot.core import credentials, state
 
 
 def _use_temporary_database(tmp_path, monkeypatch):
@@ -6,6 +6,7 @@ def _use_temporary_database(tmp_path, monkeypatch):
     monkeypatch.setattr(state, "LEGACY_DB_FILE", str(tmp_path / "likeit.db"))
     monkeypatch.setattr(state, "AGENTS_FILE", str(tmp_path / "agents.json"))
     monkeypatch.setattr(state, "LEGACY_STATS_FILE", str(tmp_path / "stats.json"))
+    monkeypatch.setattr(credentials, "runtime_path", lambda name: str(tmp_path / name))
 
 
 def test_provider_login_settings_are_isolated_by_provider(tmp_path, monkeypatch):
@@ -63,3 +64,68 @@ def test_provider_login_rejects_unknown_provider():
 
     with pytest.raises(ValueError, match="Unsupported provider"):
         state.get_provider_login_settings("Unknown")
+
+
+
+def test_provider_password_is_encrypted_at_rest_and_decrypted_for_runtime(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    state.set_provider_login_settings("Like4Like", True, "operator", "private-password")
+
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT value FROM settings WHERE key = 'provider_login.Like4Like.password'"
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert "private-password" not in stored
+    assert state.get_provider_login_settings("Like4Like")["password"] == "private-password"
+
+
+def test_legacy_plaintext_provider_password_is_migrated(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    state.init_db()
+    with sqlite3.connect(state.DB_FILE) as conn:
+        conn.execute(
+            "INSERT INTO settings (key, value) VALUES (?, ?)",
+            ("provider_login.KingdomLikes.password", "legacy-password"),
+        )
+
+    state.init_db()
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT value FROM settings WHERE key = 'provider_login.KingdomLikes.password'"
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert state.get_provider_login_settings("KingdomLikes")["password"] == "legacy-password"
+
+
+def test_agent_password_is_encrypted_and_not_exposed_by_general_agent_read(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    state.add_agent("secure-agent", "Default", login_user="legacy-user", login_password="agent-secret")
+
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT login_password FROM agents WHERE name = 'secure-agent'"
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert "agent-secret" not in stored
+    assert "login_password" not in state.get_agent("secure-agent")
+
+
+def test_generic_secret_storage_encrypts_and_round_trips(tmp_path, monkeypatch):
+    import sqlite3
+
+    _use_temporary_database(tmp_path, monkeypatch)
+    state.set_secret("captcha.api_key", "captcha-secret")
+    assert state.get_secret("captcha.api_key") == "captcha-secret"
+    with sqlite3.connect(state.DB_FILE) as conn:
+        stored = conn.execute(
+            "SELECT value FROM settings WHERE key = 'secret.captcha.api_key'"
+        ).fetchone()[0]
+    assert stored.startswith("enc:v1:")
+    assert "captcha-secret" not in stored
