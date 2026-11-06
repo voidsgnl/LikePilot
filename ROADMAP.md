@@ -189,12 +189,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Include the matching encryption key in backup/restore archives and document that backup archives must be protected as sensitive files.
   - [x] Remove the obsolete `security.encrypt_credentials=false` setting; encryption is no longer an optional toggle.
   - [x] Encrypt per-agent proxy credentials in SQLite and migrate existing plaintext proxy columns automatically; migrate authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings.
-  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 68 tests on Python 3.14.
+  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 69 tests on Python 3.14.
   - [ ] Verify migration and recovery against the user's existing local database and configuration.
 - [~] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
   - [x] Add centralized redaction for registered runtime secrets, credential-bearing URLs, bearer/basic authorization, sensitive query parameters, Discord webhook URLs, and Telegram bot tokens.
   - [x] Apply redaction to console/file logs, persisted agent logs, agent error state, and notification error details and outbound payloads; scrub older agent-log entries when read.
-  - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking; the full suite passed 68 tests on Python 3.14.
+  - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking; the full suite passed 69 tests on Python 3.14.
   - [x] Mask password, hidden, token, CSRF, and API-key form values in new HTML/screenshot diagnostics; restrict diagnostic and log directories/files to owner-only permissions where supported.
   - [x] Scrub log content and HTML diagnostics when served from the dashboard, including older artifacts.
   - [ ] Audit remaining exception and diagnostic surfaces, and assess existing log/diagnostic files for safe cleanup or migration.
@@ -207,7 +207,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Persist the Flask session signing key locally and include both dashboard auth files in backup/restore.
   - [x] Harden session cookies, rotate sessions after login, clear them on logout, and rate-limit failed login attempts.
   - [x] Keep the default bind address local and document HTTPS/reverse-proxy requirements for deliberate remote access.
-  - [x] Test generated-password persistence, explicit environment overrides, weak-password replacement, and persistent session-key creation.
+  - [x] Test generated-password persistence, explicit environment overrides, weak-password replacement, persistent session-key creation, and failed-login throttling.
   - [ ] Verify login, password recovery, and remote HTTPS cookie behavior against the user's running installation.
 
 ## Phase 5 — Web installation and portability
