@@ -229,15 +229,8 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
                 if self.should_handoff_platform("YouTube Likes"):
                     return
 
-                # 0. CLEANUP WINDOWS
+                # Preserve task windows across recovery; only close a task window after point collection.
                 main_window = self.driver.current_window_handle
-                for handle in self.driver.window_handles:
-                    if handle != main_window:
-                        try:
-                            self.driver.switch_to.window(handle)
-                            self.driver.close()
-                        except: pass
-                self.driver.switch_to.window(main_window)
 
                 if "/youtubelikes.php" not in self.driver.current_url:
                     self.driver.get(target_url)
@@ -309,29 +302,36 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
                         print(f"[INFO] Popup interaction limited: {e}")
                         self.emit_log(f"YouLikeHits popup interaction error: {e}", level="WARNING")
                     
-                    self.driver.close()
                     self.driver.switch_to.window(main_window)
 
                     if not liked:
-                        self.emit_log("YouLikeHits task not confirmed because the video like action was not verified.", level="WARNING")
+                        self.emit_log(
+                            "YouLikeHits video action was not verified; task window left open for recovery.",
+                            level="WARNING",
+                        )
                         self.record_page_diagnostics("youlikehits_like_failed")
-                        self.driver.refresh()
-                        self.random_sleep(4, 6)
-                        continue
+                        return
                     
-                    # 4. WAIT FOR CONFIRM
+                    # Confirm and collect points before closing the social-network task window.
                     print(f"[INFO] Waiting for Confirm in {container_id or 'task page'}...")
                     confirmed = self._confirm_task(container_id)
 
                     if confirmed:
                         self.emit_log("YouLikeHits confirm clicked successfully.", level="INFO")
                         self.random_sleep(7, 12)
-                        self.update_credits()
+                        if not self.update_credits():
+                            self.emit_log("YouLikeHits points could not be read; task window left open.", level="WARNING")
+                            return
+                        if not self.close_task_window(popup_handle, main_window):
+                            self.emit_log("YouLikeHits task window remains open because cleanup failed.", level="WARNING")
+                            return
                     else:
-                        print("[WARNING] Confirm button did not appear. Refreshing.")
-                        self.emit_log("YouLikeHits confirm button did not appear after a verified like.", level="WARNING")
+                        self.emit_log(
+                            "YouLikeHits confirm button did not appear after a verified like; task window left open.",
+                            level="WARNING",
+                        )
                         self.record_page_diagnostics("youlikehits_confirm_missing")
-                        self.driver.refresh()
+                        return
                 else:
                     print("[ERROR] Task failed to open popup. Capturing diagnostics.")
                     self.record_page_diagnostics("popup_fail")
@@ -577,24 +577,17 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
                     self.emit_log(f"YouLikeHits subscribe popup interaction error: {exc}", level="WARNING")
                 finally:
                     try:
-                        self.driver.close()
+                        self.driver.switch_to.window(main_window)
                     except Exception:
                         pass
 
-                try:
-                    self.driver.switch_to.window(main_window)
-                except Exception:
-                    # Fallback: pick any remaining window.
-                    remaining = [h for h in self.driver.window_handles if h in handles_before]
-                    if remaining:
-                        self.driver.switch_to.window(remaining[0])
-
                 if not subscribed:
-                    self.emit_log("YouLikeHits subscribe action was not verified. Refreshing.", level="WARNING")
+                    self.emit_log(
+                        "YouLikeHits subscribe action was not verified; task window left open for recovery.",
+                        level="WARNING",
+                    )
                     self.record_page_diagnostics("youlikehits_youtube_sub_unverified")
-                    self.driver.refresh()
-                    self.random_sleep(2, 4)
-                    continue
+                    return
 
                 # 90-second rule: confirm quickly after popup action.
                 confirm_deadline = started_at + 85.0
@@ -613,19 +606,20 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
                         level="WARNING",
                     )
                     self.record_page_diagnostics("youlikehits_youtube_sub_confirm_missing")
-                    self.driver.refresh()
-                    self.random_sleep(2, 4)
-                    continue
+                    return
 
                 if not self._safe_click(confirm_btn):
                     self.emit_log("Confirm Subscription button was found but not clickable.", level="WARNING")
                     self.record_page_diagnostics("youlikehits_youtube_sub_confirm_click_failed")
-                    self.driver.refresh()
-                    self.random_sleep(2, 4)
-                    continue
+                    return
 
                 self.random_sleep(4, 7)
-                self.update_credits()
+                if not self.update_credits():
+                    self.emit_log("YouLikeHits subscription points could not be read; task window left open.", level="WARNING")
+                    return
+                if not self.close_task_window(popup_handle, main_window):
+                    self.emit_log("YouLikeHits subscription task window remains open because cleanup failed.", level="WARNING")
+                    return
                 self.random_sleep(2, 4)
 
             except Exception as exc:
