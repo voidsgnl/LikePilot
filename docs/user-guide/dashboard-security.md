@@ -8,9 +8,9 @@ If DASHBOARD_PASS is not set to a strong explicit value, LikePilot creates a uni
 
     cat data/config/dashboard-password
 
-Existing installations that already configure a non-placeholder DASHBOARD_PASS keep using it. The old built-in password is not accepted.
+Existing installations that already configure a non-placeholder DASHBOARD_PASS keep using it. The old built-in password is not accepted. The local .env file is restricted to owner-only permissions where supported, and process-level environment variables take precedence over values in that file.
 
-To rotate a generated password, stop LikePilot, remove data/config/dashboard-password, and start it again. A new password is generated. Do not delete this file if you still need the current password.
+If LIKEPILOT_DATA_DIR points to a custom runtime root, the password file is stored under that root's data/config directory. To rotate a generated password, stop LikePilot, remove data/config/dashboard-password, and start it again. A new password is generated. Do not delete this file if you still need the current password.
 
 ## Session signing
 
