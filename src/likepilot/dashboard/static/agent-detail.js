@@ -55,6 +55,7 @@
             initialize: agent.status === 'Login Success',
             pause: agent.status === 'Running',
             resume: agent.status === 'Paused',
+            restart: agent.status !== 'Stopped',
             stop: agent.status !== 'Stopped'
         };
         root.querySelectorAll('[data-agent-action]').forEach((button) => {
