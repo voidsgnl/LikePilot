@@ -24,13 +24,6 @@
     "api_key": "",
     "max_retries": 3
   },
-  "performance": {
-    "monitoring_enabled": true,
-    "metrics_window_minutes": 60,
-    "cpu_alert_threshold": 90,
-    "memory_alert_threshold": 85,
-    "disk_alert_threshold": 90
-  },
   "dashboard": {
     "use_websockets": true,
     "refresh_interval_seconds": 2,
