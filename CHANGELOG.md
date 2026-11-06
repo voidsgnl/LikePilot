@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Documented the canonical SQLite schema, runtime data layout, additive migration behavior, legacy import rules, credential/profile migrations, and backup/restore requirements in docs/architecture/persistence.md.
+
 - Removed the built-in dashboard password fallback. Existing strong DASHBOARD_PASS overrides remain supported; otherwise a unique password and persistent Flask session key are created under data/config with owner-only permissions. Included both files in backup/restore, hardened session cookies and rotation, added failed-login throttling, and kept the default dashboard bind address local. Added dashboard security and recovery documentation; local login and HTTPS validation remain pending.
 
 - Disabled the in-place updater installer and removed its unverified ZIP extraction/direct source-overwrite path. Release checks remain available, but updates must be installed manually until signed package verification and atomic rollback-safe staging are implemented.
