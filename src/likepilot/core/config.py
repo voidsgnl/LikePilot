@@ -181,12 +181,19 @@ def get_proxy_list():
     stored = get_secret("config.proxy.proxy_list")
     if stored:
         try:
-            return json.loads(stored)
+            proxies = json.loads(stored)
+            from likepilot.core.security import register_secret
+            for proxy in proxies:
+                register_secret(proxy)
+            return proxies
         except (TypeError, json.JSONDecodeError):
             raise ValueError("Stored proxy configuration is invalid; refusing to discard it.")
 
     legacy = get_config_value("proxy.proxy_list", []) or []
     if legacy:
+        from likepilot.core.security import register_secret
+        for proxy in legacy:
+            register_secret(proxy)
         set_secret("config.proxy.proxy_list", json.dumps(legacy))
         set_config_value("proxy.proxy_list", [])
     return legacy
