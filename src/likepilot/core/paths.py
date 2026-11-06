@@ -14,6 +14,7 @@ _DATA_FILES = {
     "likeit.db": ("database", "likeit.db"),
     "runtime_port.txt": ("runtime", "runtime_port.txt"),
     "update.zip": ("tmp", "update.zip"),
+    "credential.key": ("config", "credential.key"),
 }
 _TRACKED_LEGACY_FILES = {"config.json", "agents.json", "stats.json"}
 _DATA_DIRS = {
