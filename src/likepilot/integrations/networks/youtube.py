@@ -106,7 +106,7 @@ class YouTubeBase(Like4LikeBase):
             self.random_sleep(8, 12)
             if not self.update_credits():
                 self.emit_log(
-                    f"{platform_name} provider credits could not be read; task window left open.",
+                    f"{platform_name} provider credit increase could not be confirmed; task window left open.",
                     level="WARNING",
                 )
                 return False
