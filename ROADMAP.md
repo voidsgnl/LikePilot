@@ -1,5 +1,14 @@
 # LikePilot Roadmap
 
+## 2026-11-07 — Reference redesign: component-level refinement
+- Added a final-layer stylesheet for nested dashboard UI: Settings, agent creation/editing fields, provider login cards, quick-agent switch, agent snapshot/directory tables, agent detail controls, dialogs, platform-chain picker, analytics, and operations surfaces.
+- Unified control dimensions, focus and disabled states, button hierarchy, table density, status pills, card borders, and responsive behavior with the navy/blue reference design.
+- Compact density now applies to nested form controls and data tables as well as outer panels.
+- Loaded the refinement layer after existing styles and bumped the service-worker cache to v1.0.18.
+- No routes, API contracts, form identifiers, or runtime behavior changed.
+- Firefox visual verification of nested components remains outstanding; this pass is not marked complete until checked in the running application.
+
+
 **Project status:** Working web application; active restructuring and verification  
 **Primary branch:** `main`  
 **Delivery model:** One browser-accessed web application. Desktop applications and executable builds are not supported.  
