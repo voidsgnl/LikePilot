@@ -35,7 +35,6 @@ DEFAULT_CONFIG = {
         "max_retries": 3,
     },
     "dashboard": {
-        "use_websockets": False,  # Toggle between polling and websockets
         "refresh_interval_seconds": 2,
         "chart_history_points": 200,
     },
@@ -191,12 +190,6 @@ def get_captcha_api_key():
     """Get the CAPTCHA service API key."""
     config = load_config()
     return config.get("captcha", {}).get("api_key", "")
-
-
-def is_websocket_enabled():
-    """Check if WebSocket mode is enabled for dashboard."""
-    config = load_config()
-    return config.get("dashboard", {}).get("use_websockets", False)
 
 
 def get_stealth_settings():
