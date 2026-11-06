@@ -17,7 +17,6 @@ dependencies = [
     "undetected-chromedriver",
     "flask",
     "requests",
-    "eventlet",
 ]
 
 [project.optional-dependencies]
