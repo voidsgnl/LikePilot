@@ -342,7 +342,6 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
 
             except Exception as e:
                 self.emit_log(f"YLH Runtime Error: {e}", level="ERROR")
-                self.driver.refresh()
                 time.sleep(5)
 
     def skip_task(self, container_id):
@@ -625,8 +624,5 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
             except Exception as exc:
                 self.emit_log(f"YLH YouTube subscribe runtime error: {exc}", level="ERROR")
                 self.record_page_diagnostics("youlikehits_youtube_sub_runtime_error")
-                try:
-                    self.driver.refresh()
-                except Exception:
-                    pass
+                # Preserve any open task window for manual recovery.
                 time.sleep(4)
