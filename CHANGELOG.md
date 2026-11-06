@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added the provider/network/action matrix and a registry consistency regression test. Registered the existing YouLikeHits YouTube Subscribe adapter in both the runtime bot registry and task URL map, making the already-implemented action selectable by agents. The matrix records 25 registered provider/task combinations and distinguishes code wiring from pending live-site verification.
+
 - Documented the canonical SQLite schema, runtime data layout, additive migration behavior, legacy import rules, credential/profile migrations, and backup/restore requirements in docs/architecture/persistence.md.
 
 - Removed the built-in dashboard password fallback. Existing strong DASHBOARD_PASS overrides remain supported; otherwise a unique password and persistent Flask session key are created under data/config with owner-only permissions. Included both files in backup/restore, hardened session cookies and rotation, added failed-login throttling, and kept the default dashboard bind address local. Login throttling and session-cookie policy are covered by regression tests. Added dashboard security and recovery documentation; local login and HTTPS validation remain pending.
