@@ -1,21 +1,50 @@
 {% extends "layout.html" %}
 {% block body_class %}page-dashboard{% endblock %}
 {% block title %}Overview{% endblock %}
-{% block subtitle %}Live status and credit balances for configured agents.{% endblock %}
-{% block head %}<script src="{{ url_for('static', filename='overview.js') }}" defer></script>{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='overview.js') }}" defer></script>
+{% endblock %}
 {% block content %}
-<div class="overview-page">
-    <section class="workspace-metrics overview-metrics">
-        <article class="stat-card"><div class="stat-label">Configured agents</div><div class="stat-value" id="overview-total">—</div></article>
-        <article class="stat-card"><div class="stat-label">Running</div><div class="stat-value" id="overview-running">—</div></article>
-        <article class="stat-card"><div class="stat-label">Waiting / attention</div><div class="stat-value" id="overview-waiting">—</div></article>
-        <article class="stat-card"><div class="stat-label">Stopped</div><div class="stat-value" id="overview-stopped">—</div></article>
+<div class="overview-page reference-overview">
+    <section class="overview-hero">
+        <div class="overview-hero-copy">
+            <span class="overview-eyebrow">LIKEPILOT WORKSPACE</span>
+            <h2>Welcome back</h2>
+            <p>Monitor your agents, provider connections, and collected credits from one place.</p>
+            <div class="overview-hero-actions">
+                <a href="/settings/agents/new" class="overview-primary-action">Create agent <span aria-hidden="true">↗</span></a>
+                <a href="/agents" class="overview-secondary-action">View agents</a>
+            </div>
+        </div>
+        <div class="overview-hero-state">
+            <span class="overview-state-orbit" aria-hidden="true"><span></span></span>
+            <div><span class="overview-state-label">WORKSPACE STATUS</span><strong id="overview-workspace-state">Connecting</strong><small id="overview-workspace-detail">Checking runtime activity</small></div>
+        </div>
     </section>
-    <section class="overview-columns overview-columns-single">
-        <section class="panel panel-pad stack-sm">
-            <div class="surface-header"><div><div class="section-kicker">Runtime inventory</div><h3 class="section-heading">Agent snapshot</h3></div><div class="surface-header-actions"><span id="overview-updated" class="section-subtle" aria-live="off"></span><a class="btn-secondary btn-compact" href="/agents">View all</a></div></div>
-            <div class="table-wrap"><table class="data-table overview-table"><thead><tr><th>Agent</th><th>Status</th><th>Provider</th><th>Platform</th><th>Credits</th></tr></thead><tbody id="overview-agent-rows"><tr><td colspan="5" class="section-subtle">&nbsp;</td></tr></tbody></table></div>
-        </section>
+
+    <section class="overview-metric-grid" aria-label="Agent overview">
+        <article class="overview-metric-card metric-blue"><span class="metric-icon" aria-hidden="true">▤</span><span class="stat-label">Configured agents</span><strong class="stat-value" id="overview-total">—</strong><small>All configured agents</small></article>
+        <article class="overview-metric-card metric-green"><span class="metric-icon" aria-hidden="true">▶</span><span class="stat-label">Running</span><strong class="stat-value" id="overview-running">—</strong><small>Active workers</small></article>
+        <article class="overview-metric-card metric-violet"><span class="metric-icon" aria-hidden="true">◷</span><span class="stat-label">Waiting / attention</span><strong class="stat-value" id="overview-waiting">—</strong><small>Require attention</small></article>
+        <article class="overview-metric-card metric-rose"><span class="metric-icon" aria-hidden="true">Ⅱ</span><span class="stat-label">Stopped</span><strong class="stat-value" id="overview-stopped">—</strong><small>Currently stopped</small></article>
+    </section>
+
+    <section class="overview-chart-grid">
+        <article class="overview-chart-card overview-trend-card">
+            <div class="overview-card-heading"><div><span class="overview-eyebrow">PERFORMANCE</span><h3>Credit activity</h3></div><span class="overview-card-note">Recorded history</span></div>
+            <div class="overview-chart-wrap"><canvas id="overview-credit-chart" aria-label="Recorded credit history chart"></canvas><div id="overview-chart-empty" class="overview-chart-empty" hidden>No credit history has been recorded yet.</div></div>
+            <div class="overview-chart-foot"><span>Latest balance</span><strong id="overview-latest-credits">—</strong><span class="overview-foot-spacer"></span><span>Session gain</span><strong id="overview-session-gain">—</strong></div>
+        </article>
+        <article class="overview-chart-card overview-platform-card">
+            <div class="overview-card-heading"><div><span class="overview-eyebrow">DISTRIBUTION</span><h3>Platform activity</h3></div></div>
+            <div class="overview-platform-content"><div class="overview-doughnut-wrap"><canvas id="overview-platform-chart" aria-label="Platform activity distribution chart"></canvas><div class="overview-doughnut-total" id="overview-platform-total">0</div></div><div id="overview-platform-legend" class="overview-platform-legend"><span class="section-subtle">No platform activity recorded.</span></div></div>
+        </article>
+    </section>
+
+    <section class="panel panel-pad overview-agent-panel">
+        <div class="surface-header"><div><span class="overview-eyebrow">RUNTIME INVENTORY</span><h3 class="section-heading">Agent snapshot</h3></div><div class="surface-header-actions"><span id="overview-updated" class="section-subtle" aria-live="off"></span><a class="btn-secondary btn-compact" href="/agents">View all</a></div></div>
+        <div class="table-wrap"><table class="data-table overview-table"><thead><tr><th>Agent</th><th>Status</th><th>Provider</th><th>Platform</th><th>Credits</th></tr></thead><tbody id="overview-agent-rows"><tr><td colspan="5" class="section-subtle">&nbsp;</td></tr></tbody></table></div>
     </section>
     <div id="overview-error" class="notice notice-danger" hidden></div>
 </div>
