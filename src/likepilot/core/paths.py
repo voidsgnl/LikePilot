@@ -15,6 +15,7 @@ _DATA_FILES = {
     "runtime_port.txt": ("runtime", "runtime_port.txt"),
     "update.zip": ("tmp", "update.zip"),
 }
+_TRACKED_LEGACY_FILES = {"config.json", "agents.json", "stats.json"}
 _DATA_DIRS = {
     "profiles": "profiles",
     "logs": "logs",
@@ -95,10 +96,15 @@ def runtime_path(*parts):
         legacy = root / first
         destination.parent.mkdir(parents=True, exist_ok=True)
         if legacy.exists() and not destination.exists() and legacy.is_file():
-            try:
-                os.replace(legacy, destination)
-            except OSError:
+            if first in _TRACKED_LEGACY_FILES:
+                # These compatibility seeds are tracked by Git. Copy them so
+                # upgrading a checkout does not create tracked-file deletions.
                 shutil.copy2(legacy, destination)
+            else:
+                try:
+                    os.replace(legacy, destination)
+                except OSError:
+                    shutil.copy2(legacy, destination)
         return str(destination.joinpath(*map(str, parts[1:])))
 
     if first in _DATA_DIRS:
