@@ -15,11 +15,12 @@ def test_runtime_file_paths_use_data_categories(tmp_path, monkeypatch):
 def test_runtime_file_migration_preserves_legacy_file(tmp_path, monkeypatch):
     monkeypatch.setenv("LIKEPILOT_DATA_DIR", str(tmp_path))
     legacy = tmp_path / "config.json"
-    legacy.write_text('{"browser":{"default":"firefox"}}', encoding="utf-8")
+    expected = '{"browser":{"default":"firefox"}}'
+    legacy.write_text(expected, encoding="utf-8")
 
     destination = runtime_path("config.json")
 
-    assert open(destination, encoding="utf-8").read() == legacy.read_text(encoding="utf-8")
+    assert open(destination, encoding="utf-8").read() == expected
     assert not legacy.exists()
 
 
