@@ -187,7 +187,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Include the matching encryption key in backup/restore archives and document that backup archives must be protected as sensitive files.
   - [x] Remove the obsolete `security.encrypt_credentials=false` setting; encryption is no longer an optional toggle.
   - [x] Migrate authenticated proxy entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings; clear plaintext config values after successful migration and keep proxy-list updates encrypted.
-  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions verification pending.
+  - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 56 tests on Python 3.14.
   - [ ] Verify migration and recovery against the user's existing local database and configuration.
 - [ ] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
 - [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
