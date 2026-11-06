@@ -34,11 +34,6 @@ DEFAULT_CONFIG = {
         "api_key": "",
         "max_retries": 3,
     },
-    "performance": {
-        "use_multiprocessing": False,  # Toggle between threading and multiprocessing
-        "max_agents_per_process": 1,
-        "process_restart_on_crash": True,
-    },
     "dashboard": {
         "use_websockets": False,  # Toggle between polling and websockets
         "refresh_interval_seconds": 2,
