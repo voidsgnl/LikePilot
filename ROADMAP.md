@@ -195,7 +195,10 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add regression tests for common credential formats, persisted agent-log redaction, notification payload sanitization, and diagnostic HTML masking.
   - [x] Mask password, hidden, token, CSRF, and API-key form values in new HTML/screenshot diagnostics; restrict diagnostic directory/files to owner-only permissions where supported.
   - [ ] Audit remaining exception and diagnostic surfaces, and assess existing log/diagnostic files for safe cleanup or migration.
-- [ ] **P4.5 — Harden or disable unsafe updater installation behavior.**
+- [x] **P4.5 — Harden or disable unsafe updater installation behavior.**
+  - [x] Disable in-place updater installation because release ZIPs are not signature-verified, path-validated, or atomically staged.
+  - [x] Remove the archive extraction and direct source-overwrite implementation; retain release checking only. Manual installation is required until a verifiable, rollback-safe updater is designed.
+  - [x] Add a regression test proving install requests do not download or execute release archives.
 - [ ] **P4.6 — Review dashboard authentication, sessions, and network exposure.**
   - [ ] Remove the built-in `admin` / `likepilot2026` fallback and require an explicitly configured dashboard password without locking out existing installations.
 
