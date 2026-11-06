@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from datetime import datetime, timedelta, timezone
 from likepilot.core.paths import runtime_path
 from likepilot.core.credentials import decrypt_secret, encrypt_secret, is_encrypted
+from likepilot.core.security import redact_sensitive_text, register_secret
 
 DB_FILE = runtime_path("likepilot.db")
 LEGACY_DB_FILE = runtime_path("likeit.db")
@@ -268,6 +269,8 @@ def get_provider_login_settings(site):
         "username": values.get(keys["username"], ""),
         "password": decrypt_secret(values.get(keys["password"], "")),
     }
+    register_secret(result["password"])
+    return result
 
 
 def set_provider_login_settings(site, enabled, username, password=None, clear_password=False):
@@ -307,7 +310,9 @@ def get_secret(name, default=""):
     init_db()
     with _DB_LOCK, _connect() as conn:
         row = conn.execute("SELECT value FROM settings WHERE key = ?", (f"secret.{name}",)).fetchone()
-    return decrypt_secret(row["value"]) if row else default
+    value = decrypt_secret(row["value"]) if row else default
+    register_secret(value)
+    return value
 
 
 def set_secret(name, value):
@@ -393,6 +398,7 @@ def get_agent(name):
             return None
         result = dict(row)
         result.pop("login_password", None)
+        register_secret(result.get("proxy"))
         return result
 
 
@@ -437,6 +443,8 @@ def update_agent(name, **fields):
         assignments.append(f"{key} = ?")
         if key == "login_password":
             value = encrypt_secret(value)
+        elif key == "last_error":
+            value = redact_sensitive_text(value)
         values.append(value)
     if not assignments:
         return
@@ -458,6 +466,7 @@ def heartbeat_agent(name, status=None):
 
 
 def append_agent_log(name, message, level="INFO"):
+    message = redact_sensitive_text(message)
     init_db()
     with _DB_LOCK, _connect() as conn:
         conn.execute(
