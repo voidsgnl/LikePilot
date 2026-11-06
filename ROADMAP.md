@@ -65,7 +65,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 - [ ] **P1.4 — Complete runtime-data migration.**
   - [ ] Define the canonical data directory and configuration precedence.
   - [ ] Add non-destructive migration/compatibility handling for current root-level files.
-  - [ ] Move runtime-generated logs, profiles, database, backups, and diagnostics only after backup/restore tests.
+  - [ ] Move runtime-generated logs, browser profiles (`profiles/` → `data/profiles/`), database, backups, and diagnostics only after backup/restore tests.
   - **Acceptance:** existing user data is discovered and preserved after upgrade.
 - [~] **P1.5 — Resolve redundancy and legacy code.**
   - [x] Remove obsolete `index.html` and `settings.html` templates after tracing active Flask routes to their dedicated replacements.
@@ -221,6 +221,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | A-007 | Original silent launcher advertised the wrong port and used Windows-only flags. | [x] Retired | Use the canonical web-server command |
 | A-008 | Browser driver was Chrome-only; legacy `distutils` import failed under Python 3.14. | [~] Added global Chrome/Firefox selection, Ubuntu Firefox Snap binary resolution, and browser-specific stealth handling; local lifecycle verification pending | Verify Firefox/geckodriver startup and agent lifecycle, then run Chrome regression |
 | A-009 | Provider login credentials and mode were configured per agent despite shared provider accounts. | [~] Added per-provider settings, inherited runtime behavior, and manual fallback for verification; local provider-specific validation pending | Verify all provider login forms and complete credential-at-rest hardening |
+| A-010 | Local checkout retains legacy root directories after the src-layout migration. | [~] User inspection found `web/` and `modules/` contain only `__pycache__`, and `tools/` contains the retired `build/` directory; `profiles/` contains persistent browser data and must be preserved | Remove only confirmed cache/build leftovers locally; defer moving `profiles/` to `data/profiles/` until P1.4 compatibility and backup/restore checks are implemented |
 
 ## Change tracking
 
@@ -234,6 +235,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
 | 2026-11-06 | Restricted Chrome CDP stealth injection to Chrome so Firefox does not call Selenium's removed Firefox CDP implementation; added regression tests for both browser paths. | Source-level regression tests added; local Firefox startup and full suite execution pending. |
 | 2026-11-06 | Added system-level provider login settings for Like4Like, KingdomLikes, and YouLikeHits; agents inherit the assigned provider's Auto login mode and credentials, with manual fallback for missing credentials or verification challenges. | GitHub Actions: 24 tests passed; live provider login validation remains pending. |
 | 2026-11-06 | Extracted `Like4LikeBase` into `providers/like4like.py`; updated Facebook, Instagram, TikTok, X, and YouTube adapters while keeping shared lifecycle behavior in `providers/base.py`. | Source/import mapping updated; CI and runtime import checks pending. |
+| 2026-11-06 | Recorded the remaining local-only legacy directories: `web/` and `modules/` contain only Python cache files, `tools/` contains the retired build directory, and browser profiles remain persistent runtime data. Selected P0.2 package-backed launcher verification as the next task; profile relocation remains part of P1.4. | Findings reported from the user's local checkout; no local files or runtime data were changed. Latest GitHub Actions run for `0dde46f` passed. |
 
 
 ## Phase 8 — Dashboard visual system
