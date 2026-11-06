@@ -66,3 +66,27 @@ def test_task_window_closes_after_credit_collection_and_restores_provider():
     assert bot.close_task_window("task", "provider", credits_collected=True) is True
     assert bot.driver.window_handles == ["provider"]
     assert bot.driver.current_window_handle == "provider"
+
+
+class _DelayedCreditBot(_WindowBot):
+    def __init__(self):
+        super().__init__("user", "password")
+        self.credit_checks = 0
+
+    def update_credits(self):
+        self.credit_checks += 1
+        return self.credit_checks >= 2
+
+
+def test_credit_collection_waits_for_delayed_provider_update():
+    bot = _DelayedCreditBot()
+
+    assert bot.wait_for_credit_increase(timeout_seconds=0.5, poll_interval=0.01) is True
+    assert bot.credit_checks == 2
+
+
+def test_credit_collection_times_out_without_confirmed_increase():
+    bot = _WindowBot("user", "password")
+    bot.update_credits = lambda: False
+
+    assert bot.wait_for_credit_increase(timeout_seconds=0.02, poll_interval=0.01) is False
