@@ -1,5 +1,15 @@
 # LikePilot Roadmap
 
+## 2026-11-09 — Workspace navigation and agent-first overview
+- Replaced the icon rail + permanent sidebar + duplicate top shortcuts with a single horizontal primary navigation and route-aware contextual navigation for Analytics, Settings, and Operations.
+- Added direct primary navigation to the existing Providers and Platforms pages without changing Flask routes or API contracts.
+- Recomposed Overview around live agent status, the agent inventory, and a recent-event timeline sourced from existing runtime log data; removed the redundant overview charts from this page (credit analytics remain available under Analytics).
+- Added a final workspace stylesheet and aligned the default appearance to a light navy/blue workspace, while retaining dark and high-contrast modes.
+- Corrected the high-contrast shortcut to update the root theme state and fixed service-worker cache versioning so the new stylesheet and other updated static assets are fetched.
+- Added regression assertions for the new navigation and cache asset.
+- [ ] Run the Python 3.14 CI suite and verify all dashboard routes in Firefox and Chrome at desktop and mobile widths.
+
+
 ## 2026-11-07 — Shared legacy-surface replacement
 - Replaced remaining legacy near-black component fills in table wrappers, inset panels, focus cards, event rows, overview shortcuts, integration marks, agent workspace metrics, and directory surfaces with the reference surface tokens.
 - Standardized status badge fills while preserving semantic running, waiting, and stopped colors; removed legacy glow/shadow treatment from shared action controls.
