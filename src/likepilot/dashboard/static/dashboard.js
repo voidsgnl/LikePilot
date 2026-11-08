@@ -113,8 +113,8 @@ function applyTheme(theme) {
 }
 
 function initializeTheme() {
-    const storedTheme = localStorage.getItem('theme') || 'dark';
-    const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'dark';
+    const storedTheme = localStorage.getItem('theme') || 'light';
+    const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'light';
     applyTheme(savedTheme);
 }
 
