@@ -20,7 +20,6 @@ const STATIC_ASSETS = [
     '/static/reference-layout.css',
     '/static/detail-polish.css',
     '/static/workspace-navigation.css',
-    'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap'
 ];
 
 // Install event - cache static assets
