@@ -156,15 +156,19 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "initializePredictionChart" not in script
     assert "Captured balance history." in template
 
-def test_login_screen_is_centered_and_minimal():
+def test_login_screen_uses_responsive_flight_layout():
     template = (DASHBOARD / "templates" / "login.html").read_text(encoding="utf-8")
     styles = (DASHBOARD / "static" / "auth.css").read_text(encoding="utf-8")
 
-    assert 'class="login-card"' in template
-    assert "place-items:center" in styles
-    assert "Mission control for multi-account credit farming." not in template
+    assert 'class="flight-panel"' in template
+    assert 'class="login-panel"' in template
+    assert 'id="password-toggle"' in template
+    assert "pilot-flight.svg" in template
+    assert "Your agents." in template
+    assert "place-items: center" in styles
+    assert "@media (max-width: 700px)" in styles
+    assert "box-shadow" not in styles
     assert "feature-grid" not in template
-    assert "login-footnote" not in template
 
 
 def test_dashboard_shell_avoids_redundant_copy_and_loading_motion():
@@ -234,5 +238,7 @@ def test_provider_login_is_system_level_not_agent_level():
 
 def test_workspace_navigation_styles_are_cached_for_release():
     service_worker = (DASHBOARD / "static" / "sw.js").read_text(encoding="utf-8")
-    assert "'likepilot-static-v1.0.22'" in service_worker
+    assert "'likepilot-static-v1.0.24'" in service_worker
+    assert "'/static/auth.css'" in service_worker
+    assert "'/static/pilot-flight.svg'" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
