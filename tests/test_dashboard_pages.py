@@ -70,10 +70,13 @@ def test_analytics_does_not_present_fabricated_telemetry():
     assert "Math.random()" not in analytics_script
 
 
-def test_dashboard_navigation_omits_static_catalog_pages():
+def test_workspace_navigation_exposes_all_primary_destinations():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
-    assert 'href="/providers"' not in layout
-    assert 'href="/platforms"' not in layout
+    for path in ("/dashboard", "/agents", "/analytics", "/providers", "/platforms", "/operations/database", "/settings/browser"):
+        assert f'href="{path}"' in layout
+    assert 'class="icon-rail"' not in layout
+    assert 'id="sidebar"' not in layout
+    assert 'class="context-nav"' in layout
 
 
 def test_chart_library_is_loaded_only_on_analytics():
@@ -227,3 +230,9 @@ def test_provider_login_is_system_level_not_agent_level():
     assert 'data-provider-login-enabled' in provider_template
     assert 'data-provider-login-username' in provider_template
     assert 'data-provider-login-password' in provider_template
+
+
+def test_workspace_navigation_styles_are_cached_for_release():
+    service_worker = (DASHBOARD / "static" / "sw.js").read_text(encoding="utf-8")
+    assert "'likepilot-static-v1.0.22'" in service_worker
+    assert "'/static/workspace-navigation.css'" in service_worker
