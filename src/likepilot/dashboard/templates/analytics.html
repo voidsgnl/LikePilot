@@ -91,13 +91,6 @@
         </div>
     </section>
 
-    <nav class="subnav page-nav" aria-label="Analytics pages">
-        <a class="subnav-button {% if analytics_view == 'summary' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='summary') }}">Summary</a>
-        <a class="subnav-button {% if analytics_view == 'trends' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='trends') }}">Trends</a>
-        <a class="subnav-button {% if analytics_view == 'platforms' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='platforms') }}">Platforms</a>
-        <a class="subnav-button {% if analytics_view == 'export' %}active{% endif %}" href="{{ url_for('analytics', analytics_view='export') }}">Export</a>
-    </nav>
-
     <div id="analytics-feedback" class="section-subtle" aria-live="polite"></div>
 
     <div class="tab-panel {% if analytics_view == 'summary' %}active{% endif %}" data-tab-panel="summary" {% if analytics_view != 'summary' %}hidden{% endif %}>
