@@ -9,12 +9,6 @@
 
 {% block content %}
 <section class="panel panel-pad stack-sm page-section console-shell" data-operation-view="{{ operation_view|default('database') }}">
-    <div class="subnav">
-        <a class="subnav-button {% if operation_view == 'database' %}active{% endif %}" href="{{ url_for('operations', operation_view='database') }}">Database</a>
-        <a class="subnav-button {% if operation_view == 'logs' %}active{% endif %}" href="{{ url_for('operations', operation_view='logs') }}">Logs</a>
-        <a class="subnav-button {% if operation_view == 'diagnostics' %}active{% endif %}" href="{{ url_for('operations', operation_view='diagnostics') }}">Diagnostics</a>
-    </div>
-
     <div id="operations-feedback" class="section-subtle" aria-live="polite"></div>
 
     {% if operation_view == 'database' %}
