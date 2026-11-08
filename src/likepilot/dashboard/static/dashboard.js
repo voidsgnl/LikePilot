@@ -97,9 +97,9 @@ function updateThemeLabel(theme) {
     }
 }
 
-function applyTheme(theme) {
+function applyTheme(theme, notify = true) {
     const root = document.documentElement;
-    const next = theme || 'dark';
+    const next = theme || 'light';
     root.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
     updateThemeLabel(next);
@@ -109,13 +109,13 @@ function applyTheme(theme) {
     setTimeout(() => root.style.transition = '', 300);
 
     window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: next } }));
-    showNotification(`Theme changed to ${next}`, 'info', 1500);
+    if (notify) showNotification(`Theme changed to ${next}`, 'info', 1500);
 }
 
 function initializeTheme() {
     const storedTheme = localStorage.getItem('theme') || 'light';
     const savedTheme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'light';
-    applyTheme(savedTheme);
+    applyTheme(savedTheme, false);
 }
 
 // Enhanced sidebar toggle with smooth animation
