@@ -167,7 +167,7 @@ def test_login_screen_uses_responsive_flight_layout():
     assert "Your agents." in template
     assert "place-items: center" in styles
     assert "@media (max-width: 700px)" in styles
-    assert "box-shadow" not in styles
+    assert "filter: blur" not in styles
     assert "feature-grid" not in template
 
 
