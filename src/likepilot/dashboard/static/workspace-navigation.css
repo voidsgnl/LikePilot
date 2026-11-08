@@ -113,3 +113,45 @@ html[data-density='comfortable'] .content-wrapper{padding-top:26px!important;pad
  .settings-agent-fields{grid-template-columns:1fr!important}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+
+/* Overview: prioritize the agent inventory and live event stream. */
+.overview-page{display:grid;gap:18px;min-width:0}
+.overview-intro{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:3px 0 2px}
+.overview-intro h2{margin:5px 0 4px;color:var(--text);font-size:19px;font-weight:700;letter-spacing:-.035em}
+.overview-intro p{margin:0;color:var(--text-muted);font-size:11px;line-height:1.55}
+.overview-intro-actions{display:flex;align-items:center;gap:12px;flex-shrink:0}
+.overview-workspace-status{display:inline-flex;align-items:center;min-height:29px;padding:0 10px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text-muted);font-size:10px;font-weight:650}
+.overview-workspace-status:before{content:"";width:7px;height:7px;margin-right:7px;border-radius:50%;background:var(--text-soft)}
+.overview-workspace-status.is-running{border-color:rgba(22,134,83,.22);background:var(--success-soft);color:var(--success)}
+.overview-workspace-status.is-running:before{background:var(--success)}
+.overview-workspace-status.is-waiting{border-color:rgba(166,106,8,.22);background:var(--warning-soft);color:var(--warning)}
+.overview-workspace-status.is-waiting:before{background:var(--warning)}
+.overview-metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.overview-metric-card{display:flex!important;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-height:88px!important;padding:14px 16px!important;border:1px solid var(--border)!important;border-radius:9px!important;background:var(--surface)!important;box-shadow:var(--shadow)!important}
+.overview-metric-card .metric-label{color:var(--text-muted);font-size:10px;font-weight:600}
+.overview-metric-card strong{color:var(--text);font-family:'JetBrains Mono',ui-monospace,monospace;font-size:22px;font-weight:650;line-height:1}
+.overview-main-grid{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,.85fr);align-items:start;gap:14px;min-width:0}
+.overview-agent-panel,.overview-activity-panel{min-width:0;overflow:hidden}
+.overview-agent-panel .surface-header,.overview-activity-panel .surface-header{align-items:center;margin-bottom:14px}
+.overview-agent-panel .surface-header p,.overview-activity-panel .surface-header p{margin:4px 0 0}
+.overview-table-meta{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.overview-table{min-width:720px}
+.overview-table th,.overview-table td{padding:11px 12px}
+.overview-table td:last-child{white-space:nowrap}
+.overview-activity-list{display:flex;flex-direction:column;gap:0;margin:0;padding:0;list-style:none}
+.overview-activity-item{display:grid;grid-template-columns:10px minmax(0,1fr);gap:11px;padding:13px 0;border-bottom:1px solid var(--border)}
+.overview-activity-item:first-child{padding-top:3px}
+.overview-activity-item:last-child{border-bottom:0;padding-bottom:2px}
+.overview-activity-mark{width:7px;height:7px;margin-top:5px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.overview-activity-mark.is-warning{background:var(--warning);box-shadow:0 0 0 3px var(--warning-soft)}
+.overview-activity-mark.is-error{background:var(--danger);box-shadow:0 0 0 3px var(--danger-soft)}
+.overview-activity-copy{min-width:0}
+.overview-activity-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--text-soft);font-size:9px}
+.overview-activity-meta a{color:var(--text);font-size:10px;font-weight:700;text-decoration:none}
+.overview-activity-meta a:hover{color:var(--accent)}
+.overview-activity-copy p{margin:5px 0;color:var(--text-muted);font-size:10px;line-height:1.5;overflow-wrap:anywhere}
+.overview-activity-copy time{color:var(--text-soft);font-size:9px}
+.overview-activity-empty{padding:22px 4px;color:var(--text-muted);font-size:11px;line-height:1.5}
+@media(max-width:1050px){.overview-main-grid{grid-template-columns:minmax(0,1fr)}.overview-activity-panel{order:2}}
+@media(max-width:700px){.overview-intro{align-items:flex-start;flex-direction:column}.overview-intro-actions{width:100%;justify-content:space-between}.overview-metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.overview-table-meta{align-items:flex-end;flex-direction:column;gap:6px}}
+@media(max-width:440px){.overview-metric-card{min-height:76px!important;padding:11px!important}.overview-metric-card strong{font-size:19px}.overview-table-meta .section-subtle{font-size:9px}}
