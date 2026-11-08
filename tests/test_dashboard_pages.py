@@ -123,7 +123,7 @@ def test_overview_update_indicator_has_a_matching_template_element():
 
     assert 'id="overview-updated"' in template
     assert "getElementById('overview-updated')" in script
-    assert "Agent snapshot" in template
+    assert "Your agents" in template
 
 
 def test_agent_directory_uses_one_contextual_empty_state():
