@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" fill="none" role="img" aria-labelledby="title desc">
+<title id="title">LikePilot pilot in flight</title>
+<desc id="desc">A cheerful aviator in a compact single-engine aircraft cruising above soft geometric clouds.</desc>
+<defs>
+  <linearGradient id="plane" x1="390" y1="270" x2="930" y2="500" gradientUnits="userSpaceOnUse"><stop stop-color="#F8FBFF"/><stop offset="1" stop-color="#B9D4E8"/></linearGradient>
+  <linearGradient id="wing" x1="550" y1="330" x2="800" y2="510" gradientUnits="userSpaceOnUse"><stop stop-color="#A9D9CF"/><stop offset="1" stop-color="#58B7A8"/></linearGradient>
+</defs>
+<g opacity=".32" stroke="#A9C7D8" stroke-width="2">
+  <path d="M94 176h115M152 118v116M1010 150h96M1058 102v96M950 610h150M1025 560v100"/>
+  <circle cx="152" cy="176" r="37"/><circle cx="1058" cy="150" r="31"/>
+</g>
+<g fill="#DCEAF1" opacity=".92">
+  <path d="M90 545c0-25 20-45 45-45 8-31 36-54 70-54 36 0 66 26 72 61 27 3 48 25 48 52 0 29-24 53-53 53H145c-30 0-55-24-55-54v-13Z"/>
+  <path d="M850 625c0-21 17-38 38-38 7-26 30-45 58-45 30 0 55 22 60 51 23 2 40 21 40 44 0 25-20 45-45 45H897c-26 0-47-21-47-47v-10Z"/>
+</g>
+<path d="M160 385c180-128 330-154 490-103 142 45 232 31 370-53" stroke="#8CB9CC" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 15" opacity=".8"/>
+<g transform="translate(155 60) rotate(-8 470 330)">
+  <path d="M250 400c125-80 302-105 497-79l122 17c33 5 56 31 52 57-3 24-25 42-51 41l-131-3c-154-4-295 21-431 79l-93 40c-25 11-53-1-61-26-8-23 1-48 23-62l73-64Z" fill="url(#plane)" stroke="#6D91A9" stroke-width="5"/>
+  <path d="M542 398 724 224c18-17 47-15 62 4l23 29-115 171-152 54Z" fill="url(#wing)" stroke="#477E82" stroke-width="5"/>
+  <path d="m565 414 175 144c17 14 43 10 55-8l17-25-122-145-125-33Z" fill="#70BFB0" stroke="#477E82" stroke-width="5"/>
+  <path d="m270 410-111-79c-17-12-40-5-48 14l-16 38 128 100Z" fill="#E8F1F5" stroke="#6D91A9" stroke-width="5"/>
+  <path d="m273 411-116 101c-17 15-15 42 5 54l24 14 144-123Z" fill="#A9D4E0" stroke="#6D91A9" stroke-width="5"/>
+  <path d="M348 379c41-75 111-112 187-104 57 6 102 39 127 91l-20 61-283 25-11-73Z" fill="#193D54" stroke="#102B40" stroke-width="7"/>
+  <path d="M390 375c29-48 77-72 129-68 39 3 69 22 90 54l-11 45-197 16-11-47Z" fill="#A8DDE0" stroke="#4B8997" stroke-width="5"/>
+  <path d="M463 325c-7-35 13-63 45-67 34-4 58 20 56 54l-3 45-89 7-9-39Z" fill="#D99A72" stroke="#6C4A3E" stroke-width="5"/>
+  <path d="M455 300c-1-36 24-63 59-65 36-2 60 23 58 58l-7 15c-19-14-45-21-72-15-14 3-25 8-34 16l-4-9Z" fill="#E9B94F" stroke="#8B6B32" stroke-width="5"/>
+  <path d="M474 294c21-11 48-13 73-4" stroke="#27475A" stroke-width="9" stroke-linecap="round"/>
+  <path d="M475 294h-17c-8 0-14 7-13 15l1 8c1 8 8 13 16 12l19-3M548 289l18-3c8-1 15 4 16 12l1 8c1 8-5 15-13 16l-19 2" stroke="#27475A" stroke-width="8" stroke-linecap="round"/>
+  <path d="M504 347c14 9 30 10 44 2" stroke="#8D4E48" stroke-width="4" stroke-linecap="round"/>
+  <path d="M537 356c-7 24-2 42 13 54l-54 8c-10-24-8-46 5-67l36 5Z" fill="#E9B94F" stroke="#8B6B32" stroke-width="4"/>
+  <path d="m570 366 44 20-17 24-43-17" fill="#E16F5B"/>
+  <path d="M917 341c48-19 79-13 105 5" stroke="#6D91A9" stroke-width="7" stroke-linecap="round"/>
+  <path d="M1000 310v101M1016 319v83" stroke="#6D91A9" stroke-width="6" stroke-linecap="round"/>
+  <path d="M1008 310c20-3 37 9 37 25s-17 28-37 25M1008 411c20 3 37-9 37-25s-17-28-37-25" stroke="#6D91A9" stroke-width="5" stroke-linecap="round"/>
+  <path d="M295 481c-20 19-31 42-30 68" stroke="#E16F5B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M317 471c-14 15-22 31-23 48" stroke="#E16F5B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M735 458c24 6 46 9 67 8" stroke="#8CB9CC" stroke-width="5" stroke-linecap="round"/>
+</g>
+<g fill="#A8C8D7" opacity=".8">
+  <circle cx="300" cy="226" r="5"/><circle cx="335" cy="208" r="3"/><circle cx="880" cy="280" r="5"/><circle cx="910" cy="258" r="3"/>
+</g>
+</svg>
