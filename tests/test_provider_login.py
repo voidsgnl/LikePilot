@@ -1,3 +1,4 @@
+import os
 from likepilot.core import credentials, state
 
 
@@ -205,3 +206,13 @@ def test_legacy_agent_proxy_is_migrated_to_encrypted_storage(tmp_path, monkeypat
         ).fetchone()[0]
     assert stored.startswith("enc:v1:")
     assert state.get_agent("legacy-proxy-agent")["proxy"] == proxy
+
+
+
+def test_database_and_runtime_directory_permissions_are_private(tmp_path, monkeypatch):
+    _use_temporary_database(tmp_path, monkeypatch)
+
+    state.init_db()
+
+    assert os.stat(state.DB_FILE).st_mode & 0o777 == 0o600
+    assert os.stat(tmp_path).st_mode & 0o777 == 0o700
