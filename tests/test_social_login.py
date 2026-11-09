@@ -178,3 +178,16 @@ def test_all_task_adapter_families_use_social_login_recovery():
     )
     for adapter in adapters:
         assert "wait_for_social_login()" in adapter.read_text(encoding="utf-8"), adapter.name
+
+
+def test_public_task_page_without_session_still_waits_for_sign_in(monkeypatch):
+    driver = _Driver("https://www.instagram.com/p/public-example/")
+    bot = _bot(driver)
+
+    def finish_login(_seconds):
+        driver.cookies = [{"name": "sessionid", "value": "authenticated"}]
+
+    monkeypatch.setattr(base.time, "sleep", finish_login)
+
+    assert bot.wait_for_social_login("Instagram", timeout_seconds=1, poll_interval=0.01) is True
+    assert bot.status_updates == ["Awaiting Social Login", "Running"]
