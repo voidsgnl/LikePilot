@@ -106,6 +106,8 @@ def test_agent_workspace_keeps_only_operational_metrics():
     assert "actionAvailability" in script
     assert "ready: agent.status === 'Awaiting Login'" in script
     assert "initialize: agent.status === 'Login Success'" in script
+    assert "Awaiting Social Login" in script
+    assert "Sign in to the social platform in the open browser window" in script
 
 
 def test_agent_workspace_separates_runtime_details_from_configuration():
