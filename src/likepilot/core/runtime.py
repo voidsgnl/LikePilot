@@ -508,7 +508,7 @@ class AgentSupervisor:
             return "fallback"
 
         if get_auto_switch():
-            next_platform = self._next_platform(platform)
+            next_platform = self._next_platform(platform, supported_platforms)
             update_agent(
                 agent_name,
                 platform=next_platform,
