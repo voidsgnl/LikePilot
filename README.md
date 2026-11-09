@@ -104,6 +104,7 @@ LikePilot reads environment settings from the runtime .env file and the process 
 | DASHBOARD_PASS | Generated when unset | Dashboard login password. A unique password is initialized and written to the runtime password file when no password is configured. |
 | FLASK_SECRET_KEY | Generated and persisted when unset | Secret used to sign Flask sessions. Configure a stable, private value for persistent deployments. |
 | DASHBOARD_COOKIE_SECURE | Application default | Set to true when the dashboard is served over HTTPS and secure cookies are required. |
+| LIKEPILOT_CHROME_VERSION | Auto-detected | Optional Chrome major-version override for undetected-chromedriver. Leave unset for automatic detection. |
 
 For a local installation, the default host binds the service to loopback so it is not directly reachable from other machines.
 
