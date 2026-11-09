@@ -120,7 +120,7 @@ TASK_URLS = {
 }
 
 
-ACTIVE_STATUSES = {"Awaiting Login", "Login Success", "Running", "Paused"}
+ACTIVE_STATUSES = {"Awaiting Login", "Login Success", "Awaiting Social Login", "Running", "Paused"}
 
 
 class AgentRuntime:
