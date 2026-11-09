@@ -12,7 +12,9 @@ def _dashboard_client():
 def test_agent_create_endpoint_validates_and_persists(monkeypatch):
     module, client = _dashboard_client()
     created = []
+    platform_updates = []
     monkeypatch.setattr(module, "add_agent", lambda *args, **kwargs: created.append((args, kwargs)))
+    monkeypatch.setattr(module, "update_agent", lambda name, **fields: platform_updates.append((name, fields)))
 
     invalid = client.post("/api/agents/add", json={"name": "worker"})
     assert invalid.status_code == 400
@@ -29,6 +31,7 @@ def test_agent_create_endpoint_validates_and_persists(monkeypatch):
         "fallback_chain": None,
         "comment_templates": None,
     })]
+    assert platform_updates == [("worker", {"platform": "Twitter"})]
 
 
 def test_agent_configuration_endpoint_updates_stopped_agent(monkeypatch):
@@ -151,3 +154,87 @@ def test_agent_delete_reports_missing_agent(monkeypatch):
 
     response = client.post("/api/agents/remove", json={"name": "missing"})
     assert response.status_code == 404
+
+
+
+def test_agent_creation_uses_a_platform_supported_by_selected_provider(monkeypatch):
+    module, client = _dashboard_client()
+    created = []
+    platform_updates = []
+    monkeypatch.setattr(module, "add_agent", lambda *args, **kwargs: created.append((args, kwargs)))
+    monkeypatch.setattr(module, "update_agent", lambda name, **fields: platform_updates.append((name, fields)))
+
+    response = client.post(
+        "/api/agents/add",
+        json={"name": "youtube-worker", "profile": "profile-youtube", "site": "YouLikeHits"},
+    )
+
+    assert response.status_code == 200
+    assert response.get_json()["platform"] == "YouTube Subs"
+    assert platform_updates == [("youtube-worker", {"platform": "YouTube Subs"})]
+
+
+def test_agent_creation_rejects_unsupported_provider(monkeypatch):
+    module, client = _dashboard_client()
+    created = []
+    monkeypatch.setattr(module, "add_agent", lambda *args, **kwargs: created.append(args))
+
+    response = client.post(
+        "/api/agents/add",
+        json={"name": "worker", "profile": "profile-a", "site": "UnknownProvider"},
+    )
+
+    assert response.status_code == 400
+    assert created == []
+
+
+def test_agent_creation_rejects_non_object_json():
+    _module, client = _dashboard_client()
+
+    response = client.post("/api/agents/add", json=["not", "an", "object"])
+
+    assert response.status_code == 400
+
+
+def test_provider_change_resets_platform_when_old_provider_does_not_support_it(monkeypatch):
+    module, client = _dashboard_client()
+    current = {
+        "status": "Stopped",
+        "site": "Like4Like",
+        "platform": "Twitter",
+        "chrome_profile": "profile-a",
+        "proxy": None,
+        "fallback_platform": None,
+        "fallback_chain": None,
+        "comment_templates": None,
+    }
+    updates = []
+    monkeypatch.setattr(module, "get_agent", lambda _name: dict(current))
+    monkeypatch.setattr(module, "update_agent", lambda name, **fields: updates.append((name, fields)))
+    monkeypatch.setattr(module, "append_agent_log", lambda *_args, **_kwargs: None)
+
+    response = client.post(
+        "/api/agents/update",
+        json={"current_name": "worker", "name": "worker", "profile": "profile-a", "site": "YouLikeHits"},
+    )
+
+    assert response.status_code == 200
+    assert ("worker", {"site": "YouLikeHits"}) in updates
+    assert ("worker", {"platform": "YouTube Subs"}) in updates
+
+
+def test_platform_endpoint_rejects_platform_not_supported_by_provider(monkeypatch):
+    module, client = _dashboard_client()
+    monkeypatch.setattr(module, "get_agent", lambda _name: {"site": "YouLikeHits", "status": "Stopped"})
+
+    response = client.post("/api/platform", json={"name": "worker", "platform": "Twitter"})
+
+    assert response.status_code == 400
+
+
+def test_control_endpoint_rejects_non_object_json():
+    _module, client = _dashboard_client()
+
+    response = client.post("/api/control", json=["worker", "start"])
+
+    assert response.status_code == 400
