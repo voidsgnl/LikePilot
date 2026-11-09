@@ -28,6 +28,15 @@ _DATA_DIRS = {
 }
 
 
+def _restrict_directory_permissions(path):
+    """Keep private runtime data directories accessible only to their owner."""
+    if os.name == "posix":
+        try:
+            os.chmod(path, 0o700)
+        except OSError:
+            pass
+
+
 def get_runtime_root():
     override = os.getenv("LIKEPILOT_DATA_DIR")
     if override:
@@ -83,7 +92,8 @@ def runtime_dir(name):
                 _merge_legacy_directory(legacy, destination)
         elif legacy.is_dir():
             _merge_legacy_directory(legacy, destination)
-    destination.mkdir(parents=True, exist_ok=True)
+    destination.mkdir(parents=True, exist_ok=True, mode=0o700)
+    _restrict_directory_permissions(destination)
     return str(destination)
 
 
@@ -99,7 +109,8 @@ def runtime_path(*parts):
         legacy = root / first
         if not legacy.exists() and first in _TRACKED_LEGACY_FILES:
             legacy = root / "legacy" / "runtime-seed" / first
-        destination.parent.mkdir(parents=True, exist_ok=True)
+        destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+        _restrict_directory_permissions(destination.parent)
         if legacy.exists() and not destination.exists() and legacy.is_file():
             if first in _TRACKED_LEGACY_FILES:
                 # These compatibility seeds are tracked by Git. Copy them so
