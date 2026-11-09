@@ -82,3 +82,27 @@ def test_stop_agent_joins_worker_before_releasing_runtime(monkeypatch):
     assert "agent-a" not in supervisor.active_agents
     assert "agent-a" not in supervisor.cooldowns
     assert updates == [{"status": "Stopped", "session_started_at": None}]
+
+
+
+def test_provider_platform_rotation_never_leaves_provider_capabilities():
+    supervisor = runtime.AgentSupervisor()
+
+    assert supervisor._next_platform(
+        "YouTube Subs",
+        ["YouTube Subs", "YouTube Likes"],
+    ) == "YouTube Likes"
+    assert supervisor._next_platform(
+        "YouTube Likes",
+        ["YouTube Subs", "YouTube Likes"],
+    ) == "YouTube Subs"
+
+
+def test_fallback_chain_ignores_platforms_not_supported_by_provider():
+    supervisor = runtime.AgentSupervisor()
+
+    assert supervisor._next_from_chain(
+        "YouTube Subs",
+        "Twitter, YouTube Subs, Instagram, YouTube Likes",
+        ["YouTube Subs", "YouTube Likes"],
+    ) == "YouTube Likes"
