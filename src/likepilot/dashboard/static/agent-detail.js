@@ -23,7 +23,10 @@
             return;
         }
         set('agent-name', name);
-        set('agent-summary', [agent.site, agent.platform].filter(Boolean).join(' · ') || 'Agent runtime');
+        const summary = [agent.site, agent.platform].filter(Boolean).join(' · ') || 'Agent runtime';
+        set('agent-summary', agent.status === 'Awaiting Social Login'
+            ? summary + ' · Sign in to the social platform in the open browser window. The current task will resume automatically.'
+            : summary);
         const badge = byId('agent-status');
         badge.textContent = agent.status || 'Unknown';
         badge.className = 'status-badge status-' + String(agent.status || 'unknown').toLowerCase().replace(/[^a-z0-9]+/g, '-');
@@ -53,7 +56,7 @@
             start: agent.status === 'Stopped',
             ready: agent.status === 'Awaiting Login',
             initialize: agent.status === 'Login Success',
-            pause: agent.status === 'Running',
+            pause: agent.status === 'Running' || agent.status === 'Awaiting Social Login',
             resume: agent.status === 'Paused',
             restart: agent.status !== 'Stopped',
             stop: agent.status !== 'Stopped'
