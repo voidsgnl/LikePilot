@@ -645,7 +645,7 @@ def control_agent():
         update_agent(name, status="Running")
         append_agent_log(name, "Ready received. Automation may proceed.", level="SYSTEM")
     elif action == 'pause':
-        if current["status"] != "Running":
+        if current["status"] not in {"Running", "Awaiting Social Login"}:
             return jsonify({"message": "Only a running agent can be paused."}), 409
         update_agent(name, status="Paused")
         pause_sent = supervisor.pause_agent(name)
