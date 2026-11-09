@@ -72,8 +72,12 @@ def test_analytics_does_not_present_fabricated_telemetry():
 
 def test_workspace_navigation_exposes_all_primary_destinations():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
-    for path in ("/dashboard", "/agents", "/analytics", "/providers", "/platforms", "/operations/database", "/settings/browser"):
+    for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/providers", "/platforms", "/operations/database"):
         assert f'href="{path}"' in layout
+    assert layout.count('class="pill-link') == 4
+    assert 'class="pill-nav"' in layout
+    assert 'class="primary-nav"' not in layout
+    assert 'class="topbar"' in layout
     assert 'class="icon-rail"' not in layout
     assert 'id="sidebar"' not in layout
     assert 'class="context-nav"' in layout
@@ -142,7 +146,8 @@ def test_global_header_keeps_only_actionable_status_and_navigation():
     script = (DASHBOARD / "static" / "dashboard.js").read_text(encoding="utf-8")
 
     assert 'id="live-updates-pill"' in layout
-    assert 'id="agent-quick-switch"' in layout
+    assert 'class="top-actions"' in layout
+    assert 'id="agent-quick-switch"' not in layout
     assert 'id="session-badge"' not in layout
     assert 'id="clock"' not in layout
     assert "renderSessionBadge" not in script
@@ -249,3 +254,4 @@ def test_workspace_navigation_styles_are_cached_for_release():
     assert "'/static/pilot-flight.svg'" not in service_worker
     assert "/favicon/brand-mark.svg" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
+    assert "'/static/floating-dashboard.css'" in service_worker
