@@ -670,3 +670,160 @@ html body .analytics-workspace{
  width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;
 }
 html body .content-wrapper{box-sizing:border-box!important;padding-left:clamp(16px,2vw,32px)!important;padding-right:clamp(16px,2vw,32px)!important}
+
+/*
+ * Surface normalization.
+ * Older workspace layers contain literal white/near-white backgrounds
+ * (including a 97% opaque white header) that bypass the theme variables.
+ * Keep the slate canvas, but force every shared workspace surface to use
+ * the same opaque dark-slate tokens in either saved theme mode.
+ */
+html[data-theme="light"],
+html[data-theme="dark"]{
+  --bg:#101820;
+  --bg-strong:#0c131a;
+  --surface:#192530;
+  --surface-strong:#202f3b;
+  --surface-muted:#15212b;
+  --surface-soft:#243541;
+  --border:#2c3d49;
+  --border-strong:#405461;
+  --text:#e7eef2;
+  --text-muted:#b4c1c9;
+  --text-soft:#899ba6;
+  --accent:#54bdb1;
+  --accent-strong:#72d1c6;
+  --accent-soft:#203e40;
+  color-scheme:dark;
+}
+html[data-theme="light"] body,
+html[data-theme="dark"] body,
+html[data-theme="light"] .app-shell,
+html[data-theme="dark"] .app-shell,
+html[data-theme="light"] .main-content,
+html[data-theme="dark"] .main-content,
+html[data-theme="light"] .content-wrapper,
+html[data-theme="dark"] .content-wrapper{
+  background:#101820!important;
+  color:#e7eef2!important;
+}
+html[data-theme="light"] .app-header,
+html[data-theme="dark"] .app-header,
+html[data-theme="light"] .header-primary-row,
+html[data-theme="dark"] .header-primary-row,
+html[data-theme="light"] .header-workspace-row,
+html[data-theme="dark"] .header-workspace-row,
+html[data-theme="light"] .context-nav,
+html[data-theme="dark"] .context-nav{
+  background:#141f29!important;
+  border-color:#2c3d49!important;
+}
+html[data-theme="light"] .panel,
+html[data-theme="dark"] .panel,
+html[data-theme="light"] .panel-pad,
+html[data-theme="dark"] .panel-pad,
+html[data-theme="light"] .page-section,
+html[data-theme="dark"] .page-section,
+html[data-theme="light"] .console-shell,
+html[data-theme="dark"] .console-shell,
+html[data-theme="light"] .inset-panel,
+html[data-theme="dark"] .inset-panel,
+html[data-theme="light"] .stat-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="light"] .directory-card,
+html[data-theme="dark"] .directory-card,
+html[data-theme="light"] .directory-toolbar,
+html[data-theme="dark"] .directory-toolbar,
+html[data-theme="light"] .agent-form,
+html[data-theme="dark"] .agent-form,
+html[data-theme="light"] .provider-login-card,
+html[data-theme="dark"] .provider-login-card,
+html[data-theme="light"] .workspace-hero,
+html[data-theme="dark"] .workspace-hero,
+html[data-theme="light"] .overview-recent,
+html[data-theme="dark"] .overview-recent,
+html[data-theme="light"] .overview-focus,
+html[data-theme="dark"] .overview-focus,
+html[data-theme="light"] .overview-metric-card,
+html[data-theme="dark"] .overview-metric-card,
+html[data-theme="light"] .overview-chart-card,
+html[data-theme="dark"] .overview-chart-card,
+html[data-theme="light"] .chart-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="light"] .activity-panel,
+html[data-theme="dark"] .activity-panel,
+html[data-theme="light"] .system-panel,
+html[data-theme="dark"] .system-panel,
+html[data-theme="light"] .focus-card,
+html[data-theme="dark"] .focus-card,
+html[data-theme="light"] .hero-panel,
+html[data-theme="dark"] .hero-panel,
+html[data-theme="light"] .hero-side,
+html[data-theme="dark"] .hero-side,
+html[data-theme="light"] .dashboard-card,
+html[data-theme="dark"] .dashboard-card,
+html[data-theme="light"] .metric-card,
+html[data-theme="dark"] .metric-card,
+html[data-theme="light"] .mini-stat,
+html[data-theme="dark"] .mini-stat,
+html[data-theme="light"] .table-wrap,
+html[data-theme="dark"] .table-wrap,
+html[data-theme="light"] .app-modal-card,
+html[data-theme="dark"] .app-modal-card{
+  background:#192530!important;
+  border-color:#2c3d49!important;
+  color:#e7eef2!important;
+  box-shadow:none!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+html[data-theme="light"] .live-pill,
+html[data-theme="dark"] .live-pill,
+html[data-theme="light"] .agent-quick-switch a,
+html[data-theme="dark"] .agent-quick-switch a,
+html[data-theme="light"] .agent-quick-switch button,
+html[data-theme="dark"] .agent-quick-switch button,
+html[data-theme="light"] .quick-agent,
+html[data-theme="dark"] .quick-agent{
+  background:#15212b!important;
+  border-color:#2c3d49!important;
+  color:#b4c1c9!important;
+}
+html[data-theme="light"] input,
+html[data-theme="dark"] input,
+html[data-theme="light"] select,
+html[data-theme="dark"] select,
+html[data-theme="light"] textarea,
+html[data-theme="dark"] textarea,
+html[data-theme="light"] .form-control,
+html[data-theme="dark"] .form-control{
+  background:#101820!important;
+  border-color:#405461!important;
+  color:#e7eef2!important;
+  box-shadow:none!important;
+}
+html[data-theme="light"] .data-table th,
+html[data-theme="dark"] .data-table th{
+  background:#15212b!important;
+  color:#b4c1c9!important;
+}
+html[data-theme="light"] .data-table td,
+html[data-theme="dark"] .data-table td,
+html[data-theme="light"] .section-heading,
+html[data-theme="dark"] .section-heading,
+html[data-theme="light"] .page-title,
+html[data-theme="dark"] .page-title,
+html[data-theme="light"] .card-title,
+html[data-theme="dark"] .card-title{
+  color:#e7eef2!important;
+}
+html[data-theme="light"] .section-subtle,
+html[data-theme="dark"] .section-subtle,
+html[data-theme="light"] .page-subtitle,
+html[data-theme="dark"] .page-subtitle,
+html[data-theme="light"] .muted,
+html[data-theme="dark"] .muted,
+html[data-theme="light"] .help-text,
+html[data-theme="dark"] .help-text{
+  color:#a8b7c0!important;
+}
