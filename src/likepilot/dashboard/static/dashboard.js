@@ -297,7 +297,7 @@ function showSuccessModal(message, options = {}) {
 
 function quickStatusClass(status) {
     if (status === 'Running') return 'quick-dot running';
-    if (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Switch') return 'quick-dot waiting';
+    if (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Social Login' || status === 'Awaiting Switch') return 'quick-dot waiting';
     return 'quick-dot stopped';
 }
 
