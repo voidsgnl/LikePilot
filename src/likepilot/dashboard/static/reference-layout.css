@@ -172,7 +172,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--accent)}
 .directory-agent-link:hover{color:var(--accent-strong)}
 .status-badge{min-height:25px;padding:0 10px;border:1px solid var(--border);border-radius:999px;background:var(--surface-soft);color:var(--text-muted);font-size:9px;font-weight:650}
 .status-running,.status-available{border-color:rgba(66,189,112,.25);background:var(--success-soft);color:var(--success)}
-.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-switch{border-color:rgba(228,179,78,.25);background:var(--warning-soft);color:var(--warning)}
+.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-social-login,.status-awaiting-switch{border-color:rgba(228,179,78,.25);background:var(--warning-soft);color:var(--warning)}
 .status-stopped,.status-not-found{border-color:var(--border);background:var(--surface-soft);color:var(--text-soft)}
 .subnav{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:5px;border:1px solid var(--border);border-radius:12px;background:var(--surface-muted)}
 .subnav-button{min-height:32px;padding:0 13px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--text-muted);font-size:10px}
