@@ -71,6 +71,8 @@
 
     <!-- ── DETAIL GRID ──────────────────────────────────── -->
     <div class="orbit-detail-grid">
+
+        <!-- Configuration -->
         <section class="orbit-card">
             <header class="orbit-card-head">
                 <div>
@@ -90,31 +92,62 @@
             </a>
         </section>
 
-        <section class="orbit-card">
+        <!-- Runtime · Pulse -->
+        <section class="orbit-card orbit-runtime-card">
             <header class="orbit-card-head">
                 <div>
                     <span class="orbit-kicker">Runtime</span>
-                    <h3 class="orbit-card-title">Session details</h3>
+                    <h3 class="orbit-card-title">Session pulse</h3>
                 </div>
-            </header>
-            <dl class="orbit-detail-list runtime-details">
-                <div><dt>Heartbeat</dt><dd class="mono" id="agent-heartbeat">—</dd></div>
-                <div><dt>Session started</dt><dd class="mono" id="agent-session-start">—</dd></div>
-            </dl>
-
-            <header class="orbit-card-head orbit-card-head-sub">
-                <div>
-                    <span class="orbit-kicker">Activity</span>
-                    <h3 class="orbit-card-title">Recent events</h3>
-                </div>
-                <span class="orbit-chip">Latest 5</span>
+                <span class="orbit-chip orbit-runtime-chip" id="agent-runtime-chip">—</span>
             </header>
 
-            <div id="agent-event-list" class="orbit-event-list">
-                <div class="orbit-event-empty">Loading events…</div>
+            <!-- Band 1 · heartbeat -->
+            <div class="orbit-runtime-band orbit-runtime-heartbeat">
+                <div class="orbit-pulse" id="agent-pulse" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="orbit-runtime-band-copy">
+                    <div class="orbit-runtime-band-label">Heartbeat</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-utc mono" id="agent-heartbeat-utc">—</span>
+                        <span class="orbit-runtime-relative" id="agent-heartbeat-rel">—</span>
+                    </div>
+                </div>
+                <span id="agent-heartbeat" hidden></span>
             </div>
-            <div id="agent-error" class="orbit-notice orbit-notice-danger" hidden></div>
+
+            <!-- Band 2 · session start + uptime -->
+            <div class="orbit-runtime-band orbit-runtime-session">
+                <div class="orbit-runtime-mini">
+                    <div class="orbit-runtime-band-label">Started</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-utc mono" id="agent-session-start-utc">—</span>
+                        <span class="orbit-runtime-relative" id="agent-session-start-rel">—</span>
+                    </div>
+                </div>
+                <div class="orbit-runtime-mini">
+                    <div class="orbit-runtime-band-label">Uptime</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-uptime mono" id="agent-uptime">—</span>
+                    </div>
+                </div>
+                <span id="agent-session-start" hidden></span>
+            </div>
+
+            <!-- Band 3 · activity timeline -->
+            <div class="orbit-runtime-band orbit-runtime-activity">
+                <div class="orbit-runtime-activity-head">
+                    <div class="orbit-runtime-band-label" style="margin:0">Activity</div>
+                    <span class="orbit-chip">Latest 5</span>
+                </div>
+                <div id="agent-event-list" class="orbit-event-timeline">
+                    <div class="orbit-event-empty">Loading events…</div>
+                </div>
+                <div id="agent-error" class="orbit-notice orbit-notice-danger" hidden></div>
+            </div>
         </section>
+
     </div>
 </div>
 {% endblock %}

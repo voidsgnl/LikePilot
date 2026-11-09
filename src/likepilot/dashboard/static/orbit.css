@@ -1911,3 +1911,237 @@ html,body{height:100%;margin:0}
     .orbit-stage,.orbit-core,.orbit-panel{animation:none!important;transition:none!important}
 }
 
+/* ============================================================================
+   ORBIT — runtime card (agent detail · Pulse layout)
+   Appended at end of orbit.css. All selectors namespaced to .orbit-runtime-*
+   and .orbit-pulse so nothing collides with existing rules.
+   ============================================================================ */
+
+.orbit-runtime-card{
+    display:flex;flex-direction:column;gap:0;
+    padding:0;                       /* bands control their own padding */
+    overflow:hidden;
+}
+.orbit-runtime-card > .orbit-card-head{
+    padding:20px 22px 14px;
+    margin:0;
+    border-bottom:1px solid var(--line);
+}
+.orbit-runtime-chip{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;letter-spacing:.04em;
+    transition:background .25s,border-color .25s,color .25s;
+}
+.orbit-runtime-chip.is-live{
+    color:var(--spark);
+    border-color:color-mix(in oklab, var(--spark) 35%, var(--line));
+    background:color-mix(in oklab, var(--spark) 10%, var(--panel-2));
+}
+.orbit-runtime-chip.is-warn{
+    color:var(--warn);
+    border-color:color-mix(in oklab, var(--warn) 35%, var(--line));
+    background:color-mix(in oklab, var(--warn) 10%, var(--panel-2));
+}
+.orbit-runtime-chip.is-idle{
+    color:var(--ink-mute);
+}
+
+/* ---------- bands ---------- */
+.orbit-runtime-band{
+    padding:18px 22px;
+    border-bottom:1px solid var(--line);
+}
+.orbit-runtime-band:last-child{border-bottom:0}
+
+.orbit-runtime-band-label{
+    font-size:10px;font-weight:700;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-mute);
+    margin-bottom:6px;
+}
+.orbit-runtime-band-value{
+    display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
+    color:var(--ink);
+}
+.orbit-runtime-utc{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;letter-spacing:0;color:var(--ink-soft);
+}
+.orbit-runtime-relative{
+    font-size:12px;color:var(--ink-soft);
+    transition:color .3s;
+}
+.orbit-runtime-relative.is-stale{color:var(--warn)}
+.orbit-runtime-relative.is-dead{color:var(--bad)}
+.orbit-runtime-uptime{
+    font-family:'JetBrains Mono',monospace;
+    font-size:20px;font-weight:600;letter-spacing:-.02em;
+    color:var(--ink);
+}
+
+/* ---------- heartbeat band ---------- */
+.orbit-runtime-heartbeat{
+    display:flex;align-items:center;gap:18px;
+    background:linear-gradient(180deg,
+        color-mix(in oklab, var(--spark) 4%, transparent),
+        transparent 70%);
+}
+.orbit-runtime-heartbeat .orbit-runtime-band-copy{
+    display:flex;flex-direction:column;gap:4px;
+}
+
+/* the live pulse — three dots that beat in sync */
+.orbit-pulse{
+    display:inline-flex;align-items:center;gap:5px;
+    padding:12px 14px;
+    border-radius:12px;
+    background:var(--panel-3);
+    border:1px solid color-mix(in oklab, var(--spark) 30%, var(--line));
+    transition:background .3s,border-color .3s;
+    flex-shrink:0;
+}
+.orbit-pulse span{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--spark);
+    animation:orbit-pulse-beat 1.6s ease-in-out infinite;
+    transition:background .3s;
+}
+.orbit-pulse span:nth-child(2){animation-delay:.15s}
+.orbit-pulse span:nth-child(3){animation-delay:.30s}
+
+@keyframes orbit-pulse-beat{
+    0%,100%{transform:scale(.75);opacity:.45}
+    40%    {transform:scale(1);opacity:1}
+}
+
+.orbit-pulse.is-stale{
+    border-color:color-mix(in oklab, var(--warn) 30%, var(--line));
+    background:color-mix(in oklab, var(--warn) 8%, var(--panel-3));
+}
+.orbit-pulse.is-stale span{
+    background:var(--warn);
+    animation-duration:3.2s;
+}
+
+.orbit-pulse.is-dead{
+    border-color:color-mix(in oklab, var(--bad) 30%, var(--line));
+    background:color-mix(in oklab, var(--bad) 8%, var(--panel-3));
+}
+.orbit-pulse.is-dead span{
+    background:var(--bad);
+    animation:none;
+    opacity:.7;
+}
+
+/* ---------- session band ---------- */
+.orbit-runtime-session{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(0,auto);
+    gap:22px;align-items:end;
+}
+.orbit-runtime-mini{min-width:0}
+
+/* ---------- activity band ---------- */
+.orbit-runtime-activity{padding-bottom:8px}
+.orbit-runtime-activity-head{
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;margin-bottom:10px;
+}
+
+/* the timeline list */
+.orbit-event-timeline{
+    display:flex;flex-direction:column;
+    margin:0;
+}
+
+.orbit-event-timeline .event-row{
+    display:grid;
+    grid-template-columns:14px 92px 60px minmax(0,1fr);
+    align-items:center;gap:10px;
+    padding:9px 4px;
+    border-bottom:1px solid var(--line);
+    background:transparent;border-radius:0;
+    border-left:0;border-right:0;border-top:0;
+    animation:orbit-row-in .3s ease;
+}
+.orbit-event-timeline .event-row:last-child{border-bottom:0}
+
+@keyframes orbit-row-in{
+    from{opacity:0;transform:translateY(-4px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+.orbit-event-timeline .event-row::before{
+    content:"";
+    width:8px;height:8px;border-radius:50%;
+    background:var(--spark);
+    justify-self:center;
+    transition:background .2s,box-shadow .2s;
+}
+.orbit-event-timeline .event-row.is-warn::before{
+    background:var(--warn);
+    box-shadow:0 0 0 3px color-mix(in oklab, var(--warn) 20%, transparent);
+}
+.orbit-event-timeline .event-row.is-error::before{
+    background:var(--bad);
+    box-shadow:0 0 0 3px color-mix(in oklab, var(--bad) 20%, transparent);
+}
+
+.orbit-event-timeline .event-row-meta{display:contents}
+.orbit-event-timeline .event-row-meta time{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;color:var(--ink-mute);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    grid-column:2;grid-row:1;
+}
+
+.orbit-event-timeline .event-level{
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:'JetBrains Mono',monospace;
+    font-size:9px;font-weight:700;letter-spacing:.06em;
+    padding:3px 6px;border-radius:4px;
+    background:var(--panel-3);color:var(--ink-soft);
+    border:1px solid var(--line);
+    grid-column:3;grid-row:1;justify-self:start;
+}
+.orbit-event-timeline .event-row.is-warn .event-level{
+    color:var(--warn);
+    border-color:color-mix(in oklab, var(--warn) 30%, var(--line));
+    background:color-mix(in oklab, var(--warn) 8%, var(--panel-3));
+}
+.orbit-event-timeline .event-row.is-error .event-level{
+    color:var(--bad);
+    border-color:color-mix(in oklab, var(--bad) 30%, var(--line));
+    background:color-mix(in oklab, var(--bad) 8%, var(--panel-3));
+}
+
+.orbit-event-timeline .event-row p{
+    grid-column:4;grid-row:1;
+    margin:0;font-size:12px;line-height:1.5;
+    color:var(--ink-soft);
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.orbit-event-timeline .event-row.is-warn p,
+.orbit-event-timeline .event-row.is-error p{color:var(--ink)}
+
+.orbit-event-empty{
+    padding:18px;
+    font-size:12px;text-align:center;color:var(--ink-mute);
+    border:1px dashed var(--line);border-radius:10px;
+}
+
+/* ---------- responsive ---------- */
+@media(max-width:640px){
+    .orbit-runtime-band{padding:14px 16px}
+    .orbit-runtime-card > .orbit-card-head{padding:16px 16px 12px}
+    .orbit-runtime-session{grid-template-columns:1fr}
+    .orbit-event-timeline .event-row{
+        grid-template-columns:14px minmax(0,1fr);
+        grid-template-rows:auto auto;
+        gap:4px 10px;
+    }
+    .orbit-event-timeline .event-row::before{grid-row:1/3;align-self:start;margin-top:4px}
+    .orbit-event-timeline .event-row-meta time{grid-column:2;grid-row:1;font-size:10px}
+    .orbit-event-timeline .event-level{grid-column:2;grid-row:2;justify-self:start;font-size:8px;padding:2px 5px}
+    .orbit-event-timeline .event-row p{grid-column:2;grid-row:2;font-size:12px;padding-left:56px;white-space:normal}
+}
+
