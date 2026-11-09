@@ -280,10 +280,18 @@ class AgentSupervisor:
                     continue
 
                 site = status.get("site", "Like4Like")
-                platform = status["platform"]
                 supported_platforms = list(BOT_REGISTRY.get(site, {}))
+                platform = self._resolve_supported_platform(site, status.get("platform"))
+                if platform and platform != status.get("platform"):
+                    append_agent_log(
+                        agent_name,
+                        f"Stored platform is not supported by {site}; switching to {platform}.",
+                        level="WARNING",
+                    )
+                    update_agent(agent_name, platform=platform, last_error=None)
+                    status["platform"] = platform
                 bot_cls = BOT_REGISTRY.get(site, {}).get(platform)
-                
+
                 if not bot_cls:
                     append_agent_log(agent_name, f"Unsupported platform: {site} - {platform}", level="ERROR")
                     update_agent(agent_name, status="Stopped", last_error=f"Unsupported platform: {site} - {platform}", session_started_at=None)
@@ -456,6 +464,13 @@ class AgentSupervisor:
         site = agent_status.get("site", "Like4Like")
         settings = get_provider_login_settings(site)
         return settings["username"] or None, settings["password"] or None
+
+    @staticmethod
+    def _resolve_supported_platform(site, current_platform):
+        supported = list(BOT_REGISTRY.get(site, {}))
+        if current_platform in supported:
+            return current_platform
+        return supported[0] if supported else None
 
     def _next_platform(self, current_platform, supported_platforms=None):
         platforms = list(supported_platforms or PLATFORMS)
