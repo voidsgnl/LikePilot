@@ -293,6 +293,8 @@ class YouLikeHitsYouTubeLikeBot(YouLikeHitsBase):
 
                 if popup_handle:
                     self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
                     liked = False
                     try:
                         liked = self._like_video_in_popup()
@@ -574,6 +576,8 @@ class YouLikeHitsYouTubeSubscribeBot(YouLikeHitsBase):
                 subscribed = False
                 try:
                     self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
                     subscribed = self._subscribe_in_popup()
                 except TimeoutException:
                     self.emit_log("YouLikeHits subscribe popup did not load YouTube in time.", level="WARNING")
