@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title id="title">LikePilot</title>
+  <rect width="128" height="128" rx="30" fill="#172b3a"/>
+  <path d="M39 31v65h47" fill="none" stroke="#f5f8f7" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M66 48h25L78 61" fill="none" stroke="#7ee0c0" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="91" cy="36" r="7" fill="#7ee0c0"/>
+</svg>
