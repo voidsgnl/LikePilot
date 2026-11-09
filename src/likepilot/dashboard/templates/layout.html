@@ -59,7 +59,7 @@
 
             <div class="page-head">
                 <h1 class="page-title">{% block title %}{% endblock %}</h1>
-                {% block subtitle %}<p class="page-subtitle"></p>{% endblock %}
+                {% if page != 'dashboard' %}<p class="page-description">{% block subtitle %}{% endblock %}</p>{% endif %}
             </div>
         </header>
         <div class="content-wrapper" id="main-content">
@@ -72,7 +72,7 @@
             {% elif page in ['settings','providers','platforms'] %}
             <nav class="context-nav" aria-label="Settings sections">
                 <a href="{{ url_for('browser_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'browser' %}active{% endif %}">Browser</a>
-                <a href="{{ url_for('provider_settings') }}" class="context-nav-link {% if page == 'providers' %}active{% endif %}">Providers</a>
+                <a href="{{ url_for('provider_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'providers' %}active{% endif %}">Providers</a>
                 <a href="/platforms" class="context-nav-link {% if page == 'platforms' %}active{% endif %}">Social platforms</a>
                 <a href="{{ url_for('create_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'create' %}active{% endif %}">Create agent</a>
                 <a href="{{ url_for('manage_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'manage' %}active{% endif %}">Manage agents</a>
