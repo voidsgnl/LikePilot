@@ -350,7 +350,7 @@ button:not(.btn-primary):not(.btn-secondary):not(.btn-danger):hover{
   color:var(--text-muted);
 }
 .status-running,.status-available{background:var(--success-soft);color:var(--success)}
-.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-switch{background:var(--warning-soft);color:var(--warning)}
+.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-social-login,.status-awaiting-switch{background:var(--warning-soft);color:var(--warning)}
 .status-stopped,.status-not-found{background:var(--surface-soft);color:var(--text-soft)}
 /* Flat action controls across all page-specific workspaces. */
 .page-dashboard button,.page-agents button,.page-agent-detail button,
