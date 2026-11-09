@@ -1,7 +1,6 @@
 import re
 import time
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.action_chains import ActionChains
 from likepilot.core.state import get_agent
 from .base import BaseBot
 
@@ -53,23 +52,6 @@ class Like4LikeBase(BaseBot):
         except Exception as e:
             self.emit_log(f"L4L Credit Update Failed: {e}", level="WARNING")
             return False
-
-    def safe_click(self, element):
-        try:
-            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center', inline: 'center'});", element)
-            time.sleep(1)
-            ActionChains(self.driver).move_to_element(element).pause(0.2).click().perform()
-            return True
-        except Exception:
-            try:
-                element.click()
-                return True
-            except Exception:
-                try:
-                    self.driver.execute_script("arguments[0].click();", element)
-                    return True
-                except Exception:
-                    return False
 
     def find_first_visible(self, selectors, by=By.XPATH):
         for selector in selectors:
