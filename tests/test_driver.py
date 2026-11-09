@@ -1,3 +1,5 @@
+import os
+
 import pytest
 
 from likepilot.core import driver
@@ -48,6 +50,8 @@ def test_profile_directory_uses_data_directory(tmp_path, monkeypatch, browser, p
 
     assert profile_path == str(tmp_path / "data" / "profiles" / directory)
     assert (tmp_path / "data" / "profiles" / directory).is_dir()
+    assert os.stat(tmp_path / "data" / "profiles").st_mode & 0o777 == 0o700
+    assert os.stat(profile_path).st_mode & 0o777 == 0o700
     assert not (tmp_path / "profiles" / directory).exists()
 
 
