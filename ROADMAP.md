@@ -159,6 +159,14 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Add regression tests for new-window detection, premature-close prevention, and focus restoration.
   - [ ] Verify the full task/confirmation/credit sequence live against each provider and supported browser; browser-dependent validation remains.
   - **Acceptance:** task windows remain available until the social action and provider point collection are confirmed; cleanup happens afterward without ending the main browser session.
+- [x] **P2.7 — Detect and recover from missing social-platform sessions.**
+  - [x] Distinguish task-provider login from social-network account login.
+  - [x] Detect login gates in task popups for Instagram, YouTube/Google, X, Facebook, and TikTok.
+  - [x] Keep the pending task window open while the user signs in manually; wait for the platform session cookie before resuming the same task.
+  - [x] Expose an `Awaiting Social Login` runtime state and allow pause/stop while waiting.
+  - [x] Add unit coverage for existing sessions, login recovery, Google verification, stop interruption, false-positive avoidance, and authenticated-cookie checks.
+  - [ ] Verify real sign-in and task continuation on each supported platform/browser; automated tests do not replace live-site verification.
+
 - **Acceptance:** each advertised integration and agent transition is verified and failures are visible.
 
 - [~] **P2.5 — Add system-level provider login configuration.**
