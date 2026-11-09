@@ -1,6 +1,6 @@
 // Service Worker for LikePilot - Performance Optimization
-const STATIC_CACHE = 'likepilot-static-v1.0.31';
-const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.31';
+const STATIC_CACHE = 'likepilot-static-v1.0.32';
+const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.32';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
@@ -20,6 +20,7 @@ const STATIC_ASSETS = [
     '/static/reference-layout.css',
     '/static/detail-polish.css',
     '/static/workspace-navigation.css',
+    '/static/floating-dashboard.css',
     '/static/auth.css',
 ];
 
