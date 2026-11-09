@@ -97,6 +97,8 @@ class KingdomLikesGenericBot(KingdomLikesBase):
                     if not popup_handle:
                         raise RuntimeError("Popup did not open")
                     self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
                     
                     # Perform the actual Social Media action (Like/Follow).
                     action_completed = self.perform_social_action()
