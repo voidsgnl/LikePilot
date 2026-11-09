@@ -10,6 +10,9 @@ def test_runtime_file_paths_use_data_categories(tmp_path, monkeypatch):
     assert runtime_path("agents.json") == str(tmp_path / "data" / "state" / "agents.json")
     assert runtime_path("likepilot.db") == str(tmp_path / "data" / "database" / "likepilot.db")
     assert runtime_path("runtime_port.txt") == str(tmp_path / "data" / "runtime" / "runtime_port.txt")
+    if os.name == "posix":
+        for directory in ("config", "state", "database", "runtime"):
+            assert os.stat(tmp_path / "data" / directory).st_mode & 0o777 == 0o700
 
 
 def test_tracked_runtime_file_is_copied_without_dirtying_checkout(tmp_path, monkeypatch):
@@ -61,6 +64,8 @@ def test_runtime_directory_migration_moves_existing_contents(tmp_path, monkeypat
     assert (tmp_path / "data" / "logs" / "latest.log").read_text(encoding="utf-8") == "existing log"
     assert destination == str(tmp_path / "data" / "logs")
     assert not legacy.exists()
+    if os.name == "posix":
+        assert os.stat(destination).st_mode & 0o777 == 0o700
 
 
 def test_runtime_directory_merge_preserves_collisions(tmp_path, monkeypatch):
