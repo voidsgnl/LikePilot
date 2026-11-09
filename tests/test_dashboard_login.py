@@ -17,9 +17,9 @@ def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_pat
 
     login_page = client.get("/login")
     assert login_page.status_code == 200
-    assert b"Your agents." in login_page.data
-    assert b"Enter workspace" in login_page.data
-    assert b"pilot-flight.svg" in login_page.data
+    assert b"Welcome back" in login_page.data
+    assert b"Sign in" in login_page.data
+    assert b"pilot-flight.svg" not in login_page.data
     assert b'name="username"' in login_page.data
     assert b'name="password"' in login_page.data
 
