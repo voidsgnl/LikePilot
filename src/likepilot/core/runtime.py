@@ -281,6 +281,7 @@ class AgentSupervisor:
 
                 site = status.get("site", "Like4Like")
                 platform = status["platform"]
+                supported_platforms = list(BOT_REGISTRY.get(site, {}))
                 bot_cls = BOT_REGISTRY.get(site, {}).get(platform)
                 
                 if not bot_cls:
