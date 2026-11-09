@@ -125,3 +125,19 @@ def test_auto_rotation_stays_inside_selected_provider(monkeypatch):
 
     assert result == "auto"
     assert updates[0]["platform"] == "YouTube Likes"
+
+
+
+def test_legacy_agent_platform_is_recovered_within_provider_registry():
+    assert runtime.AgentSupervisor._resolve_supported_platform(
+        "YouLikeHits",
+        "Twitter",
+    ) == "YouTube Subs"
+    assert runtime.AgentSupervisor._resolve_supported_platform(
+        "YouLikeHits",
+        "YouTube Likes",
+    ) == "YouTube Likes"
+    assert runtime.AgentSupervisor._resolve_supported_platform(
+        "UnknownProvider",
+        "Twitter",
+    ) is None
