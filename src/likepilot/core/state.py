@@ -125,6 +125,14 @@ def init_db():
         _ensure_agent_columns(conn)
         _migrate_credentials(conn)
     _import_legacy_data()
+    if os.name == "posix":
+        database_directory = os.path.dirname(DB_FILE)
+        try:
+            os.chmod(database_directory, 0o700)
+            if os.path.isfile(DB_FILE):
+                os.chmod(DB_FILE, 0o600)
+        except OSError:
+            pass
 
 
 def _ensure_agent_columns(conn):
