@@ -147,6 +147,8 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Verify Chrome startup regression and proxy connectivity for both browsers; user confirmed both browser paths and proxy checks.
   - [x] Run focused driver tests locally: 12 passed in 0.28s.
   - [x] Confirm GitHub Actions passed for the driver test changes (Python 3.14).
+  - [x] Let undetected-chromedriver detect the installed Chrome major version by default; retain an optional `LIKEPILOT_CHROME_VERSION` override.
+  - [x] Restrict Chrome and Firefox profile directories to owner-only access on POSIX systems because they contain authenticated browser sessions.
 - [ ] **P2.4 — Select and verify the runtime concurrency model.**
 - [~] **P2.6 — Centralize task-window lifecycle and point-collection sequencing.**
   - [x] Add shared window tracking and lifecycle helpers to the common provider base; identify newly-created windows and restore focus to the provider window.
@@ -186,7 +188,12 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Replace the placeholder-heavy overview with a compact live runtime summary.
   - [x] Add responsive mobile navigation and repair the shared navigation markup.
   - [ ] Verify responsive navigation, page state, and all existing actions.
-- [ ] **P3.1a — Audit dashboard controls against backend behavior.**
+- [x] **P3.1a — Audit dashboard controls against backend behavior.**
+  - [x] Map dashboard JavaScript requests to authenticated Flask API routes and confirm that each referenced endpoint exists.
+  - [x] Validate agent create, update, control, delete, and platform-change request payloads; malformed JSON and unsupported providers/platforms now receive clear client errors.
+  - [x] Keep agent creation, provider changes, platform selection, and automatic fallback within the selected provider's registered capabilities.
+  - [x] Add regression coverage for provider-aware defaults, legacy platform recovery, and unsupported platform rejection.
+  - [ ] Verify every dashboard control in the running browser; visual interaction and live-session checks remain under P3.3/P3.4.
 - [~] **P3.2 — Verify settings persistence and validation.**
   - [x] Add authenticated API endpoints and dashboard control for global browser selection.
   - [ ] Verify persistence and invalid-value rejection in the local dashboard.
@@ -237,6 +244,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Complete ZIP archive creation/verification and restore of `.env`, JSON configuration/state, SQLite data, and logs.
   - [x] Reject unsafe ZIP paths and validate JSON/SQLite contents before replacing live data.
   - [x] GitHub Actions: 46 tests passed on Python 3.14, including end-to-end archive/config/log restore and ZIP path-traversal rejection.
+  - [x] Restrict the default backup directory and generated ZIP archives to owner-only access on POSIX systems; restore secret files with owner-only permissions.
   - [ ] Verify backup/restore against the user's existing local data directory while the server and agent workers are stopped.
 - [~] **P4.3 — Secure credential storage and remove insecure defaults.**
   - [x] Add Fernet authenticated encryption with a dedicated local key at `data/config/credential.key` and owner-only file permissions where supported.
@@ -247,6 +255,7 @@ LikePilot is a multi-platform automation and agent-management application. It co
   - [x] Remove the obsolete `security.encrypt_credentials=false` setting; encryption is no longer an optional toggle.
   - [x] Encrypt per-agent proxy credentials in SQLite and migrate existing plaintext proxy columns automatically; migrate authenticated proxy-list entries, Discord webhook URLs, and Telegram bot tokens from legacy JSON configuration into encrypted SQLite settings.
   - [x] Add regression tests for proxy-list migration/updates and notification-token migration; GitHub Actions passed 69 tests on Python 3.14.
+  - [x] Restrict runtime configuration, state, database, browser-profile, log, diagnostic, and backup directories to owner-only access on POSIX systems; set the SQLite database file to owner-only access.
   - [ ] Verify migration and recovery against the user's existing local database and configuration.
 - [~] **P4.4 — Prevent secrets from appearing in logs and diagnostics.**
   - [x] Add centralized redaction for registered runtime secrets, credential-bearing URLs, bearer/basic authorization, sensitive query parameters, Discord webhook URLs, and Telegram bot tokens.
