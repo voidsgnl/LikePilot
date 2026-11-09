@@ -28,7 +28,7 @@ class BackupManager:
             else os.path.abspath(os.path.join(get_runtime_root(), os.path.expanduser(self.backup_path)))
         )
         os.makedirs(self.backup_dir, mode=0o700, exist_ok=True)
-        if os.name == "posix":
+        if os.name == "posix" and self.backup_path == "backups":
             try:
                 os.chmod(self.backup_dir, 0o700)
             except OSError:
@@ -50,7 +50,7 @@ class BackupManager:
             return None
 
         os.makedirs(self.backup_dir, mode=0o700, exist_ok=True)
-        if os.name == "posix":
+        if os.name == "posix" and getattr(self, "backup_path", "backups") == "backups":
             try:
                 os.chmod(self.backup_dir, 0o700)
             except OSError:
