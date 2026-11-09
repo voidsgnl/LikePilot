@@ -72,8 +72,10 @@ def test_analytics_does_not_present_fabricated_telemetry():
 
 def test_workspace_navigation_exposes_all_primary_destinations():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
-    for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/providers", "/platforms", "/operations/database"):
+    for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/platforms"):
         assert f'href="{path}"' in layout
+    assert "url_for('provider_settings')" in layout
+    assert "url_for('operations', operation_view=key)" in layout
     assert layout.count('class="pill-link') == 4
     assert 'class="pill-nav"' in layout
     assert 'class="primary-nav"' not in layout
