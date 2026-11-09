@@ -141,3 +141,7 @@ def test_legacy_agent_platform_is_recovered_within_provider_registry():
         "UnknownProvider",
         "Twitter",
     ) is None
+
+
+def test_social_login_waiting_state_keeps_agent_runtime_active():
+    assert "Awaiting Social Login" in runtime.ACTIVE_STATUSES
