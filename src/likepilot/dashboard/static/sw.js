@@ -1,6 +1,6 @@
 // Service Worker for LikePilot - Performance Optimization
-const STATIC_CACHE = 'likepilot-static-v1.0.25';
-const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.25';
+const STATIC_CACHE = 'likepilot-static-v1.0.26';
+const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.26';
 
 // Static assets to cache immediately
 const STATIC_ASSETS = [
@@ -88,8 +88,8 @@ self.addEventListener('push', event => {
     const data = event.data.json();
     const options = {
         body: data.body,
-        icon: '/static/favicon-192x192.png',
-        badge: '/static/favicon-192x192.png',
+        icon: '/favicon/brand-mark.svg',
+        badge: '/favicon/brand-mark.svg',
         vibrate: [100, 50, 100],
         data: { dateOfArrival: Date.now(), primaryKey: data.primaryKey }
     };
