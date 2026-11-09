@@ -39,6 +39,7 @@ def test_agent_configuration_endpoint_updates_stopped_agent(monkeypatch):
     current = {
         "status": "Stopped",
         "site": "Like4Like",
+        "platform": "Twitter",
         "chrome_profile": "old-profile",
         "proxy": None,
         "fallback_platform": None,
