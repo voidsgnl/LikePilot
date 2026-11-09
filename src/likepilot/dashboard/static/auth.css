@@ -35,3 +35,23 @@ body{font-family:Inter,"Segoe UI",system-ui,sans-serif;color:var(--ink);letter-s
 .auth-footer{display:flex;justify-content:space-between;gap:12px;margin-top:24px;color:#a2abb4;font-size:.55rem;font-weight:700;letter-spacing:.12em}
 @media(max-width:420px){.auth-body{padding:20px 15px}.auth-brand{margin-bottom:25px}.auth-card{padding:25px 21px}.auth-footer{font-size:.49rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition-duration:.01ms!important}}
+
+/* Match the dashboard's slate-and-teal visual system. */
+:root{
+  color-scheme:light;
+  --ink:#1c2b35;--muted:#586b76;--line:#dce5e8;
+  --accent:#167c78;--accent-dark:#116963;--surface:#f8fafb;
+}
+.auth-body{background:#eef2f4}
+.auth-card{border-color:#dce5e8;border-radius:13px;background:#f8fafb}
+.auth-brand{color:#1c2b35}
+.auth-kicker{color:#167c78}
+.auth-field label{color:#344b56}
+.auth-field input{border-color:#d4dfe2;background:#fff;color:#1c2b35}
+.auth-field input:focus{border-color:#167c78}
+.password-toggle{color:#167c78}
+.password-toggle:hover{background:#e2f1ef}
+.auth-button{border-color:#167c78;background:#167c78}
+.auth-button:hover{background:#116963}
+.auth-security-note span{color:#167c78}
+.error-msg{border-color:#f0d7d5;background:#faeeee;color:#a94743}
