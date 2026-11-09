@@ -165,6 +165,7 @@ def test_login_screen_uses_focused_minimal_layout():
     assert 'id="password-toggle"' in template
     assert "Welcome back" in template
     assert "pilot-flight.svg" not in template
+    assert "brand-mark.svg" in template
     assert "auth-page" in styles
     assert "auth-card" in styles
     assert "box-shadow" not in styles
@@ -240,4 +241,6 @@ def test_workspace_navigation_styles_are_cached_for_release():
     assert "'likepilot-static-v1.0.25'" in service_worker
     assert "'/static/auth.css'" in service_worker
     assert "'/static/pilot-flight.svg'" not in service_worker
+    assert "v1.0.26" in service_worker
+    assert "/favicon/brand-mark.svg" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
