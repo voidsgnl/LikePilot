@@ -456,7 +456,10 @@ def operations(operation_view='database'):
 @app.route('/api/status')
 @login_required
 def get_status():
-    return jsonify(list_runtime_status())
+    payload = list_runtime_status()
+    for agent in payload.get("agents", {}).values():
+        agent["supported_platforms"] = list(BOT_REGISTRY.get(agent.get("site", "Like4Like"), {}))
+    return jsonify(payload)
 
 @app.route('/api/stream/status')
 @login_required
