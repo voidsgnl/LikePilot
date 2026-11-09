@@ -158,3 +158,30 @@ def test_firefox_driver_factory_uses_selected_browser_and_opens_startup_url(monk
     assert calls["options"] is fake_options
     assert calls["url"] == "https://example.com"
     assert created is not None
+
+
+
+def test_chrome_driver_factory_detects_installed_version_by_default(monkeypatch):
+    calls = []
+    monkeypatch.setattr(driver, "get_config_value", lambda *_args: "chrome")
+    monkeypatch.setattr(driver, "get_chrome_options", lambda *_args: object())
+    monkeypatch.delenv("LIKEPILOT_CHROME_VERSION", raising=False)
+    monkeypatch.setattr(driver.uc, "Chrome", lambda **kwargs: calls.append(kwargs) or object())
+
+    created = driver.create_stealth_driver(profile_name="Agent A")
+
+    assert created is not None
+    assert len(calls) == 1
+    assert "version_main" not in calls[0]
+
+
+def test_chrome_driver_factory_accepts_explicit_version_override(monkeypatch):
+    calls = []
+    monkeypatch.setattr(driver, "get_config_value", lambda *_args: "chrome")
+    monkeypatch.setattr(driver, "get_chrome_options", lambda *_args: object())
+    monkeypatch.setenv("LIKEPILOT_CHROME_VERSION", "144")
+    monkeypatch.setattr(driver.uc, "Chrome", lambda **kwargs: calls.append(kwargs) or object())
+
+    driver.create_stealth_driver(profile_name="Agent A")
+
+    assert calls[0]["version_main"] == 144
