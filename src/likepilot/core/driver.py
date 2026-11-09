@@ -43,7 +43,12 @@ def _profile_directory(browser, profile_name=None):
     data_profiles = os.path.join(runtime_root, "data", "profiles")
     path = os.path.join(data_profiles, profile_dirname)
 
-    os.makedirs(data_profiles, exist_ok=True)
+    os.makedirs(data_profiles, mode=0o700, exist_ok=True)
+    if os.name == "posix":
+        try:
+            os.chmod(data_profiles, 0o700)
+        except OSError:
+            pass
     legacy_exists = os.path.isdir(legacy_path)
     destination_exists = os.path.exists(path)
 
@@ -59,7 +64,13 @@ def _profile_directory(browser, profile_name=None):
         # profile (including cookies and session databases) without copying.
         os.replace(legacy_path, path)
     else:
-        os.makedirs(path, exist_ok=True)
+        os.makedirs(path, mode=0o700, exist_ok=True)
+
+    if os.name == "posix":
+        try:
+            os.chmod(path, 0o700)
+        except OSError:
+            pass
 
     print(f"Using dedicated {browser.title()} profile: {path}")
     return path
