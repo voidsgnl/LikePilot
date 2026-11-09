@@ -28,10 +28,11 @@ class BackupManager:
             else os.path.abspath(os.path.join(get_runtime_root(), os.path.expanduser(self.backup_path)))
         )
         os.makedirs(self.backup_dir, mode=0o700, exist_ok=True)
-        try:
-            os.chmod(self.backup_dir, 0o700)
-        except OSError:
-            pass
+        if os.name == "posix":
+            try:
+                os.chmod(self.backup_dir, 0o700)
+            except OSError:
+                pass
 
         self.last_backup = 0
 
@@ -49,10 +50,11 @@ class BackupManager:
             return None
 
         os.makedirs(self.backup_dir, mode=0o700, exist_ok=True)
-        try:
-            os.chmod(self.backup_dir, 0o700)
-        except OSError:
-            pass
+        if os.name == "posix":
+            try:
+                os.chmod(self.backup_dir, 0o700)
+            except OSError:
+                pass
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S_%f")
         safe_reason = "".join(
@@ -73,7 +75,8 @@ class BackupManager:
                 bad_member = archive.testzip()
                 if bad_member:
                     raise zipfile.BadZipFile(f"Archive verification failed at {bad_member}")
-            os.chmod(temporary_zip, 0o600)
+            if os.name == "posix":
+                os.chmod(temporary_zip, 0o600)
             os.replace(temporary_zip, zip_path)
             self._cleanup_old_backups()
             self.last_backup = time.time()
@@ -284,7 +287,7 @@ class BackupManager:
 
             for temporary, destination in staged:
                 os.replace(temporary, destination)
-                if os.path.basename(destination) in {".env", "credential.key", "dashboard-password", "dashboard-session.key"}:
+                if os.name == "posix" and os.path.basename(destination) in {".env", "credential.key", "dashboard-password", "dashboard-session.key"}:
                     try:
                         os.chmod(destination, 0o600)
                     except OSError:
