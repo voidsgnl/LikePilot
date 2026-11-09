@@ -31,6 +31,7 @@ The application is organized around a central dashboard and agent workspace:
 - **Operations** — inspect runtime logs, database information, and diagnostics.
 - **Analytics** — review available activity and performance data.
 - **Browser automation** — run supported workflows through Chrome/Chromium and Selenium.
+- **Social login recovery** — detect when a task opens a social-platform sign-in gate, wait for manual sign-in in the task window, and resume the same task after the authenticated session is detected.
 - **Persistent local state** — keep configuration, database state, browser profiles, logs, and backups in a dedicated runtime data directory.
 
 Available capabilities depend on the integrations and workflows implemented in the current version. Consult the application and project roadmap rather than assuming every area supports every provider or platform.
@@ -107,6 +108,10 @@ LikePilot reads environment settings from the runtime .env file and the process 
 | LIKEPILOT_CHROME_VERSION | Auto-detected | Optional Chrome major-version override for undetected-chromedriver. Leave unset for automatic detection. |
 
 For a local installation, the default host binds the service to loopback so it is not directly reachable from other machines.
+
+### Social account sign-in
+
+Social-network accounts are authenticated separately from LikePilot task-provider accounts. When a task opens a social platform that is not signed in, LikePilot pauses that task and displays **Awaiting Social Login**. Sign in manually in the open social-platform browser window, including any CAPTCHA or two-factor challenge. LikePilot then checks for the platform's authenticated session and resumes the pending task. Social account passwords are not entered into LikePilot. The social action and provider credit must still be verified before a task is treated as complete.
 
 ### Credentials and secrets
 
