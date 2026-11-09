@@ -234,14 +234,16 @@ function renderAgents(data) {
     const items = Object.entries(data.agents);
     const statusChipClass = (status) => status === 'Running'
         ? 'chip chip-running status-running'
-        : (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Switch')
+        : (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Social Login' || status === 'Awaiting Switch')
             ? 'chip chip-waiting'
             : 'chip chip-stopped';
     const statusLabel = (status) => status === 'Awaiting Login'
         ? 'Awaiting Login'
         : status === 'Login Success'
             ? 'Login Success'
-            : status;
+            : status === 'Awaiting Social Login'
+                ? 'Social login required'
+                : status;
 
     // Check if user is currently interacting with any element in the list
     const activeEl = document.activeElement;
