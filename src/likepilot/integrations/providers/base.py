@@ -365,6 +365,135 @@ class BaseBot(ABC):
             level="SYSTEM",
         )
 
+    @staticmethod
+    def _social_platform_details(platform):
+        value = (platform or "").lower()
+        if "instagram" in value or value.startswith("ig "):
+            return "Instagram", ("instagram.com",), {"sessionid"}
+        if "youtube" in value:
+            return "YouTube", ("youtube.com", "google.com"), {"sid", "hsid", "ssid", "sapisid", "__secure-1psid", "login_info"}
+        if "tiktok" in value:
+            return "TikTok", ("tiktok.com",), {"sessionid", "sid_tt", "sid_guard"}
+        if "facebook" in value or value.startswith("fb "):
+            return "Facebook", ("facebook.com",), {"c_user", "xs"}
+        if "twitter" in value or value.startswith("x "):
+            return "X", ("x.com", "twitter.com"), {"auth_token"}
+        return "social platform", (), set()
+
+    def _social_login_gate_present(self, platform, domains):
+        """Detect explicit social sign-in gates without treating ordinary nav links as login walls."""
+        try:
+            from urllib.parse import urlparse
+            parsed = urlparse((self.driver.current_url or "").lower())
+            host = (parsed.hostname or "").removeprefix("www.")
+            path = parsed.path or ""
+            if platform == "YouTube" and host == "accounts.google.com":
+                return True
+            if any(host == domain or host.endswith("." + domain) for domain in domains):
+                if any(marker in path for marker in (
+                    "/login", "/signin", "/sign-in", "/i/flow/login",
+                    "/checkpoint", "/challenge", "/two_step", "/accounts/login",
+                )):
+                    return True
+
+            password_fields = self.driver.find_elements(By.CSS_SELECTOR, "input[type='password']")
+            if any(field.is_displayed() for field in password_fields):
+                return True
+
+            body_text = self.driver.execute_script(
+                "return document.body ? document.body.innerText : '';"
+            ).lower()
+            explicit_prompts = (
+                "log in to continue", "login to continue", "sign in to continue",
+                "log in to like", "sign in to like", "log in to follow",
+                "sign in to follow", "log in to comment", "sign in to comment",
+                "you must log in", "you must sign in",
+            )
+            return any(marker in body_text for marker in explicit_prompts)
+        except Exception:
+            return False
+
+    def _has_social_auth_cookie(self, cookie_names):
+        try:
+            names = {str(cookie.get("name", "")).lower() for cookie in self.driver.get_cookies()}
+            return bool(names.intersection(cookie_names))
+        except Exception:
+            return False
+
+    def wait_for_social_login(self, platform=None, timeout_seconds=20, poll_interval=2):
+        """Pause the current task popup for manual social login, then resume the same task."""
+        if not self.driver or not self.is_running:
+            return False
+
+        agent = get_agent(self.agent_name) if self.agent_name else None
+        selected_platform = platform or (agent or {}).get("platform", "")
+        label, domains, cookie_names = self._social_platform_details(selected_platform)
+        if not domains:
+            return True
+
+        from urllib.parse import urlparse
+        deadline = time.monotonic() + max(1, timeout_seconds)
+        current_url = ""
+        while self.is_running and time.monotonic() < deadline:
+            try:
+                current_url = self.driver.current_url or ""
+                host = (urlparse(current_url.lower()).hostname or "").removeprefix("www.")
+                is_expected_host = any(
+                    host == domain or host.endswith("." + domain)
+                    for domain in domains
+                )
+                is_google_auth = label == "YouTube" and host == "accounts.google.com"
+                if is_expected_host or is_google_auth:
+                    break
+            except Exception:
+                pass
+            time.sleep(0.5)
+
+        if not self.is_running:
+            return False
+        if not current_url:
+            return True
+
+        try:
+            host = (urlparse(current_url.lower()).hostname or "").removeprefix("www.")
+        except Exception:
+            host = ""
+        if not any(host == domain or host.endswith("." + domain) for domain in domains) and not (
+            label == "YouTube" and host == "accounts.google.com"
+        ):
+            return True
+
+        if not self._social_login_gate_present(label, domains):
+            return True
+
+        self.heartbeat(status="Awaiting Social Login")
+        self.emit_log(
+            f"{label} login is required. Sign in manually in the open browser window; this task will resume automatically.",
+            level="WARNING",
+        )
+
+        while self.is_running:
+            try:
+                current_url = self.driver.current_url or ""
+                host = (urlparse(current_url.lower()).hostname or "").removeprefix("www.")
+                on_social_site = any(
+                    host == domain or host.endswith("." + domain)
+                    for domain in domains
+                )
+                gate_visible = self._social_login_gate_present(label, domains)
+                if on_social_site and not gate_visible and self._has_social_auth_cookie(cookie_names):
+                    self.heartbeat(status="Running")
+                    self.emit_log(
+                        f"{label} session is authenticated. Resuming the pending task.",
+                        level="SYSTEM",
+                    )
+                    return True
+            except Exception:
+                pass
+            time.sleep(max(0.5, poll_interval))
+
+        return False
+
     def wait_for_popup(self, main_window, timeout_seconds=15, handles_before=None):
         """Return only a newly-created task window, never an existing unrelated window."""
         original_handles = set(handles_before or self._known_window_handles or [main_window])
