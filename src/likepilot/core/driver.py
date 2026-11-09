@@ -172,17 +172,27 @@ def create_stealth_driver(headless=False, proxy=None, profile_name=None, startup
         return driver
 
     print(f"[DEBUG] Launching Chrome for profile: {profile_name}")
-    options = get_chrome_options(profile_name, proxy, startup_url)
+    version_main = _env_int("LIKEPILOT_CHROME_VERSION", 0)
+    driver_options = {
+        "options": get_chrome_options(profile_name, proxy, startup_url),
+        "headless": headless,
+        "use_subprocess": True,
+    }
+    if version_main > 0:
+        driver_options["version_main"] = version_main
+
     try:
-        return uc.Chrome(options=options, headless=headless, use_subprocess=True, version_main=145)
+        return uc.Chrome(**driver_options)
     except Exception as error:
         print(f"Chrome subprocess launch failed: {error}. Trying fallback mode...")
-        return uc.Chrome(
-            options=get_chrome_options(profile_name, proxy, startup_url),
-            headless=headless,
-            use_subprocess=False,
-            version_main=145,
-        )
+        fallback_options = {
+            "options": get_chrome_options(profile_name, proxy, startup_url),
+            "headless": headless,
+            "use_subprocess": False,
+        }
+        if version_main > 0:
+            fallback_options["version_main"] = version_main
+        return uc.Chrome(**fallback_options)
 
 
 def inject_stealth(driver):
