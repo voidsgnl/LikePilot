@@ -99,6 +99,7 @@ def test_agent_lifecycle_api_runs_valid_transition_sequence(monkeypatch):
     assert action("initialize").status_code == 200
     assert agent["status"] == "Running"
 
+    agent["status"] = "Awaiting Social Login"
     assert action("pause").status_code == 200
     assert agent["status"] == "Paused"
     assert action("resume").status_code == 200
