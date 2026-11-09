@@ -6,15 +6,14 @@
     <meta name="theme-color" content="#f7f8fa">
     <meta name="description" content="Sign in to your LikePilot workspace.">
     <title>LikePilot · Sign in</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('brand_asset', filename='favicon.ico') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('brand_asset', filename='favicon-32x32.png') }}">
-    <link rel="apple-touch-icon" href="{{ url_for('brand_asset', filename='apple-touch-icon.png') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('brand_asset', filename='brand-mark.svg') }}">
+    <link rel="manifest" href="{{ url_for('brand_asset', filename='site.webmanifest') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
 </head>
 <body class="auth-body">
     <main class="auth-page">
         <a class="auth-brand" href="/login" aria-label="LikePilot home">
-            <img src="{{ url_for('brand_asset', filename='192x192.png') }}" alt="">
+            <img src="{{ url_for('brand_asset', filename='brand-mark.svg') }}" alt="">
             <span>LikePilot</span>
         </a>
 
