@@ -373,7 +373,7 @@ class BaseBot(ABC):
         if "youtube" in value:
             return "YouTube", ("youtube.com", "google.com"), {"sid", "hsid", "ssid", "sapisid", "__secure-1psid", "login_info"}
         if "tiktok" in value:
-            return "TikTok", ("tiktok.com",), {"sessionid", "sid_tt", "sid_guard"}
+            return "TikTok", ("tiktok.com",), {"sessionid", "sessionid_ss", "sid_tt", "sid_guard"}
         if "facebook" in value or value.startswith("fb "):
             return "Facebook", ("facebook.com",), {"c_user", "xs"}
         if "twitter" in value or value.startswith("x "):
