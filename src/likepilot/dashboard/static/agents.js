@@ -169,13 +169,14 @@
     function statusChip(status) {
         if (status === 'Running') return 'chip chip-running status-running';
         if (status === 'Paused') return 'chip chip-paused status-paused';
-        if (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Switch') return 'chip chip-waiting';
+        if (status === 'Awaiting Login' || status === 'Login Success' || status === 'Awaiting Social Login' || status === 'Awaiting Switch') return 'chip chip-waiting';
         return 'chip chip-stopped';
     }
 
     function statusLabel(status) {
         if (status === 'Login Success') return 'Login Success';
         if (status === 'Awaiting Login') return 'Awaiting Login';
+        if (status === 'Awaiting Social Login') return 'Social login required';
         return status;
     }
 
@@ -191,7 +192,7 @@
             html += `<button class="btn-secondary btn-compact" data-agent-action="initialize" data-agent-name="${escapeHtml(name)}">Initialize</button>`;
             html += `<button class="btn-secondary btn-compact" data-agent-action="ready" data-agent-name="${escapeHtml(name)}">Ready</button>`;
         }
-        if (status === 'Running') {
+        if (status === 'Running' || status === 'Awaiting Social Login') {
             html += `<button class="btn-warning btn-compact" data-agent-action="pause" data-agent-name="${escapeHtml(name)}">Pause</button>`;
         }
         if (status === 'Paused') {
