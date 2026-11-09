@@ -10,7 +10,7 @@ This document describes the combinations the runtime actually routes. A combinat
 4. The selected adapter runs the provider task flow and performs its platform-specific social action.
 5. The adapter submits the provider confirmation and polls for a credit increase. The shared provider base only permits task-window closure when credit collection is explicitly confirmed.
 
-The route registry and URL map must remain key-for-key identical. Unsupported pairs are not silently substituted; the runtime logs an unsupported platform and stops that agent.
+The route registry and URL map must remain key-for-key identical. When a known provider has a stale or unsupported platform stored on an existing agent, the runtime logs a warning and selects the first registered platform for that provider. An unknown provider with no registered routes is stopped with an error.
 
 ## Registered combinations
 
