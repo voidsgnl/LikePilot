@@ -11,7 +11,7 @@
         const selected = filter.value;
         const rows = entries.filter(([name, agent]) => {
             const matchesTerm = !term || [name, agent.site, agent.platform].some((v) => String(v || '').toLowerCase().includes(term));
-            const isWaiting = ['Awaiting Login', 'Login Success', 'Awaiting Switch'].includes(agent.status);
+            const isWaiting = ['Awaiting Login', 'Login Success', 'Awaiting Social Login', 'Awaiting Switch', 'Paused'].includes(agent.status);
             const matchesStatus = selected === 'all' || (selected === 'waiting' ? isWaiting : agent.status === selected);
             return matchesTerm && matchesStatus;
         });
