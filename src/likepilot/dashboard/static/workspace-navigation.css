@@ -420,3 +420,64 @@ input:focus,select:focus,textarea:focus{outline:2px solid #d6e9e5!important;outl
 @media(max-width:900px){.primary-nav{overflow-x:auto}.primary-nav-link{padding:0 9px!important}.overview-focus{grid-template-columns:1fr}.overview-agent-summary{border-top:1px solid var(--lp-line);border-left:0;padding-top:15px}}
 @media(max-width:700px){.header-primary-row{flex-wrap:wrap;gap:10px;padding-top:10px!important;padding-bottom:10px!important}.primary-nav{order:3;width:100%;padding-bottom:2px}.header-account{margin-left:auto}.header-workspace-row{min-height:70px}.content-wrapper{padding-top:18px!important}.overview-welcome{align-items:flex-start;flex-direction:column}.overview-welcome-actions{width:100%;justify-content:space-between}.overview-activity-item{grid-template-columns:8px minmax(0,1fr) auto}.overview-activity-type{display:none}.overview-recent-meta{flex-direction:column;gap:3px;text-align:right}}
 @media(max-width:460px){.overview-agent-summary>div{padding:8px}.overview-agent-summary strong{font-size:22px}.overview-recent{padding:16px!important}.overview-activity-item time{font-size:9px}.page-title{font-size:20px!important}.context-nav{width:100%!important}}
+
+
+/* Unified LikePilot palette: cool slate surfaces with one consistent teal accent. */
+:root,[data-theme="light"]{
+  --bg:#eef2f4;--bg-strong:#e7edef;--surface:#f8fafb;--surface-strong:#ffffff;
+  --surface-muted:#f1f5f6;--surface-soft:#eaf0f1;
+  --border:#dce5e8;--border-strong:#c8d5d9;
+  --text:#1c2b35;--text-muted:#586b76;--text-soft:#82929a;
+  --accent:#167c78;--accent-strong:#116963;--accent-soft:#e2f1ef;
+  --success:#24734f;--success-soft:#e8f4ed;
+  --warning:#956b22;--warning-soft:#f8f1e3;
+  --danger:#a94743;--danger-soft:#faeceb;
+}
+html[data-theme="light"] body{
+  background:#eef2f4!important;color:#1c2b35!important;
+}
+html[data-theme="light"] .app-header{
+  background:#f8fafb!important;border-color:#dce5e8!important;
+}
+html[data-theme="light"] .header-primary-row{border-color:#e5ecee!important}
+html[data-theme="light"] .primary-nav-link.active,
+html[data-theme="light"] .context-nav-link.active{
+  background:#e2f1ef!important;border-color:#cfe6e2!important;color:#116963!important;
+}
+html[data-theme="light"] .context-nav,
+html[data-theme="light"] .panel,
+html[data-theme="light"] .panel-pad,
+html[data-theme="light"] .page-section,
+html[data-theme="light"] .console-shell,
+html[data-theme="light"] .inset-panel,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .directory-card,
+html[data-theme="light"] .directory-toolbar,
+html[data-theme="light"] .agent-form,
+html[data-theme="light"] .provider-login-card{
+  background:#f8fafb!important;border-color:#dce5e8!important;box-shadow:none!important;
+}
+html[data-theme="light"] .data-table th{background:#eef3f4!important;color:#586b76!important}
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea{
+  background:#fff!important;border-color:#d4dfe2!important;color:#1c2b35!important;
+}
+html[data-theme="light"] .btn-primary,
+html[data-theme="light"] .overview-primary-action{
+  background:#167c78!important;border-color:#167c78!important;color:#fff!important;
+}
+html[data-theme="light"] .btn-primary:hover,
+html[data-theme="light"] .overview-primary-action:hover{
+  background:#116963!important;border-color:#116963!important;
+}
+html[data-theme="light"] .overview-page,
+html[data-theme="light"] .content-wrapper,
+html[data-theme="light"] .content-wrapper>*,
+html[data-theme="light"] .page-section,
+html[data-theme="light"] .page-section>*{
+  width:100%!important;max-width:none!important;
+}
+html[data-theme="light"] .overview-page{margin:0!important}
+html[data-theme="light"] .overview-activity-item{border-color:#e8eef0!important}
+html[data-theme="light"] .overview-recent-heading{border-color:#e1e9eb!important}
