@@ -45,6 +45,8 @@ class YouTubeBase(Like4LikeBase):
             self.record_page_diagnostics(f"{platform_name.lower().replace(' ', '_')}_popup_missing")
             return True
         self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
 
         action_completed = False
         try:
