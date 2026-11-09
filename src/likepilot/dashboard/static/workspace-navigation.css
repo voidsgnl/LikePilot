@@ -575,3 +575,98 @@ html body .agent-form{max-width:none!important}
 @media(max-width:560px){
  html body .content-wrapper{padding-left:12px!important;padding-right:12px!important}
 }
+
+
+/* Final dark-surface pass: remove residual white cards and controls. */
+html[data-theme="light"]{
+ color-scheme:dark;
+ --bg:#101820;--bg-strong:#0c131a;
+ --surface:#192530;--surface-strong:#202f3b;
+ --surface-muted:#15212b;--surface-soft:#243541;
+ --border:#2c3d49;--border-strong:#405461;
+ --text:#e7eef2;--text-muted:#b4c1c9;--text-soft:#899ba6;
+ --accent:#54bdb1;--accent-strong:#72d1c6;--accent-soft:#203e40;
+}
+html[data-theme="light"] body,
+html[data-theme="light"] .app-shell,
+html[data-theme="light"] .main-content,
+html[data-theme="light"] .content-wrapper,
+html[data-theme="light"] .page-section,
+html[data-theme="light"] .tab-panel,
+html[data-theme="light"] .section-scroll{
+ background:#101820!important;color:#e7eef2!important;
+}
+html[data-theme="light"] .panel,
+html[data-theme="light"] .panel-pad,
+html[data-theme="light"] .page-section,
+html[data-theme="light"] .console-shell,
+html[data-theme="light"] .inset-panel,
+html[data-theme="light"] .stat-card,
+html[data-theme="light"] .directory-card,
+html[data-theme="light"] .directory-toolbar,
+html[data-theme="light"] .agent-form,
+html[data-theme="light"] .provider-login-card,
+html[data-theme="light"] .workspace-hero,
+html[data-theme="light"] .overview-recent,
+html[data-theme="light"] .overview-focus,
+html[data-theme="light"] .overview-metric-card,
+html[data-theme="light"] .overview-chart-card,
+html[data-theme="light"] .chart-card,
+html[data-theme="light"] .activity-panel,
+html[data-theme="light"] .system-panel,
+html[data-theme="light"] .focus-card,
+html[data-theme="light"] .dashboard-grid> *,
+html[data-theme="light"] .metrics-overview> *,
+html[data-theme="light"] .charts-section> *,
+html[data-theme="light"] .ops-grid> *,
+html[data-theme="light"] .agent-card,
+html[data-theme="light"] .provider-card,
+html[data-theme="light"] .platform-card,
+html[data-theme="light"] .settings-card,
+html[data-theme="light"] .collapsible-block,
+html[data-theme="light"] .collapsible-body,
+html[data-theme="light"] .table-wrap,
+html[data-theme="light"] .data-table tbody tr{
+ background:#192530!important;border-color:#2c3d49!important;color:#e7eef2!important;box-shadow:none!important;
+}
+html[data-theme="light"] .app-header,
+html[data-theme="light"] .header-primary-row,
+html[data-theme="light"] .header-workspace-row,
+html[data-theme="light"] .context-nav{
+ background:#141f29!important;border-color:#2c3d49!important;
+}
+html[data-theme="light"] input,
+html[data-theme="light"] select,
+html[data-theme="light"] textarea,
+html[data-theme="light"] .form-control{
+ background:#101820!important;border-color:#405461!important;color:#e7eef2!important;
+}
+html[data-theme="light"] .data-table th{background:#15212b!important;color:#b4c1c9!important}
+html[data-theme="light"] .data-table td,
+html[data-theme="light"] .section-heading,
+html[data-theme="light"] .page-title,
+html[data-theme="light"] .card-title{color:#e7eef2!important}
+html[data-theme="light"] .section-subtle,
+html[data-theme="light"] .page-subtitle,
+html[data-theme="light"] .muted,
+html[data-theme="light"] .help-text{color:#a8b7c0!important}
+
+/* Full-width layout, including legacy page and dashboard grid wrappers. */
+html body .app-shell,
+html body .app-header,
+html body .header-primary-row,
+html body .header-workspace-row,
+html body .content-wrapper,
+html body .content-wrapper>*,
+html body .page-section,
+html body .overview-page,
+html body .dashboard-grid,
+html body .metrics-overview,
+html body .charts-section,
+html body .ops-grid,
+html body .agent-workspace,
+html body .settings-workspace,
+html body .analytics-workspace{
+ width:100%!important;max-width:none!important;margin-left:0!important;margin-right:0!important;
+}
+html body .content-wrapper{box-sizing:border-box!important;padding-left:clamp(16px,2vw,32px)!important;padding-right:clamp(16px,2vw,32px)!important}
