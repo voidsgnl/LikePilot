@@ -106,3 +106,22 @@ def test_fallback_chain_ignores_platforms_not_supported_by_provider():
         "Twitter, YouTube Subs, Instagram, YouTube Likes",
         ["YouTube Subs", "YouTube Likes"],
     ) == "YouTube Likes"
+
+
+
+def test_auto_rotation_stays_inside_selected_provider(monkeypatch):
+    supervisor = runtime.AgentSupervisor()
+    updates = []
+    monkeypatch.setattr(runtime, "update_agent", lambda _name, **fields: updates.append(fields))
+    monkeypatch.setattr(runtime, "append_agent_log", lambda *_args, **_kwargs: None)
+    monkeypatch.setattr(runtime, "get_auto_switch", lambda: True)
+
+    result = supervisor._resolve_exhaustion(
+        "youtube-worker",
+        {"site": "YouLikeHits", "fallback_chain": None, "fallback_platform": None},
+        "YouTube Subs",
+        "YouTube subscriptions exhausted.",
+    )
+
+    assert result == "auto"
+    assert updates[0]["platform"] == "YouTube Likes"
