@@ -423,7 +423,7 @@ class AgentSupervisor:
                     continue
 
                 if get_auto_switch():
-                    next_platform = self._next_platform(platform)
+                    next_platform = self._next_platform(platform, supported_platforms)
                     update_agent(agent_name, platform=next_platform, switch_pending=0, switch_reason=None)
                     append_agent_log(agent_name, f"Switching to {next_platform}.", level="SYSTEM")
                     next_state = get_agent(agent_name)
@@ -456,16 +456,20 @@ class AgentSupervisor:
         settings = get_provider_login_settings(site)
         return settings["username"] or None, settings["password"] or None
 
-    def _next_platform(self, current_platform):
+    def _next_platform(self, current_platform, supported_platforms=None):
+        platforms = list(supported_platforms or PLATFORMS)
+        if not platforms:
+            return current_platform
         try:
-            idx = PLATFORMS.index(current_platform)
+            idx = platforms.index(current_platform)
         except ValueError:
-            return PLATFORMS[0]
-        return PLATFORMS[(idx + 1) % len(PLATFORMS)]
+            return platforms[0]
+        return platforms[(idx + 1) % len(platforms)]
 
-    def _next_from_chain(self, current_platform, fallback_chain):
+    def _next_from_chain(self, current_platform, fallback_chain, supported_platforms=None):
         chain = [item.strip() for item in (fallback_chain or "").split(",") if item.strip()]
-        valid_chain = [item for item in chain if item in PLATFORMS]
+        supported = set(supported_platforms or PLATFORMS)
+        valid_chain = [item for item in chain if item in supported]
         if not valid_chain:
             return None
         if current_platform in valid_chain:
@@ -478,7 +482,8 @@ class AgentSupervisor:
         return None
 
     def _resolve_exhaustion(self, agent_name, current, platform, detail):
-        chain_platform = self._next_from_chain(platform, current.get("fallback_chain"))
+        supported_platforms = list(BOT_REGISTRY.get(current.get("site", "Like4Like"), {}))
+        chain_platform = self._next_from_chain(platform, current.get("fallback_chain"), supported_platforms)
         if chain_platform:
             update_agent(
                 agent_name,
@@ -491,7 +496,7 @@ class AgentSupervisor:
             return "chain"
 
         fallback_platform = current.get("fallback_platform")
-        if fallback_platform and fallback_platform != platform:
+        if fallback_platform and fallback_platform != platform and fallback_platform in supported_platforms:
             update_agent(
                 agent_name,
                 platform=fallback_platform,
