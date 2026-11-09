@@ -64,7 +64,16 @@
             button.disabled = !available;
         });
         const platformSelect = byId('agent-platform-select');
-        if (platformSelect) platformSelect.value = agent.platform || 'Twitter';
+        if (platformSelect) {
+            const supported = Array.isArray(agent.supported_platforms) ? agent.supported_platforms : [];
+            platformSelect.replaceChildren(...supported.map((platform) => {
+                const option = document.createElement('option');
+                option.value = platform;
+                option.textContent = platform;
+                return option;
+            }));
+            if (supported.includes(agent.platform)) platformSelect.value = agent.platform;
+        }
         const confirmPlatform = byId('agent-confirm-platform');
         if (confirmPlatform) confirmPlatform.hidden = !agent.switch_pending;
         if (platformSelect) platformSelect.hidden = !agent.switch_pending;
