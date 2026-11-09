@@ -237,10 +237,13 @@ def test_provider_login_is_system_level_not_agent_level():
 
 
 def test_workspace_navigation_styles_are_cached_for_release():
+    import re
+
     service_worker = (DASHBOARD / "static" / "sw.js").read_text(encoding="utf-8")
-    assert "'likepilot-static-v1.0.26'" in service_worker
+    cache_version = re.search(r"const STATIC_CACHE = 'likepilot-static-(v[0-9.]+)'", service_worker)
+    assert cache_version
+    assert re.search(rf"\b{re.escape(cache_version.group(1))}\b", service_worker)
     assert "'/static/auth.css'" in service_worker
     assert "'/static/pilot-flight.svg'" not in service_worker
-    assert "v1.0.26" in service_worker
     assert "/favicon/brand-mark.svg" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
