@@ -5,6 +5,7 @@ import os
 from abc import ABC, abstractmethod
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 from likepilot.core.paths import runtime_dir
 from likepilot.core.state import append_agent_log, get_agent, get_stats, heartbeat_agent, log_credit_update, update_agent
 from likepilot.core.security import sanitize_diagnostic_html
@@ -199,6 +200,29 @@ class BaseBot(ABC):
                 level="WARNING",
             )
             return False
+
+    def safe_click(self, element):
+        """Click an element using progressively simpler Selenium strategies."""
+        if not self.driver or element is None:
+            return False
+        try:
+            self.driver.execute_script(
+                "arguments[0].scrollIntoView({block: 'center', inline: 'center'});",
+                element,
+            )
+            time.sleep(0.5)
+            ActionChains(self.driver).move_to_element(element).pause(0.2).click().perform()
+            return True
+        except Exception:
+            try:
+                element.click()
+                return True
+            except Exception:
+                try:
+                    self.driver.execute_script("arguments[0].click();", element)
+                    return True
+                except Exception:
+                    return False
 
     def pause(self):
         """Pause task execution while preserving the authenticated browser session."""
