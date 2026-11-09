@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f5f7fa">
-    <meta name="description" content="Sign in to your LikePilot automation workspace.">
+    <meta name="theme-color" content="#f7f8fa">
+    <meta name="description" content="Sign in to your LikePilot workspace.">
     <title>LikePilot · Sign in</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('brand_asset', filename='favicon.ico') }}">
     <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('brand_asset', filename='favicon-32x32.png') }}">
@@ -12,89 +12,45 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
 </head>
 <body class="auth-body">
-    <main class="auth-layout">
-        <section class="flight-panel" aria-label="LikePilot introduction">
-            <a class="auth-brand-lockup" href="/login" aria-label="LikePilot sign in">
-                <span class="auth-brand-mark"><img src="{{ url_for('brand_asset', filename='192x192.png') }}" alt=""></span>
-                <span class="auth-brand-title">LikePilot</span>
-                <span class="brand-product-tag">AUTOMATION CONTROL</span>
-            </a>
+    <main class="auth-page">
+        <a class="auth-brand" href="/login" aria-label="LikePilot home">
+            <img src="{{ url_for('brand_asset', filename='192x192.png') }}" alt="">
+            <span>LikePilot</span>
+        </a>
 
-            <div class="flight-copy">
-                <p class="flight-eyebrow"><span class="eyebrow-line"></span> YOUR WORKSPACE, CLEARED FOR TAKEOFF</p>
-                <h1>Your agents.<br><span>Your airspace.</span></h1>
-                <p class="flight-description">One place to launch, guide and keep an eye on every automation run.</p>
+        <section class="auth-card" aria-labelledby="login-title">
+            <div class="auth-card-heading">
+                <span class="auth-kicker">YOUR WORKSPACE</span>
+                <h1 id="login-title">Welcome back<span>.</span></h1>
+                <p>Sign in to continue managing your agents.</p>
             </div>
 
-            <div class="flight-art">
-                <img src="{{ url_for('static', filename='pilot-flight.svg') }}" alt="A pilot flying a small aircraft through the clouds." fetchpriority="high">
-                <span class="flight-coordinate coordinate-left">FLIGHT PATH <b>01 / LP</b></span>
-                <span class="flight-coordinate coordinate-right">AUTOPILOT <b>READY</b></span>
+            {% if error %}
+            <div class="error-msg" role="alert">
+                {% if error == 'TOO_MANY_ATTEMPTS' %}Too many attempts. Please wait a few minutes before trying again.{% else %}That username and password combination doesn't match. Please try again.{% endif %}
             </div>
+            {% endif %}
 
-            <div class="flight-panel-footer">
-                <span>CONTROL YOUR AUTOMATION</span>
-                <span class="footer-route"><i></i> LOCAL WORKSPACE</span>
-            </div>
+            <form method="POST" class="auth-form">
+                <div class="auth-field">
+                    <label for="username">Username</label>
+                    <input id="username" type="text" name="username" required autocomplete="username" autofocus placeholder="Enter your username">
+                </div>
+                <div class="auth-field">
+                    <div class="auth-label-row"><label for="password">Password</label><span>Keep it private</span></div>
+                    <div class="password-wrap">
+                        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
+                        <button class="password-toggle" type="button" id="password-toggle" aria-label="Show password" aria-pressed="false">Show</button>
+                    </div>
+                </div>
+                <button class="auth-button" type="submit"><span>Sign in</span><span aria-hidden="true">→</span></button>
+            </form>
+
+            <div class="auth-security-note"><span aria-hidden="true">▣</span> Private workspace · Authorized access only</div>
         </section>
 
-        <section class="login-panel" aria-labelledby="login-title">
-            <div class="login-panel-top">
-                <span class="secure-label"><span class="secure-mark" aria-hidden="true"></span> PRIVATE WORKSPACE</span>
-                <span class="access-label">SECURE ACCESS <span>↗</span></span>
-            </div>
-
-            <div class="login-content">
-                <div class="login-intro">
-                    <p class="login-eyebrow">WELCOME BACK</p>
-                    <h2 id="login-title">Sign in<span>.</span></h2>
-                    <p class="login-subtitle">Pick up where your operation left off.</p>
-                </div>
-
-                {% if error %}
-                <div class="error-msg" role="alert">
-                    <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.5"></circle><path d="M10 6v4.5M10 13.5h.01"></path></svg>
-                    <span>{% if error == 'TOO_MANY_ATTEMPTS' %}Too many attempts. Please wait a few minutes before trying again.{% else %}That username and password combination doesn't match. Please try again.{% endif %}</span>
-                </div>
-                {% endif %}
-
-                <form method="POST" class="auth-form">
-                    <div class="auth-field">
-                        <label class="auth-label" for="username">Username</label>
-                        <div class="auth-input-wrap">
-                            <svg class="auth-field-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"></circle><path d="M5 20c.5-3.4 3.1-5.2 7-5.2s6.5 1.8 7 5.2"></path></svg>
-                            <input class="auth-input" id="username" type="text" name="username" required autocomplete="username" autofocus placeholder="Your username">
-                        </div>
-                    </div>
-                    <div class="auth-field">
-                        <label class="auth-label" for="password">Password</label>
-                        <div class="auth-input-wrap">
-                            <svg class="auth-field-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-                            <input class="auth-input auth-password-input" id="password" type="password" name="password" required autocomplete="current-password" placeholder="Your password">
-                            <button class="password-toggle" type="button" id="password-toggle" aria-label="Show password" aria-pressed="false">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.5"></circle></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="auth-button" type="submit">
-                        <span>Enter workspace</span>
-                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"></path></svg>
-                    </button>
-                </form>
-
-                <div class="login-assurance">
-                    <svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="8.5" width="12" height="9" rx="2"></rect><path d="M6.5 8.5V6a3.5 3.5 0 0 1 7 0v2.5"></path></svg>
-                    <span>Your session is private and protected.</span>
-                </div>
-            </div>
-
-            <footer class="login-panel-footer">
-                <span>LIKEPILOT CONTROL</span>
-                <span>AUTHORIZED USERS ONLY</span>
-            </footer>
-        </section>
+        <footer class="auth-footer"><span>LIKEPILOT</span><span>FOCUS ON WHAT MATTERS</span></footer>
     </main>
-
     <script>
         (() => {
             const input = document.getElementById('password');
@@ -102,6 +58,7 @@
             toggle.addEventListener('click', () => {
                 const reveal = input.type === 'password';
                 input.type = reveal ? 'text' : 'password';
+                toggle.textContent = reveal ? 'Hide' : 'Show';
                 toggle.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
                 toggle.setAttribute('aria-pressed', String(reveal));
             });
