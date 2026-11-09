@@ -147,3 +147,34 @@ def test_login_gate_is_not_cleared_until_auth_cookie_exists(monkeypatch):
     assert bot.wait_for_social_login("Facebook", timeout_seconds=1, poll_interval=0.01) is True
     assert sleep_count["value"] >= 2
     assert bot.status_updates == ["Awaiting Social Login", "Running"]
+
+
+def test_platform_cookie_requirements_are_defined_for_all_supported_networks():
+    expected = {
+        "Instagram Likes": {"sessionid"},
+        "YouTube Subs": {"sid", "hsid", "ssid", "sapisid", "__secure-1psid", "login_info"},
+        "Twitter Retweets": {"auth_token"},
+        "Facebook Likes": {"c_user", "xs"},
+        "TikTok Likes": {"sessionid", "sid_tt", "sid_guard"},
+    }
+    for platform, cookies in expected.items():
+        _label, domains, required_cookies = _LoginBot._social_platform_details(platform)
+        assert domains
+        assert cookies.issubset(required_cookies)
+
+
+def test_all_task_adapter_families_use_social_login_recovery():
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parents[1] / "src" / "likepilot" / "integrations"
+    adapters = (
+        root / "networks" / "instagram.py",
+        root / "networks" / "youtube.py",
+        root / "networks" / "x.py",
+        root / "networks" / "facebook.py",
+        root / "networks" / "tiktok.py",
+        root / "providers" / "kingdomlikes.py",
+        root / "providers" / "youlikehits.py",
+    )
+    for adapter in adapters:
+        assert "wait_for_social_login()" in adapter.read_text(encoding="utf-8"), adapter.name
