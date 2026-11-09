@@ -20,6 +20,7 @@ def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_pat
     assert b"Welcome back" in login_page.data
     assert b"Sign in" in login_page.data
     assert b"pilot-flight.svg" not in login_page.data
+    assert b"brand-mark.svg" in login_page.data
     assert b'name="username"' in login_page.data
     assert b'name="password"' in login_page.data
 
