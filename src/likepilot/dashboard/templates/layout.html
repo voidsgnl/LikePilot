@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='reference-layout.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='detail-polish.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='workspace-navigation.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='floating-dashboard.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
     <style>
         .notification-container{position:fixed;top:18px;right:18px;z-index:1000;pointer-events:none}
@@ -29,41 +31,37 @@
 
     <main class="app-shell" id="app-shell">
         <header class="app-header">
-            <div class="header-primary-row">
+            <div class="topbar">
                 <a class="brand-lockup" href="/dashboard" aria-label="LikePilot overview">
-                    <img src="{{ url_for('brand_asset', filename='brand-mark.svg') }}" alt="" class="brand-logo">
+                    <span class="brand-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
                     <span class="brand-name">LikePilot</span>
                 </a>
 
-                <nav class="primary-nav" aria-label="Main navigation">
-                    <a href="/dashboard" class="primary-nav-link {% if page == 'dashboard' %}active{% endif %}" {% if page == 'dashboard' %}aria-current="page"{% endif %}>Overview</a>
-                    <a href="/agents" class="primary-nav-link {% if page == 'agents' %}active{% endif %}" {% if page == 'agents' %}aria-current="page"{% endif %}>Agents</a>
-                    <a href="/analytics" class="primary-nav-link {% if page == 'analytics' %}active{% endif %}" {% if page == 'analytics' %}aria-current="page"{% endif %}>Analytics</a>
-                    <a href="/providers" class="primary-nav-link {% if page == 'providers' %}active{% endif %}" {% if page == 'providers' %}aria-current="page"{% endif %}>Providers</a>
-                    <a href="/platforms" class="primary-nav-link {% if page == 'platforms' %}active{% endif %}" {% if page == 'platforms' %}aria-current="page"{% endif %}>Platforms</a>
-                    <a href="/operations/database" class="primary-nav-link {% if page == 'operations' %}active{% endif %}" {% if page == 'operations' %}aria-current="page"{% endif %}>Operations</a>
-                    <a href="/settings/browser" class="primary-nav-link {% if page == 'settings' %}active{% endif %}" {% if page == 'settings' %}aria-current="page"{% endif %}>Settings</a>
+                <nav class="pill-nav" aria-label="Main navigation">
+                    <a href="/dashboard" class="pill-link {% if page == 'dashboard' %}active{% endif %}" {% if page == 'dashboard' %}aria-current="page"{% endif %}><i class="fa-solid fa-grid-2" aria-hidden="true"></i><span>Overview</span></a>
+                    <a href="/agents" class="pill-link {% if page == 'agents' %}active{% endif %}" {% if page == 'agents' %}aria-current="page"{% endif %}><i class="fa-solid fa-robot" aria-hidden="true"></i><span>Agents</span></a>
+                    <a href="/analytics" class="pill-link {% if page == 'analytics' %}active{% endif %}" {% if page == 'analytics' %}aria-current="page"{% endif %}><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>Analytics</span></a>
+                    <a href="/settings/browser" class="pill-link {% if page in ['settings','providers','platforms','operations'] %}active{% endif %}" {% if page in ['settings','providers','platforms','operations'] %}aria-current="page"{% endif %}><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></a>
                 </nav>
 
-                <div class="header-account">
-                    <div class="system-status meta-pill compact-pill live-pill live-pill-warning" id="live-updates-pill" title="Live connection status" aria-label="Connection status">
+                <div class="top-actions">
+                    <div class="system-status meta-pill live-pill live-pill-warning" id="live-updates-pill" title="Live connection status" aria-label="Connection status">
                         <span class="live-dot" aria-hidden="true"></span>
                         <span class="system-status-label">System</span>
                         <span id="live-updates-label">Connecting</span>
                     </div>
-                    <a class="logout-link" id="logout-link" href="/logout">Log out</a>
+                    <a class="avatar" id="logout-link" href="/logout" aria-label="Log out">
+                        <span class="avatar-img"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></span>
+                        <span>Log out</span>
+                    </a>
                 </div>
             </div>
 
-            <div class="header-workspace-row">
-                <div class="page-heading">
-                    <span class="page-breadcrumb">LIKEPILOT <span aria-hidden="true">/</span> WORKSPACE</span>
-                    <h1 class="page-title">{% block title %}{% endblock %}</h1>
-                </div>
-                <div id="agent-quick-switch" class="agent-quick-switch" role="navigation" aria-label="Quick agent switch"></div>
+            <div class="page-head">
+                <h1 class="page-title">{% block title %}{% endblock %}</h1>
+                {% block subtitle %}<p class="page-subtitle"></p>{% endblock %}
             </div>
         </header>
-
         <div class="content-wrapper" id="main-content">
             {% if page == 'analytics' %}
             <nav class="context-nav" aria-label="Analytics sections">
@@ -71,14 +69,17 @@
                 <a href="{{ url_for('analytics', analytics_view=key) }}" class="context-nav-link {% if analytics_view == key %}active{% endif %}" {% if analytics_view == key %}aria-current="page"{% endif %}>{{ label }}</a>
                 {% endfor %}
             </nav>
-            {% elif page == 'settings' %}
+            {% elif page in ['settings','providers','platforms'] %}
             <nav class="context-nav" aria-label="Settings sections">
-                {% for key, label, endpoint in [('browser','Browser','browser_settings'),('providers','Provider login','provider_settings'),('create','Create agent','create_agent_settings'),('manage','Manage agents','manage_agent_settings')] %}
-                <a href="{{ url_for(endpoint) }}" class="context-nav-link {% if settings_view == key %}active{% endif %}" {% if settings_view == key %}aria-current="page"{% endif %}>{{ label }}</a>
-                {% endfor %}
+                <a href="{{ url_for('browser_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'browser' %}active{% endif %}">Browser</a>
+                <a href="{{ url_for('provider_settings') }}" class="context-nav-link {% if page == 'providers' %}active{% endif %}">Providers</a>
+                <a href="/platforms" class="context-nav-link {% if page == 'platforms' %}active{% endif %}">Social platforms</a>
+                <a href="{{ url_for('create_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'create' %}active{% endif %}">Create agent</a>
+                <a href="{{ url_for('manage_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'manage' %}active{% endif %}">Manage agents</a>
+                <a href="{{ url_for('operations', operation_view='database') }}" class="context-nav-link {% if page == 'operations' %}active{% endif %}">Advanced</a>
             </nav>
             {% elif page == 'operations' %}
-            <nav class="context-nav" aria-label="Operations sections">
+            <nav class="context-nav" aria-label="Advanced sections">
                 {% for key, label in [('database','Database'),('logs','Runtime logs'),('diagnostics','Diagnostics')] %}
                 <a href="{{ url_for('operations', operation_view=key) }}" class="context-nav-link {% if operation_view == key %}active{% endif %}" {% if operation_view == key %}aria-current="page"{% endif %}>{{ label }}</a>
                 {% endfor %}
@@ -104,7 +105,8 @@
         (function () {
             const density = localStorage.getItem('layoutDensity') === 'compact' ? 'compact' : 'comfortable';
             const storedTheme = localStorage.getItem('theme');
-            const theme = ['dark', 'light', 'high-contrast'].includes(storedTheme) ? storedTheme : 'light';
+            const theme = 'light';
+            localStorage.setItem('theme', 'light');
             document.documentElement.setAttribute('data-density', density);
             document.documentElement.setAttribute('data-theme', theme);
         })();
