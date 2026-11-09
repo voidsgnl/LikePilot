@@ -75,8 +75,8 @@ class TikTokFollowBot(Like4LikeBase):
                     self.record_page_diagnostics("tiktok_follow_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
-                    if not self.wait_for_social_login():
-                        return
+                if not self.wait_for_social_login():
+                    return
 
                 action_completed = False
                 try:
@@ -186,8 +186,8 @@ class TikTokLikePostBot(Like4LikeBase):
                     self.record_page_diagnostics("tiktok_like_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
-                    if not self.wait_for_social_login():
-                        return
+                if not self.wait_for_social_login():
+                    return
 
                 action_completed = False
                 try:
