@@ -1,94 +1,139 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f5f7fb">
-    <title>LikePilot Control</title>
+    <meta name="theme-color" content="#070a12">
+    <title>{% block title %}LikePilot{% endblock %} · LikePilot</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('brand_asset', filename='brand-mark.svg') }}">
     <link rel="manifest" href="{{ url_for('brand_asset', filename='site.webmanifest') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='console-theme.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='workspace-pages.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='reference-layout.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='detail-polish.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='workspace-navigation.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='floating-dashboard.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    {# Orbit shell — the ONLY file that owns nav, theme, chrome, core. #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='orbit.css') }}">
+
+    {# Page-internal CSS still loads so existing pages keep their look inside the panel. #}
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='workspace-pages.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='detail-polish.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='reference-layout.css') }}">
+
     <script src="{{ url_for('static', filename='dashboard.js') }}" defer></script>
-    <style>
-        .notification-container{position:fixed;top:18px;right:18px;z-index:1000;pointer-events:none}
-        .notification-container>*{pointer-events:auto}
-    </style>
+    <script src="{{ url_for('static', filename='orbit.js') }}" defer></script>
     {% block head %}{% endblock %}
 </head>
-<body class="{% block body_class %}page-agents{% endblock %}">
+<body class="orbit-body {% block body_class %}page-{% endblock %}" data-page="{{ page|default('dashboard') }}">
+
     <a href="#main-content" class="skip-link">Skip to main content</a>
     <div class="notification-container" id="notification-container" aria-live="polite" aria-atomic="false"></div>
 
-    <main class="app-shell" id="app-shell">
-        <header class="app-header">
-            <div class="topbar">
-                <a class="brand-lockup" href="/dashboard" aria-label="LikePilot overview">
-                    <span class="brand-icon"><i class="fa-solid fa-paper-plane" aria-hidden="true"></i></span>
-                    <span class="brand-name">LikePilot</span>
-                </a>
+    <!-- ============ TOP BAR ============ -->
+    <header class="orbit-top">
+        <a class="orbit-brand" href="{{ url_for('dashboard') }}" aria-label="LikePilot home">
+            <span class="orbit-brand-mark"><span>L</span></span>
+            <span class="orbit-brand-name">LikePilot</span>
+        </a>
 
-                <nav class="pill-nav" aria-label="Main navigation">
-                    <a href="/dashboard" class="pill-link {% if page == 'dashboard' %}active{% endif %}" {% if page == 'dashboard' %}aria-current="page"{% endif %}><i class="fa-solid fa-grid-2" aria-hidden="true"></i><span>Overview</span></a>
-                    <a href="/agents" class="pill-link {% if page == 'agents' %}active{% endif %}" {% if page == 'agents' %}aria-current="page"{% endif %}><i class="fa-solid fa-robot" aria-hidden="true"></i><span>Agents</span></a>
-                    <a href="/analytics" class="pill-link {% if page == 'analytics' %}active{% endif %}" {% if page == 'analytics' %}aria-current="page"{% endif %}><i class="fa-solid fa-chart-pie" aria-hidden="true"></i><span>Analytics</span></a>
-                    <a href="/settings/browser" class="pill-link {% if page in ['settings','providers','platforms','operations'] %}active{% endif %}" {% if page in ['settings','providers','platforms','operations'] %}aria-current="page"{% endif %}><i class="fa-solid fa-sliders" aria-hidden="true"></i><span>Settings</span></a>
-                </nav>
-
-                <div class="top-actions">
-                    <div class="system-status meta-pill live-pill live-pill-warning" id="live-updates-pill" title="Live connection status" aria-label="Connection status">
-                        <span class="live-dot" aria-hidden="true"></span>
-                        <span class="system-status-label">System</span>
-                        <span id="live-updates-label">Connecting</span>
-                    </div>
-                    <a class="avatar" id="logout-link" href="/logout" aria-label="Log out">
-                        <span class="avatar-img"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></span>
-                        <span>Log out</span>
-                    </a>
-                </div>
+        <div class="orbit-top-right">
+            <div class="orbit-live live-pill live-pill-warning" id="live-updates-pill" title="Live connection status">
+                <span class="orbit-live-dot live-dot"></span>
+                <span id="live-updates-label">Connecting</span>
             </div>
 
-            <div class="page-head">
-                <h1 class="page-title">{% block title %}{% endblock %}</h1>
-                {% if page != 'dashboard' %}<p class="page-description">{% block subtitle %}{% endblock %}</p>{% endif %}
+            <div class="orbit-theme" role="group" aria-label="Theme">
+                <button id="orbit-theme-dark" class="orbit-theme-btn active" title="Orbit Dark" aria-pressed="true">🌌</button>
+                <button id="orbit-theme-light" class="orbit-theme-btn" title="Orbit Light" aria-pressed="false">☀</button>
             </div>
-        </header>
-        <div class="content-wrapper" id="main-content">
-            {% if page == 'analytics' %}
-            <nav class="context-nav" aria-label="Analytics sections">
-                {% for key, label in [('summary','Summary'),('trends','Trends'),('platforms','Platforms'),('heatmap','Heatmap'),('insights','Insights'),('export','Export')] %}
-                <a href="{{ url_for('analytics', analytics_view=key) }}" class="context-nav-link {% if analytics_view == key %}active{% endif %}" {% if analytics_view == key %}aria-current="page"{% endif %}>{{ label }}</a>
-                {% endfor %}
-            </nav>
-            {% elif page in ['settings','providers','platforms'] %}
-            <nav class="context-nav" aria-label="Settings sections">
-                <a href="{{ url_for('browser_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'browser' %}active{% endif %}">Browser</a>
-                <a href="{{ url_for('provider_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'providers' %}active{% endif %}">Providers</a>
-                <a href="/platforms" class="context-nav-link {% if page == 'platforms' %}active{% endif %}">Social platforms</a>
-                <a href="{{ url_for('create_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'create' %}active{% endif %}">Create agent</a>
-                <a href="{{ url_for('manage_agent_settings') }}" class="context-nav-link {% if page == 'settings' and settings_view == 'manage' %}active{% endif %}">Manage agents</a>
-                <a href="{{ url_for('operations', operation_view='database') }}" class="context-nav-link {% if page == 'operations' %}active{% endif %}">Advanced</a>
-            </nav>
-            {% elif page == 'operations' %}
-            <nav class="context-nav" aria-label="Advanced sections">
-                {% for key, label in [('database','Database'),('logs','Runtime logs'),('diagnostics','Diagnostics')] %}
-                <a href="{{ url_for('operations', operation_view=key) }}" class="context-nav-link {% if operation_view == key %}active{% endif %}" {% if operation_view == key %}aria-current="page"{% endif %}>{{ label }}</a>
-                {% endfor %}
-            </nav>
-            {% endif %}
-            {% block content %}{% endblock %}
+
+            <a class="orbit-avatar" id="logout-link" href="/logout" aria-label="Log out">
+                <span class="orbit-avatar-inner"><i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i></span>
+            </a>
         </div>
-    </main>
+    </header>
 
+    <!-- ============ THE STAGE ============ -->
+    <section class="orbit-stage" aria-label="Primary navigation">
+        <div class="orbit-ring-guide r1"></div>
+        <div class="orbit-ring-guide r2"></div>
+        <div class="orbit-ring-guide r3"></div>
+        <div class="orbit-ring-guide r4"></div>
+
+        <div class="orbit-ring" id="orbit-ring">
+            {# Slots are rendered by orbit.js using these hrefs so Flask routes stay intact. #}
+        </div>
+
+        <div class="orbit-core" id="orbit-core">
+            <div class="orbit-core-inner">
+                <div class="orbit-core-eyebrow" id="orbit-core-eyebrow">
+                    {% if page == 'dashboard' %}Workspace{% else %}LikePilot{% endif %}
+                </div>
+                <div class="orbit-core-status" id="orbit-core-status">
+                    <span class="orbit-core-status-dot"></span>
+                    <span id="orbit-core-status-label">Loading</span>
+                </div>
+                <div class="orbit-core-value" id="orbit-core-value">—</div>
+                <div class="orbit-core-label" id="orbit-core-label">credits</div>
+                <div class="orbit-core-delta" id="orbit-core-delta">—</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ PANEL ============ -->
+    <div class="orbit-panel-wrap">
+        <div class="orbit-panel" id="orbit-panel">
+            <header class="orbit-panel-head">
+                <div>
+                    <span class="orbit-kicker">{{ self.title() }}</span>
+                    <h1 class="orbit-panel-title">{% block title_h1 %}{{ self.title() }}{% endblock %}</h1>
+                    {% block subtitle_block %}
+                    {% if self.subtitle()|trim %}
+                    <p class="orbit-panel-sub">{{ self.subtitle() }}</p>
+                    {% endif %}
+                    {% endblock %}
+                </div>
+                <div class="orbit-panel-head-right" id="orbit-panel-head-right">
+                    {# Per-page context-nav slots in here when page requires it #}
+                    {% if page == 'analytics' %}
+                    <nav class="orbit-context-nav" aria-label="Analytics sections">
+                        {% for key, label in [('summary','Summary'),('trends','Trends'),('platforms','Platforms'),('heatmap','Heatmap'),('insights','Insights'),('export','Export')] %}
+                        <a href="{{ url_for('analytics', analytics_view=key) }}" class="orbit-context-link {% if analytics_view == key %}active{% endif %}">{{ label }}</a>
+                        {% endfor %}
+                    </nav>
+                    {% elif page in ['settings','providers','platforms'] %}
+                    <nav class="orbit-context-nav" aria-label="Settings sections">
+                        <a href="{{ url_for('browser_settings') }}" class="orbit-context-link {% if page == 'settings' and settings_view == 'browser' %}active{% endif %}">Browser</a>
+                        <a href="{{ url_for('provider_settings') }}" class="orbit-context-link {% if page == 'settings' and settings_view == 'providers' %}active{% endif %}">Providers</a>
+                        <a href="/platforms" class="orbit-context-link {% if page == 'platforms' %}active{% endif %}">Platforms</a>
+                        <a href="{{ url_for('create_agent_settings') }}" class="orbit-context-link {% if page == 'settings' and settings_view == 'create' %}active{% endif %}">Create</a>
+                        <a href="{{ url_for('manage_agent_settings') }}" class="orbit-context-link {% if page == 'settings' and settings_view == 'manage' %}active{% endif %}">Manage</a>
+                        <a href="{{ url_for('operations', operation_view='database') }}" class="orbit-context-link {% if page == 'operations' %}active{% endif %}">Advanced</a>
+                    </nav>
+                    {% elif page == 'operations' %}
+                    <nav class="orbit-context-nav" aria-label="Advanced sections">
+                        {% for key, label in [('database','Database'),('logs','Runtime logs'),('diagnostics','Diagnostics')] %}
+                        <a href="{{ url_for('operations', operation_view=key) }}" class="orbit-context-link {% if operation_view == key %}active{% endif %}">{{ label }}</a>
+                        {% endfor %}
+                    </nav>
+                    {% endif %}
+                </div>
+            </header>
+
+            <div class="orbit-panel-body" id="main-content">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ HINT BAR ============ -->
+    <div class="orbit-hint" id="orbit-hint">
+        <span class="orbit-kbd">←</span><span class="orbit-kbd">→</span>
+        <span>rotate · <b id="orbit-hint-label">{% if page == 'dashboard' %}Overview{% elif page == 'agents' %}Agents{% elif page == 'analytics' %}Analytics{% elif page in ['settings','providers','platforms','operations'] %}Settings{% else %}{{ self.title() }}{% endif %}</b></span>
+    </div>
+
+    <!-- ============ CONFIRM MODAL (unchanged) ============ -->
     <div id="app-modal" class="app-modal" hidden aria-hidden="true">
         <div class="app-modal-backdrop" data-modal-close></div>
         <section class="app-modal-card" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
@@ -102,31 +147,15 @@
     </div>
 
     <script>
+        /* Keep dashboard.js happy: it expects data-theme + data-density on <html>. */
         (function () {
-            const density = localStorage.getItem('layoutDensity') === 'compact' ? 'compact' : 'comfortable';
             const storedTheme = localStorage.getItem('theme');
-            const theme = 'light';
-            localStorage.setItem('theme', 'light');
-            document.documentElement.setAttribute('data-density', density);
+            const theme = (storedTheme === 'light') ? 'light' : 'dark';
             document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            const density = localStorage.getItem('layoutDensity') === 'compact' ? 'compact' : 'comfortable';
+            document.documentElement.setAttribute('data-density', density);
         })();
-
-        document.addEventListener('keydown', function (event) {
-            if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'h') {
-                event.preventDefault();
-                const root = document.documentElement;
-                const current = root.getAttribute('data-theme') || 'light';
-                if (current === 'high-contrast') {
-                    const previous = localStorage.getItem('previous-theme') || 'light';
-                    applyTheme(previous);
-                    showNotification('High contrast mode disabled', 'info');
-                } else {
-                    localStorage.setItem('previous-theme', current);
-                    applyTheme('high-contrast');
-                    showNotification('High contrast mode enabled', 'info');
-                }
-            }
-        });
     </script>
 </body>
 </html>

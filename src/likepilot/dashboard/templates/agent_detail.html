@@ -1,60 +1,119 @@
 {% extends "layout.html" %}
 {% block body_class %}page-agent-detail{% endblock %}
 {% block title %}{{ agent_name }}{% endblock %}
-{% block subtitle %}A dedicated control and inspection workspace for one agent.{% endblock %}
+{% block subtitle %}Session controls, live credits, and full configuration for one agent.{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='agent-detail.js') }}" defer></script>{% endblock %}
 {% block content %}
-<div class="workspace-page" id="agent-detail" data-agent-name="{{ agent_name }}">
-    <div class="workspace-toolbar">
-        <a class="btn-secondary btn-compact" href="{{ url_for('agents') }}">← All agents</a>
-        <span class="mono section-subtle">AGENT / {{ agent_name }}</span>
+<div class="workspace-page orbit-agent-detail" id="agent-detail" data-agent-name="{{ agent_name }}">
+
+    <!-- ── TOOLBAR ───────────────────────────────────────── -->
+    <div class="orbit-detail-toolbar">
+        <a class="orbit-btn orbit-btn-ghost" href="{{ url_for('agents') }}">
+            ← All agents
+        </a>
+        <span class="orbit-detail-path mono">
+            AGENT / {{ agent_name }}
+        </span>
     </div>
-    <section class="panel panel-pad workspace-hero">
-        <div class="workspace-title-row">
-            <div>
-                <div class="section-kicker">Agent identity</div>
-                <h2 class="workspace-title" id="agent-name">{{ agent_name }}</h2>
-                <p class="section-subtle" id="agent-summary">Loading agent state…</p>
-            </div>
-            <span class="status-badge" id="agent-status">Loading</span>
+
+    <!-- ── HERO ─────────────────────────────────────────── -->
+    <section class="orbit-detail-hero">
+        <div class="orbit-detail-hero-copy">
+            <span class="orbit-kicker">Agent identity</span>
+            <h2 class="orbit-detail-title" id="agent-name">{{ agent_name }}</h2>
+            <p class="orbit-detail-summary" id="agent-summary">Loading agent state…</p>
         </div>
-        <div class="workspace-actions">
-            <button class="btn-primary" type="button" data-agent-action="start" hidden>Start</button>
-            <button class="btn-primary" type="button" data-agent-action="ready" hidden>Ready</button>
-            <button class="btn-primary" type="button" data-agent-action="initialize" hidden>Initialize</button>
-            <button class="btn-secondary" type="button" data-agent-action="pause" hidden>Pause</button>
-            <button class="btn-secondary" type="button" data-agent-action="resume" hidden>Resume</button>
-            <button class="btn-secondary" type="button" data-agent-action="restart" hidden>Restart</button>
-            <button class="btn-danger" type="button" data-agent-action="stop" hidden>Stop</button>
-            <select id="agent-platform-select" aria-label="Select platform" hidden><option value="Twitter">Twitter</option><option value="Twitter Likes">Twitter Likes</option><option value="Twitter Retweets">Twitter Retweets</option><option value="Instagram">Instagram</option><option value="Instagram Likes">Instagram Likes</option><option value="IG Comments">IG Comments</option><option value="TikTok">TikTok</option><option value="TikTok Likes">TikTok Likes</option><option value="YouTube Subs">YouTube Subs</option><option value="YouTube Likes">YouTube Likes</option><option value="Facebook Subs">Facebook Subs</option><option value="Facebook Likes">Facebook Likes</option><option value="FB Comments">FB Comments</option></select>
-            <button class="btn-secondary" type="button" id="agent-confirm-platform" hidden>Confirm platform</button>
+        <div class="orbit-detail-hero-status">
+            <span class="orbit-status-pill" id="agent-status">Loading</span>
         </div>
     </section>
-    <section class="workspace-metrics">
-        <article class="stat-card"><div class="stat-label">Credits</div><div class="stat-value" id="agent-credits">—</div></article>
-        <article class="stat-card"><div class="stat-label">Session gain</div><div class="stat-value" id="agent-gain">—</div></article>
+
+    <!-- ── ACTIONS ──────────────────────────────────────── -->
+    <section class="orbit-detail-actions">
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="start" hidden>Start</button>
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="ready" hidden>Ready</button>
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="initialize" hidden>Initialize</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="pause" hidden>Pause</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="resume" hidden>Resume</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="restart" hidden>Restart</button>
+        <button class="orbit-btn orbit-btn-danger" type="button" data-agent-action="stop" hidden>Stop</button>
+        <select id="agent-platform-select" class="orbit-select" aria-label="Select platform" hidden>
+            <option value="Twitter">Twitter</option>
+            <option value="Twitter Likes">Twitter Likes</option>
+            <option value="Twitter Retweets">Twitter Retweets</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Instagram Likes">Instagram Likes</option>
+            <option value="IG Comments">IG Comments</option>
+            <option value="TikTok">TikTok</option>
+            <option value="TikTok Likes">TikTok Likes</option>
+            <option value="YouTube Subs">YouTube Subs</option>
+            <option value="YouTube Likes">YouTube Likes</option>
+            <option value="Facebook Subs">Facebook Subs</option>
+            <option value="Facebook Likes">Facebook Likes</option>
+            <option value="FB Comments">FB Comments</option>
+        </select>
+        <button class="orbit-btn orbit-btn-secondary" type="button" id="agent-confirm-platform" hidden>Confirm platform</button>
     </section>
-    <div class="workspace-columns">
-        <section class="panel panel-pad stack-sm">
-            <div class="surface-header"><div><div class="section-kicker">Configuration</div><h3 class="section-heading">Agent profile</h3></div></div>
-            <dl class="detail-list">
+
+    <!-- ── METRICS ──────────────────────────────────────── -->
+    <section class="orbit-detail-metrics">
+        <article class="orbit-tile orbit-tile-lg">
+            <div class="orbit-tile-label">Credits</div>
+            <div class="orbit-tile-value" id="agent-credits">—</div>
+            <div class="orbit-tile-sub">Current balance</div>
+        </article>
+        <article class="orbit-tile orbit-tile-lg">
+            <div class="orbit-tile-label">Session gain</div>
+            <div class="orbit-tile-value" id="agent-gain">—</div>
+            <div class="orbit-tile-sub">Since session start</div>
+        </article>
+    </section>
+
+    <!-- ── DETAIL GRID ──────────────────────────────────── -->
+    <div class="orbit-detail-grid">
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Configuration</span>
+                    <h3 class="orbit-card-title">Agent profile</h3>
+                </div>
+            </header>
+            <dl class="orbit-detail-list">
                 <div><dt>Provider</dt><dd id="agent-provider">—</dd></div>
                 <div><dt>Platform action</dt><dd id="agent-platform">—</dd></div>
                 <div><dt>Browser profile</dt><dd id="agent-profile">—</dd></div>
                 <div><dt>Proxy</dt><dd id="agent-proxy">—</dd></div>
                 <div><dt>Fallback</dt><dd id="agent-fallback">—</dd></div>
             </dl>
-            <a class="btn-secondary" href="/settings/agents/manage">Manage saved agents</a>
+            <a class="orbit-btn orbit-btn-secondary orbit-btn-block" href="/settings/agents/manage">
+                Manage saved agents
+            </a>
         </section>
-        <section class="panel panel-pad stack-sm">
-            <div class="surface-header"><div><div class="section-kicker">Runtime</div><h3 class="section-heading">Session details</h3></div></div>
-            <dl class="detail-list runtime-details">
+
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Runtime</span>
+                    <h3 class="orbit-card-title">Session details</h3>
+                </div>
+            </header>
+            <dl class="orbit-detail-list runtime-details">
                 <div><dt>Heartbeat</dt><dd class="mono" id="agent-heartbeat">—</dd></div>
                 <div><dt>Session started</dt><dd class="mono" id="agent-session-start">—</dd></div>
             </dl>
-            <div class="surface-header"><div><div class="section-kicker">Activity</div><h3 class="section-heading">Recent events</h3></div><span class="panel-note mono">Latest 5</span></div>
-            <div id="agent-event-list" class="event-list"><div class="section-subtle">Loading events…</div></div>
-            <div id="agent-error" class="notice notice-danger" hidden></div>
+
+            <header class="orbit-card-head orbit-card-head-sub">
+                <div>
+                    <span class="orbit-kicker">Activity</span>
+                    <h3 class="orbit-card-title">Recent events</h3>
+                </div>
+                <span class="orbit-chip">Latest 5</span>
+            </header>
+
+            <div id="agent-event-list" class="orbit-event-list">
+                <div class="orbit-event-empty">Loading events…</div>
+            </div>
+            <div id="agent-error" class="orbit-notice orbit-notice-danger" hidden></div>
         </section>
     </div>
 </div>

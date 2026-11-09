@@ -1,45 +1,93 @@
 {% extends "layout.html" %}
 {% block body_class %}page-dashboard{% endblock %}
 {% block title %}Overview{% endblock %}
+{% block subtitle %}A live view of your workspace, agents and the latest runtime activity.{% endblock %}
 {% block head %}<script src="{{ url_for('static', filename='overview.js') }}" defer></script>{% endblock %}
 {% block content %}
-<div class="overview-page">
-    <section class="overview-welcome">
+<div class="orbit-page orbit-overview">
+
+    <!-- ── INTRO ─────────────────────────────────────────── -->
+    <section class="orbit-overview-intro">
         <div>
-            <span class="section-kicker">WORKSPACE</span>
-            <h2>Your operation, at a glance.</h2>
-            <p>A simple view of your agents and the latest changes.</p>
+            <span class="orbit-kicker">Workspace</span>
+            <h2 class="orbit-section-title">Your operation, at a glance.</h2>
+            <p class="orbit-section-sub">Every agent, credit change, and runtime event in one calm view.</p>
         </div>
-        <div class="overview-welcome-actions">
-            <span class="overview-workspace-status is-idle" id="overview-workspace-state">Checking</span>
-            <a href="/settings/agents/new" class="btn-primary">Create agent <span aria-hidden="true">↗</span></a>
-        </div>
-    </section>
-
-    <section class="overview-focus panel" aria-labelledby="overview-agents-title">
-        <div class="overview-focus-copy">
-            <span class="section-kicker">YOUR WORKSPACE</span>
-            <h2 id="overview-agents-title">Agents</h2>
-            <p>Manage your automations in one dedicated place. Open an agent to control its session and configuration.</p>
-            <a class="btn-primary" href="/agents">Open agent workspace <span aria-hidden="true">→</span></a>
-        </div>
-        <div class="overview-agent-summary" aria-label="Agent status summary">
-            <div><strong id="overview-total">—</strong><span>Configured</span></div>
-            <div><strong id="overview-running">—</strong><span>Running</span></div>
-            <div><strong id="overview-waiting">—</strong><span>Need attention</span></div>
+        <div class="orbit-overview-intro-actions">
+            <span class="orbit-workspace-status is-idle" id="overview-workspace-state">
+                <span class="orbit-workspace-dot"></span>
+                <span>Checking</span>
+            </span>
+            <a href="/settings/agents/new" class="orbit-btn orbit-btn-primary">
+                Create agent <span aria-hidden="true">↗</span>
+            </a>
         </div>
     </section>
 
-    <section class="overview-recent panel" aria-labelledby="overview-recent-title">
-        <div class="overview-recent-heading">
-            <div><span class="section-kicker">LATEST UPDATES</span><h2 id="overview-recent-title">Recent activity</h2></div>
-            <div class="overview-recent-meta"><span id="overview-activity-count">0 events</span><span id="overview-updated" aria-live="off"></span></div>
+    <!-- ── STAT TILES ────────────────────────────────────── -->
+    <section class="orbit-tile-grid" aria-label="Workspace summary">
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Configured agents</div>
+            <div class="orbit-tile-value" id="overview-total">—</div>
+            <div class="orbit-tile-sub">Total in workspace</div>
         </div>
-        <ol id="overview-activity-list" class="overview-activity-list">
-            <li class="overview-activity-empty">Activity will appear here when your agents start working.</li>
-        </ol>
-        <div id="overview-error" class="notice notice-danger" hidden></div>
-        <div class="overview-recent-footer"><a href="/operations/logs">Open runtime logs <span aria-hidden="true">→</span></a></div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Running</div>
+            <div class="orbit-tile-value" id="overview-running">—</div>
+            <div class="orbit-tile-sub">Active right now</div>
+        </div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Need attention</div>
+            <div class="orbit-tile-value" id="overview-waiting">—</div>
+            <div class="orbit-tile-sub">Waiting on you</div>
+        </div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Recent events</div>
+            <div class="orbit-tile-value" id="overview-activity-count">0</div>
+            <div class="orbit-tile-sub">From the last hour</div>
+        </div>
+    </section>
+
+    <!-- ── AGENTS CTA + ACTIVITY ─────────────────────────── -->
+    <section class="orbit-overview-grid">
+        <article class="orbit-card orbit-overview-agents">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Your workspace</span>
+                    <h3 class="orbit-card-title" id="overview-agents-title">Agents</h3>
+                </div>
+                <a href="/agents" class="orbit-link">Open workspace ↗</a>
+            </header>
+            <p class="orbit-card-sub">
+                Manage automations in one dedicated place. Open an agent to control its
+                session, inspect credits, or change configuration.
+            </p>
+            <div class="orbit-agent-summary" aria-label="Agent status summary">
+                <div><strong id="overview-agents-total">—</strong><span>Configured</span></div>
+                <div><strong id="overview-agents-running">—</strong><span>Running</span></div>
+                <div><strong id="overview-agents-waiting">—</strong><span>Attention</span></div>
+            </div>
+            <a href="/agents" class="orbit-btn orbit-btn-primary orbit-btn-block">Open agent workspace →</a>
+        </article>
+
+        <article class="orbit-card orbit-overview-activity">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Latest updates</span>
+                    <h3 class="orbit-card-title" id="overview-recent-title">Recent activity</h3>
+                </div>
+                <div class="orbit-card-meta">
+                    <span id="overview-updated" aria-live="off">—</span>
+                </div>
+            </header>
+            <ol id="overview-activity-list" class="orbit-activity-list">
+                <li class="orbit-activity-empty">Activity will appear here when your agents start working.</li>
+            </ol>
+            <div id="overview-error" class="orbit-notice orbit-notice-danger" hidden></div>
+            <a href="/operations/logs" class="orbit-link orbit-link-footer">
+                Open runtime logs <span aria-hidden="true">→</span>
+            </a>
+        </article>
     </section>
 </div>
 {% endblock %}

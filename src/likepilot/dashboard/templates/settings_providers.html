@@ -1,46 +1,101 @@
 {% extends "layout.html" %}
 {% block body_class %}page-settings{% endblock %}
-{% block head %}<script src="{{ url_for('static', filename='settings.js') }}" defer></script>{% endblock %}
 {% block title %}Provider login{% endblock %}
-{% block subtitle %}{% endblock %}
+{% block subtitle %}Configure each engagement provider once. Assigned agents inherit these settings on their next browser session.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='settings.js') }}" defer></script>
+{% endblock %}
 {% block content %}
-<section class="panel panel-pad stack-sm page-section console-shell">
-    <div class="surface-header">
-        <div>
-            <h2 class="section-heading">Provider login</h2>
-            <div class="section-subtle">Configure each provider once. Assigned agents inherit these settings on their next browser session.</div>
+<div class="orbit-page orbit-settings">
+
+    <section class="orbit-card console-shell">
+        <header class="orbit-card-head">
+            <div>
+                <span class="orbit-kicker">Configuration</span>
+                <h2 class="orbit-card-title">Provider login</h2>
+                <p class="orbit-card-sub">
+                    Configure each provider once. Assigned agents inherit these settings
+                    on their next browser session.
+                </p>
+            </div>
+        </header>
+
+        <div class="orbit-feedback" aria-live="polite" id="provider-login-feedback"></div>
+
+        <div class="orbit-provider-login-list">
+            {% for site, key in [
+                ('Like4Like', 'like4like'),
+                ('KingdomLikes', 'kingdomlikes'),
+                ('YouLikeHits', 'youlikehits')
+            ] %}
+            <article class="orbit-provider-login-card" data-provider-login="{{ site }}">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Provider</span>
+                        <h3 class="orbit-card-title">{{ site }}</h3>
+                        <div class="orbit-card-sub" data-provider-login-status="{{ site }}">
+                            Manual login
+                        </div>
+                    </div>
+                    <label class="orbit-toggle" for="provider-login-enabled-{{ key }}">
+                        <input
+                            type="checkbox"
+                            id="provider-login-enabled-{{ key }}"
+                            data-provider-login-enabled
+                        >
+                        <span class="orbit-toggle-track" aria-hidden="true">
+                            <span class="orbit-toggle-thumb"></span>
+                        </span>
+                        <span class="orbit-toggle-label">Auto login</span>
+                    </label>
+                </header>
+
+                <div class="orbit-form-grid">
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="provider-login-username-{{ key }}">
+                            Username or email
+                        </label>
+                        <input
+                            type="text"
+                            id="provider-login-username-{{ key }}"
+                            class="orbit-input"
+                            autocomplete="username"
+                            data-provider-login-username
+                        >
+                    </div>
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="provider-login-password-{{ key }}">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            id="provider-login-password-{{ key }}"
+                            class="orbit-input"
+                            autocomplete="new-password"
+                            placeholder="Not saved"
+                            data-provider-login-password
+                        >
+                    </div>
+                </div>
+
+                <div class="orbit-actions">
+                    <button
+                        class="orbit-btn orbit-btn-primary"
+                        type="button"
+                        data-save-provider-login="{{ site }}"
+                    >
+                        Save
+                    </button>
+                </div>
+            </article>
+            {% endfor %}
         </div>
-    </div>
-    <div class="section-subtle" aria-live="polite" id="provider-login-feedback"></div>
-    <div class="stack-sm">
-        {% for site, key in [('Like4Like', 'like4like'), ('KingdomLikes', 'kingdomlikes'), ('YouLikeHits', 'youlikehits')] %}
-        <article class="event-item provider-login-card" data-provider-login="{{ site }}">
-            <div class="surface-header">
-                <div>
-                    <h3 class="section-heading">{{ site }}</h3>
-                    <div class="section-subtle" data-provider-login-status="{{ site }}">Manual login</div>
-                </div>
-                <label class="inline-row" for="provider-login-enabled-{{ key }}">
-                    <input type="checkbox" id="provider-login-enabled-{{ key }}" data-provider-login-enabled>
-                    <span>Auto login</span>
-                </label>
-            </div>
-            <div class="form-grid">
-                <div class="field-stack">
-                    <label class="section-subtle field-label" for="provider-login-username-{{ key }}">Username or email</label>
-                    <input type="text" id="provider-login-username-{{ key }}" autocomplete="username" data-provider-login-username>
-                </div>
-                <div class="field-stack">
-                    <label class="section-subtle field-label" for="provider-login-password-{{ key }}">Password</label>
-                    <input type="password" id="provider-login-password-{{ key }}" autocomplete="new-password" placeholder="Not saved" data-provider-login-password>
-                </div>
-            </div>
-            <div class="actions">
-                <button class="btn-primary btn-compact" type="button" data-save-provider-login="{{ site }}">Save</button>
-            </div>
-        </article>
-        {% endfor %}
-    </div>
-    <div class="section-subtle">If a provider requires CAPTCHA, two-factor authentication, or another verification step, LikePilot leaves the browser open for manual completion. Credentials are stored in the local LikePilot database.</div>
-</section>
+
+        <p class="orbit-card-sub orbit-provider-login-note">
+            If a provider requires CAPTCHA, two-factor authentication, or another verification
+            step, LikePilot leaves the browser open for manual completion. Credentials are
+            stored in the local LikePilot database.
+        </p>
+    </section>
+</div>
 {% endblock %}

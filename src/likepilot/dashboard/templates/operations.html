@@ -1,96 +1,122 @@
 {% extends "layout.html" %}
-
 {% block body_class %}page-operations{% endblock %}
-
 {% block title %}{{ {'database':'Database','logs':'Runtime logs','diagnostics':'Diagnostics'}.get(operation_view, 'Operations') }}{% endblock %}
-{% block subtitle %}{% endblock %}
+{% block subtitle %}Inspect the runtime database, log files, and diagnostic captures.{% endblock %}
 {% block head %}
-<script src="{{ url_for('static', filename='operations.js') }}" defer></script>{% endblock %}
-
+<script src="{{ url_for('static', filename='operations.js') }}" defer></script>
+{% endblock %}
 {% block content %}
-<section class="panel panel-pad stack-sm page-section console-shell" data-operation-view="{{ operation_view|default('database') }}">
-    <div id="operations-feedback" class="section-subtle" aria-live="polite"></div>
+<section class="orbit-page orbit-operations console-shell"
+         data-operation-view="{{ operation_view|default('database') }}">
+
+    <div id="operations-feedback" class="orbit-feedback" aria-live="polite"></div>
 
     {% if operation_view == 'database' %}
-<div class="tab-panel {% if operation_view == 'database' %}active{% endif %}" data-tab-panel="database">
-        <div class="ops-grid section-scroll">
-            <aside class="panel inset-panel stack-sm">
-                <div class="inline-row">
-                    <div><h3 class="section-heading">Tables</h3><div class="section-subtle">Database structure</div></div>
-                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-db">Refresh</button>
-                </div>
-                <div id="ops-db-summary" class="section-subtle">Loading schema.</div>
-                <div id="ops-db-list" class="ops-list"></div>
+    <!-- ═══════ DATABASE ═══════ -->
+    <div class="tab-panel active" data-tab-panel="database">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Tables</span>
+                        <h3 class="orbit-card-title">Database structure</h3>
+                    </div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-db">Refresh</button>
+                </header>
+                <div id="ops-db-summary" class="orbit-card-sub">Loading schema.</div>
+                <div id="ops-db-list" class="orbit-ops-list"></div>
             </aside>
 
-            <section class="panel inset-panel stack-sm">
-                <div class="inline-row-wrap"><div><h3 class="section-heading">Schema</h3><div class="section-subtle">Columns, keys, indexes, and table relationships.</div></div></div>
-                <div id="ops-db-table-meta" class="section-subtle">Select a table or view the full schema.</div>
-                <div class="ops-schema-shell">
-                    <div class="ops-schema-header"><div class="section-subtle" id="ops-db-schema-meta">Loading schema map.</div><div class="panel-note mono">Read only</div></div>
-                    <div class="ops-schema-stage" id="ops-schema-stage"><svg class="ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg><div class="ops-schema-grid" id="ops-schema-grid"></div></div>
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Schema</span>
+                        <h3 class="orbit-card-title">Columns, keys &amp; relationships</h3>
+                    </div>
+                    <span class="orbit-chip">Read only</span>
+                </header>
+                <div id="ops-db-table-meta" class="orbit-card-sub">Select a table or view the full schema.</div>
+                <div class="orbit-ops-schema-shell">
+                    <div class="orbit-ops-schema-header">
+                        <div class="orbit-card-sub" id="ops-db-schema-meta">Loading schema map.</div>
+                    </div>
+                    <div class="orbit-ops-schema-stage" id="ops-schema-stage">
+                        <svg class="orbit-ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg>
+                        <div class="orbit-ops-schema-grid" id="ops-schema-grid"></div>
+                    </div>
                 </div>
             </section>
         </div>
     </div>
-{% elif operation_view == 'logs' %}
-<div class="tab-panel {% if operation_view == 'logs' %}active{% endif %}" data-tab-panel="logs">
-        <div class="ops-grid section-scroll">
-            <aside class="panel inset-panel stack-sm">
-                <div class="inline-row">
+
+    {% elif operation_view == 'logs' %}
+    <!-- ═══════ LOGS ═══════ -->
+    <div class="tab-panel active" data-tab-panel="logs">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
                     <div>
-                        <h3 class="section-heading">Log files</h3>
-                        <div class="section-subtle">Files captured under <span class="mono">logs/</span>.</div>
+                        <span class="orbit-kicker">Log files</span>
+                        <h3 class="orbit-card-title">Captured in <span class="mono">logs/</span></h3>
                     </div>
-                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-logs">Refresh</button>
-                </div>
-                <div id="ops-log-list" class="ops-list"></div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-logs">Refresh</button>
+                </header>
+                <div id="ops-log-list" class="orbit-ops-list"></div>
             </aside>
 
-            <section class="panel inset-panel stack-sm">
-                <div class="inline-row-wrap">
+            <section class="orbit-card">
+                <header class="orbit-card-head">
                     <div>
-                        <h3 class="section-heading">Log viewer</h3>
-                        <div id="ops-log-meta" class="section-subtle">Select a log file to view its latest lines.</div>
+                        <span class="orbit-kicker">Viewer</span>
+                        <h3 class="orbit-card-title">Log content</h3>
+                        <div id="ops-log-meta" class="orbit-card-sub">Select a log file to view its latest lines.</div>
                     </div>
-                    <div class="actions">
-                        <button type="button" class="btn-secondary btn-compact" id="ops-clear-log" disabled>Clear</button>
-                        <button type="button" class="btn-danger btn-compact" id="ops-delete-log" disabled>Delete</button>
+                    <div class="orbit-ops-actions">
+                        <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-clear-log" disabled>Clear</button>
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-delete-log" disabled>Delete</button>
                     </div>
-                </div>
-                <pre id="ops-log-content" class="ops-log-view">Select a log file to view its latest lines.</pre>
+                </header>
+                <pre id="ops-log-content" class="orbit-ops-log-view">Select a log file to view its latest lines.</pre>
             </section>
         </div>
     </div>
-{% elif operation_view == 'diagnostics' %}
-<div class="tab-panel {% if operation_view == 'diagnostics' %}active{% endif %}" data-tab-panel="diagnostics">
-        <div class="ops-grid section-scroll">
-            <aside class="panel inset-panel stack-sm">
-                <div class="inline-row-wrap">
+
+    {% elif operation_view == 'diagnostics' %}
+    <!-- ═══════ DIAGNOSTICS ═══════ -->
+    <div class="tab-panel active" data-tab-panel="diagnostics">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
                     <div>
-                        <h3 class="section-heading">Diagnostic captures</h3>
-                        <div class="section-subtle">Grouped HTML and PNG snapshots from <span class="mono">diagnostics/</span>.</div>
+                        <span class="orbit-kicker">Captures</span>
+                        <h3 class="orbit-card-title">Diagnostic snapshots</h3>
+                        <div class="orbit-card-sub">
+                            Grouped HTML and PNG snapshots from <span class="mono">diagnostics/</span>.
+                        </div>
                     </div>
-                    <button type="button" class="btn-secondary btn-compact" id="ops-refresh-diagnostics">Refresh</button>
-                </div>
-                <div id="ops-diagnostic-list" class="ops-list"></div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-diagnostics">Refresh</button>
+                </header>
+                <div id="ops-diagnostic-list" class="orbit-ops-list"></div>
             </aside>
 
-            <section class="panel inset-panel stack-sm">
-                <div class="inline-row-wrap">
+            <section class="orbit-card">
+                <header class="orbit-card-head">
                     <div>
-                        <h3 class="section-heading">Capture viewer</h3>
-                        <div id="ops-diagnostic-meta" class="section-subtle">Select a capture to preview its contents.</div>
+                        <span class="orbit-kicker">Preview</span>
+                        <h3 class="orbit-card-title">Capture viewer</h3>
+                        <div id="ops-diagnostic-meta" class="orbit-card-sub">Select a capture to preview its contents.</div>
                     </div>
-                    <div class="actions">
-                        <button type="button" class="btn-danger btn-compact" id="ops-delete-diagnostic" disabled>Delete</button>
-                        <button type="button" class="btn-danger btn-compact" id="ops-clear-diagnostics">Clear all</button>
+                    <div class="orbit-ops-actions">
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-delete-diagnostic" disabled>Delete</button>
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-clear-diagnostics">Clear all</button>
                     </div>
+                </header>
+                <div id="ops-diagnostic-preview" class="orbit-ops-viewer orbit-empty-state">
+                    Select a capture to preview its contents.
                 </div>
-                <div id="ops-diagnostic-preview" class="ops-viewer empty-state">Select a capture to preview its contents.</div>
             </section>
         </div>
     </div>
-{% endif %}
+    {% endif %}
 </section>
 {% endblock %}

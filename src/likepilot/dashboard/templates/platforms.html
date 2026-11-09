@@ -3,16 +3,37 @@
 {% block title %}Platforms{% endblock %}
 {% block subtitle %}Social-network task families available to agent configurations.{% endblock %}
 {% block content %}
-<section class="directory-intro"><div><div class="section-kicker">Network integrations</div><h2 class="section-heading">Platform catalog</h2><p class="section-subtle">Platform actions are selected per agent. Use this catalog to navigate the supported network families without crowding the runtime overview.</p></div></section>
-<div class="directory-grid">
-{% for name, actions in [
-('Instagram', 'Likes · Comments'),
-('TikTok', 'Likes'),
-('YouTube', 'Likes · Subscribers'),
-('Facebook', 'Likes · Subscribers · Comments'),
-('X / Twitter', 'Likes · Retweets')
-] %}
-<article class="panel panel-pad directory-card"><div class="directory-card-top"><span class="integration-mark">{{ name[:1] }}</span><span class="panel-note mono">Network</span></div><h3>{{ name }}</h3><p class="section-subtle">{{ actions }}</p><a class="btn-secondary btn-compact" href="{{ url_for('settings') }}">Configure an agent</a></article>
-{% endfor %}
+<div class="orbit-page orbit-platforms">
+
+    <section class="orbit-directory-intro">
+        <span class="orbit-kicker">Network integrations</span>
+        <h2 class="orbit-section-title">Platform catalog</h2>
+        <p class="orbit-section-sub">
+            Platform actions are selected per agent. Use this catalog to navigate the
+            supported network families without crowding the runtime overview.
+        </p>
+    </section>
+
+    <section class="orbit-directory-grid">
+        {% for name, actions in [
+            ('Instagram', 'Likes · Comments'),
+            ('TikTok', 'Likes'),
+            ('YouTube', 'Likes · Subscribers'),
+            ('Facebook', 'Likes · Subscribers · Comments'),
+            ('X / Twitter', 'Likes · Retweets')
+        ] %}
+        <article class="orbit-card orbit-directory-card">
+            <div class="orbit-directory-card-top">
+                <span class="orbit-integration-mark">{{ name[:1] }}</span>
+                <span class="orbit-chip">Network</span>
+            </div>
+            <h3 class="orbit-directory-card-title">{{ name }}</h3>
+            <p class="orbit-directory-card-sub">{{ actions }}</p>
+            <a class="orbit-btn orbit-btn-secondary" href="{{ url_for('settings') }}">
+                Configure an agent
+            </a>
+        </article>
+        {% endfor %}
+    </section>
 </div>
 {% endblock %}

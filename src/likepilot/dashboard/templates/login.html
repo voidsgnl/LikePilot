@@ -1,67 +1,117 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#f7f8fa">
+    <meta name="theme-color" content="#070a12">
     <meta name="description" content="Sign in to your LikePilot workspace.">
     <title>LikePilot · Sign in</title>
     <link rel="icon" type="image/svg+xml" href="{{ url_for('brand_asset', filename='brand-mark.svg') }}">
     <link rel="manifest" href="{{ url_for('brand_asset', filename='site.webmanifest') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <script>
+        /* Apply stored theme before paint to avoid flash. */
+        (function(){
+            try {
+                var saved = localStorage.getItem('theme');
+                if (saved === 'light' || saved === 'dark') {
+                    document.documentElement.setAttribute('data-theme', saved);
+                }
+            } catch (e) {}
+        })();
+    </script>
 </head>
 <body class="auth-body">
+
+    <!-- ============ THEME SWITCH ============ -->
+    <div class="auth-theme-switch" role="group" aria-label="Theme">
+        <button type="button" id="auth-theme-dark" class="auth-theme-btn active" title="Orbit Dark" aria-pressed="true">🌌</button>
+        <button type="button" id="auth-theme-light" class="auth-theme-btn" title="Orbit Light" aria-pressed="false">☀</button>
+    </div>
+
+    <!-- ============ LOGIN ============ -->
     <main class="auth-page">
         <a class="auth-brand" href="/login" aria-label="LikePilot home">
-            <img src="{{ url_for('brand_asset', filename='brand-mark.svg') }}" alt="">
-            <span>LikePilot</span>
+            <span class="auth-brand-mark"><span>L</span></span>
+            <span class="auth-brand-name">LikePilot</span>
         </a>
 
         <section class="auth-card" aria-labelledby="login-title">
             <div class="auth-card-heading">
-                <span class="auth-kicker">YOUR WORKSPACE</span>
+                <span class="auth-kicker">Your workspace</span>
                 <h1 id="login-title">Welcome back<span>.</span></h1>
                 <p>Sign in to continue managing your agents.</p>
             </div>
 
             {% if error %}
-            <div class="error-msg" role="alert">
-                {% if error == 'TOO_MANY_ATTEMPTS' %}Too many attempts. Please wait a few minutes before trying again.{% else %}That username and password combination doesn't match. Please try again.{% endif %}
+            <div class="auth-error" role="alert">
+                {% if error == 'TOO_MANY_ATTEMPTS' %}
+                    Too many attempts. Please wait a few minutes before trying again.
+                {% else %}
+                    That username and password combination doesn't match. Please try again.
+                {% endif %}
             </div>
             {% endif %}
 
             <form method="POST" class="auth-form">
                 <div class="auth-field">
                     <label for="username">Username</label>
-                    <input id="username" type="text" name="username" required autocomplete="username" autofocus placeholder="Enter your username">
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        required
+                        autocomplete="username"
+                        autofocus
+                        placeholder="Enter your username"
+                    >
                 </div>
+
                 <div class="auth-field">
-                    <div class="auth-label-row"><label for="password">Password</label><span>Keep it private</span></div>
-                    <div class="password-wrap">
-                        <input id="password" type="password" name="password" required autocomplete="current-password" placeholder="Enter your password">
-                        <button class="password-toggle" type="button" id="password-toggle" aria-label="Show password" aria-pressed="false">Show</button>
+                    <div class="auth-label-row">
+                        <label for="password">Password</label>
+                        <span>Keep it private</span>
+                    </div>
+                    <div class="auth-password-wrap">
+                        <input
+                            id="password"
+                            type="password"
+                            name="password"
+                            required
+                            autocomplete="current-password"
+                            placeholder="Enter your password"
+                        >
+                        <button
+                            class="auth-password-toggle"
+                            type="button"
+                            id="password-toggle"
+                            aria-label="Show password"
+                            aria-pressed="false"
+                        >Show</button>
                     </div>
                 </div>
-                <button class="auth-button" type="submit"><span>Sign in</span><span aria-hidden="true">→</span></button>
+
+                <button class="auth-button" type="submit">
+                    <span>Sign in</span>
+                    <span aria-hidden="true">→</span>
+                </button>
             </form>
 
-            <div class="auth-security-note"><span aria-hidden="true">▣</span> Private workspace · Authorized access only</div>
+            <div class="auth-security-note">
+                <span aria-hidden="true">▣</span>
+                Private workspace · Authorized access only
+            </div>
         </section>
 
-        <footer class="auth-footer"><span>LIKEPILOT</span><span>FOCUS ON WHAT MATTERS</span></footer>
+        <footer class="auth-footer">
+            <span>LikePilot</span>
+            <span>Focus on what matters</span>
+        </footer>
     </main>
-    <script>
-        (() => {
-            const input = document.getElementById('password');
-            const toggle = document.getElementById('password-toggle');
-            toggle.addEventListener('click', () => {
-                const reveal = input.type === 'password';
-                input.type = reveal ? 'text' : 'password';
-                toggle.textContent = reveal ? 'Hide' : 'Show';
-                toggle.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-                toggle.setAttribute('aria-pressed', String(reveal));
-            });
-        })();
-    </script>
+
+    <script src="{{ url_for('static', filename='login.js') }}" defer></script>
 </body>
 </html>
