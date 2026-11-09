@@ -1,5 +1,6 @@
 from likepilot.integrations.providers import base
 from likepilot.integrations.providers.base import BaseBot
+from likepilot.integrations.providers.kingdomlikes import KingdomLikesTwitterLikeBot
 
 
 class _ClickBot(BaseBot):
@@ -92,3 +93,9 @@ def test_safe_click_returns_false_without_driver():
     bot = _ClickBot("user", "password")
 
     assert bot.safe_click(_Element()) is False
+
+
+def test_kingdomlikes_twitter_like_bot_inherits_safe_click():
+    bot = KingdomLikesTwitterLikeBot("user", "password")
+
+    assert callable(bot.safe_click)
