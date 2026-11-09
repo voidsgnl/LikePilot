@@ -15,7 +15,7 @@ from likepilot.dashboard.auth import resolve_dashboard_password, resolve_flask_s
 from likepilot.core.security import redact_sensitive_text, sanitize_diagnostic_html
 from likepilot.core.config import get_config_value, set_config_value
 from likepilot.core.agents import add_agent, remove_agent
-from likepilot.core.runtime import supervisor
+from likepilot.core.runtime import BOT_REGISTRY, supervisor
 from likepilot.core.state import (
     _resolve_db_file,
     append_agent_log,
@@ -472,31 +472,55 @@ def stream_status():
 @app.route('/api/agents/add', methods=['POST'])
 @login_required
 def api_add_agent():
-    data = request.json
-    name = (data.get("name") or "").strip()
-    profile = (data.get("profile") or "").strip()
-    site = (data.get("site") or "Like4Like").strip()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Request body must be a JSON object."}), 400
+
+    name = data.get("name")
+    profile = data.get("profile")
+    site = data.get("site", "Like4Like")
+    if not isinstance(name, str) or not isinstance(profile, str):
+        return jsonify({"message": "Agent name and profile are required text values."}), 400
+    if not isinstance(site, str) or site not in BOT_REGISTRY:
+        return jsonify({"message": "Select a supported provider."}), 400
+
+    optional_fields = ("proxy", "fallback_platform", "fallback_chain", "comment_templates")
+    if any(data.get(field) is not None and not isinstance(data.get(field), str) for field in optional_fields):
+        return jsonify({"message": "Optional agent settings must be text values."}), 400
+
+    name = name.strip()
+    profile = profile.strip()
+    if not name or not profile:
+        return jsonify({"message": "Agent name and profile are required."}), 400
+
     fallback_platform = (data.get("fallback_platform") or "").strip() or None
     fallback_chain = (data.get("fallback_chain") or "").strip() or None
     comment_templates = (data.get("comment_templates") or "").strip() or None
     proxy = (data.get("proxy") or "").strip() or None
-    if name and profile:
-        add_agent(
-            name,
-            profile,
-            proxy=proxy,
-            site=site,
-            fallback_platform=fallback_platform,
-            fallback_chain=fallback_chain,
-            comment_templates=comment_templates,
-        )
-        return jsonify({"message": f"Agent {name} added."})
-    return jsonify({"message": "Invalid data"}), 400
+
+    add_agent(
+        name,
+        profile,
+        proxy=proxy,
+        site=site,
+        fallback_platform=fallback_platform,
+        fallback_chain=fallback_chain,
+        comment_templates=comment_templates,
+    )
+
+    # The database's legacy default is Twitter. Pick a platform that the
+    # selected provider actually implements before the agent can be started.
+    default_platform = next(iter(BOT_REGISTRY[site]))
+    update_agent(name, platform=default_platform)
+    return jsonify({"message": f"Agent {name} added.", "platform": default_platform})
 
 @app.route('/api/agents/remove', methods=['POST'])
 @login_required
 def api_remove_agent():
-    name = request.json.get("name")
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict) or not isinstance(data.get("name"), str) or not data["name"].strip():
+        return jsonify({"message": "Agent name is required."}), 400
+    name = data["name"].strip()
     if get_agent(name):
         if not supervisor.stop_agent(name):
             return jsonify({"message": "Agent is still shutting down. Try again after its worker exits."}), 409
@@ -508,11 +532,20 @@ def api_remove_agent():
 @app.route('/api/agents/update', methods=['POST'])
 @login_required
 def api_update_agent():
-    data = request.json or {}
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Request body must be a JSON object."}), 400
+
+    text_fields = ("current_name", "name", "profile", "site", "fallback_platform", "fallback_chain", "comment_templates", "proxy")
+    if any(data.get(field) is not None and not isinstance(data.get(field), str) for field in text_fields):
+        return jsonify({"message": "Agent settings must be text values."}), 400
+
     current_name = (data.get("current_name") or "").strip()
     new_name = (data.get("name") or "").strip()
     profile = (data.get("profile") or "").strip()
     site = (data.get("site") or "Like4Like").strip()
+    if site not in BOT_REGISTRY:
+        return jsonify({"message": "Select a supported provider."}), 400
     fallback_platform = (data.get("fallback_platform") or "").strip() or None
     fallback_chain = (data.get("fallback_chain") or "").strip() or None
     comment_templates = (data.get("comment_templates") or "").strip() or None
@@ -538,6 +571,8 @@ def api_update_agent():
 
     if site != current["site"]:
         update_agent(final_name, site=site)
+        if current.get("platform") not in BOT_REGISTRY[site]:
+            update_agent(final_name, platform=next(iter(BOT_REGISTRY[site])))
     if profile != current["chrome_profile"]:
         update_agent(final_name, chrome_profile=profile)
     if proxy != current.get("proxy"):
@@ -559,10 +594,15 @@ def api_update_agent():
 @app.route('/api/control', methods=['POST'])
 @login_required
 def control_agent():
-    data = request.json
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Request body must be a JSON object."}), 400
     name = data.get("name")
     action = data.get("action")
-    
+    if not isinstance(name, str) or not name.strip() or not isinstance(action, str):
+        return jsonify({"message": "Agent name and action are required."}), 400
+    name = name.strip()
+
     current = get_agent(name)
     if not current:
         return jsonify({"message": "Invalid Agent"}), 404
@@ -625,20 +665,29 @@ def control_agent():
 @app.route('/api/platform', methods=['POST'])
 @login_required
 def update_platform():
-    data = request.json
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return jsonify({"message": "Request body must be a JSON object."}), 400
     name = data.get("name")
+    platform = data.get("platform", "Twitter")
+    if not isinstance(name, str) or not name.strip() or not isinstance(platform, str):
+        return jsonify({"message": "Agent name and platform are required."}), 400
+    name = name.strip()
     current = get_agent(name)
     if not current:
         return jsonify({"message": "Invalid Agent"}), 404
+    supported_platforms = BOT_REGISTRY.get(current.get("site"), {})
+    if platform not in supported_platforms:
+        return jsonify({"message": f"{platform} is not supported by {current.get('site', 'this provider')}."}), 400
     updates = {
-        "platform": data.get("platform", "Twitter"),
+        "platform": platform,
         "switch_pending": 0,
         "switch_reason": None,
     }
     if current["status"] == "Awaiting Switch":
         updates["status"] = "Running"
     update_agent(name, **updates)
-    append_agent_log(name, f"Platform set to {data.get('platform', 'Twitter')}.", level="SYSTEM")
+    append_agent_log(name, f"Platform set to {platform}.", level="SYSTEM")
     return jsonify({"message": "Platform updated"})
 
 @app.route('/api/toggle_auto_switch', methods=['POST'])
