@@ -463,7 +463,13 @@ class BaseBot(ABC):
         ):
             return True
 
-        if not self._social_login_gate_present(label, domains):
+        # A public post may load normally while still being unauthenticated.
+        # Social actions require a valid account session, so check the platform cookie
+        # even when the page does not show an explicit login form or redirect.
+        if (
+            not self._social_login_gate_present(label, domains)
+            and self._has_social_auth_cookie(cookie_names)
+        ):
             return True
 
         self.heartbeat(status="Awaiting Social Login")
