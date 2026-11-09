@@ -14,7 +14,7 @@ The dashboard never returns saved passwords. Provider settings responses expose 
 
 ## Backups and restores
 
-Backup archives include the credential key and, when generated locally, the dashboard password and session key. The dashboard password file preserves access after restore, and the session key preserves session signing continuity. These files make backup archives sensitive; the credential key can decrypt stored credentials. Store backup archives as sensitive files, restrict access, and do not upload or share them.
+Backup archives include the credential key and, when generated locally, the dashboard password and session key. The dashboard password file preserves access after restore, and the session key preserves session signing continuity. These files make backup archives sensitive; the credential key can decrypt stored credentials. On POSIX systems, LikePilot restricts its default backup directory to owner-only access and creates archive files with owner-only permissions. Restored `.env`, credential-key, dashboard-password, and session-key files are also restricted to owner-only access where supported. Store backup archives as sensitive files, and do not upload or share them.
 
 Stop the LikePilot server and all agent workers before restoring. Restore the database, configuration, and credential key from the same backup set. Do not mix a database from one installation with another installation's key.
 
