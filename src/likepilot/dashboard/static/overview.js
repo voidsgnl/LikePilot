@@ -2,7 +2,7 @@
     const activityList = document.getElementById('overview-activity-list');
     if (!activityList) return;
     const escape = (value) => String(value ?? '—').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-    const waitingStates = ['Awaiting Login', 'Login Success', 'Awaiting Switch', 'Paused'];
+    const waitingStates = ['Awaiting Login', 'Login Success', 'Awaiting Social Login', 'Awaiting Switch', 'Paused'];
 
     function parseLog(line) {
         const value = String(line || '');
