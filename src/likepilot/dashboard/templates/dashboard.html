@@ -4,49 +4,42 @@
 {% block head %}<script src="{{ url_for('static', filename='overview.js') }}" defer></script>{% endblock %}
 {% block content %}
 <div class="overview-page">
-    <section class="overview-intro">
+    <section class="overview-welcome">
         <div>
             <span class="section-kicker">WORKSPACE</span>
-            <h2>Agent activity</h2>
-            <p>Monitor your agents and see what is happening across the workspace.</p>
+            <h2>Your operation, at a glance.</h2>
+            <p>A simple view of your agents and the latest changes.</p>
         </div>
-        <div class="overview-intro-actions">
-            <span class="overview-workspace-status" id="overview-workspace-state">Checking status…</span>
+        <div class="overview-welcome-actions">
+            <span class="overview-workspace-status is-idle" id="overview-workspace-state">Checking</span>
             <a href="/settings/agents/new" class="btn-primary">Create agent <span aria-hidden="true">↗</span></a>
         </div>
     </section>
 
-    <section class="overview-metric-grid" aria-label="Agent status summary">
-        <article class="overview-metric-card"><span class="metric-label">Configured agents</span><strong id="overview-total">—</strong></article>
-        <article class="overview-metric-card"><span class="metric-label">Running</span><strong id="overview-running">—</strong></article>
-        <article class="overview-metric-card"><span class="metric-label">Waiting / attention</span><strong id="overview-waiting">—</strong></article>
-        <article class="overview-metric-card"><span class="metric-label">Stopped</span><strong id="overview-stopped">—</strong></article>
+    <section class="overview-focus panel" aria-labelledby="overview-agents-title">
+        <div class="overview-focus-copy">
+            <span class="section-kicker">YOUR WORKSPACE</span>
+            <h2 id="overview-agents-title">Agents</h2>
+            <p>Manage your automations in one dedicated place. Open an agent to control its session and configuration.</p>
+            <a class="btn-primary" href="/agents">Open agent workspace <span aria-hidden="true">→</span></a>
+        </div>
+        <div class="overview-agent-summary" aria-label="Agent status summary">
+            <div><strong id="overview-total">—</strong><span>Configured</span></div>
+            <div><strong id="overview-running">—</strong><span>Running</span></div>
+            <div><strong id="overview-waiting">—</strong><span>Need attention</span></div>
+        </div>
     </section>
 
-    <div class="overview-main-grid">
-        <section class="panel panel-pad overview-agent-panel" aria-label="Agent activity table">
-            <div class="surface-header">
-                <div><h2 class="section-heading">Your agents</h2><p class="section-subtle">Live status and recent activity for each configured agent.</p></div>
-                <div class="overview-table-meta"><span id="overview-updated" class="section-subtle" aria-live="off"></span><a class="btn-secondary btn-compact" href="/agents">All agents</a></div>
-            </div>
-            <div class="table-wrap">
-                <table class="data-table overview-table">
-                    <thead><tr><th>Agent</th><th>Status</th><th>Provider</th><th>Platform</th><th>Credits</th><th>Last activity</th></tr></thead>
-                    <tbody id="overview-agent-rows"><tr><td colspan="6" class="section-subtle">Connecting to runtime…</td></tr></tbody>
-                </table>
-            </div>
-            <div id="overview-error" class="notice notice-danger" hidden></div>
-        </section>
-
-        <aside class="panel panel-pad overview-activity-panel" aria-label="Recent activity">
-            <div class="surface-header">
-                <div><h2 class="section-heading">Recent activity</h2><p class="section-subtle">Latest events reported by your agents.</p></div>
-                <span id="overview-activity-count" class="panel-note">0 events</span>
-            </div>
-            <ol id="overview-activity-list" class="overview-activity-list">
-                <li class="section-subtle">Waiting for agent activity…</li>
-            </ol>
-        </aside>
-    </div>
+    <section class="overview-recent panel" aria-labelledby="overview-recent-title">
+        <div class="overview-recent-heading">
+            <div><span class="section-kicker">LATEST UPDATES</span><h2 id="overview-recent-title">Recent activity</h2></div>
+            <div class="overview-recent-meta"><span id="overview-activity-count">0 events</span><span id="overview-updated" aria-live="off"></span></div>
+        </div>
+        <ol id="overview-activity-list" class="overview-activity-list">
+            <li class="overview-activity-empty">Activity will appear here when your agents start working.</li>
+        </ol>
+        <div id="overview-error" class="notice notice-danger" hidden></div>
+        <div class="overview-recent-footer"><a href="/operations/logs">Open runtime logs <span aria-hidden="true">→</span></a></div>
+    </section>
 </div>
 {% endblock %}
