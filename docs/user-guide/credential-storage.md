@@ -4,6 +4,8 @@ LikePilot encrypts provider passwords, legacy agent passwords, per-agent proxy c
 
 ## Local key
 
+On POSIX systems, LikePilot restricts its runtime configuration, state, database, browser-profile, log, diagnostic, and backup directories to owner-only access. Browser profiles contain authenticated website sessions and cookies, so they must be treated as sensitive data. Existing profile directories are also restricted when LikePilot resolves them.
+
 The first encryption or legacy-credential migration creates `data/config/credential.key` with owner-only file permissions where supported. Keep this file private and do not delete it. LikePilot deliberately refuses to generate a replacement key when encrypted values already exist but the key is missing; generating a new key would make the existing credentials unrecoverable.
 
 Legacy plaintext provider and agent passwords are encrypted automatically during database initialization. Legacy CAPTCHA API keys are moved from `data/config/config.json` into encrypted settings the first time the CAPTCHA integration loads them. Authenticated proxy entries are migrated the first time the proxy-list accessor is used; Discord webhook URLs and Telegram bot tokens are migrated when the notification manager initializes. The corresponding plaintext JSON values are cleared after successful migration. Proxy-list changes are persisted only in encrypted settings.
