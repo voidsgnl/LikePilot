@@ -45,8 +45,8 @@ class InstagramLikeBot(Like4LikeBase):
                     self.record_page_diagnostics("instagram_follow_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
-                    if not self.wait_for_social_login():
-                        return
+                if not self.wait_for_social_login():
+                    return
 
                 action_completed = False
                 try:
@@ -148,8 +148,8 @@ class InstagramLikePostBot(Like4LikeBase):
                     self.record_page_diagnostics("instagram_like_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
-                    if not self.wait_for_social_login():
-                        return
+                if not self.wait_for_social_login():
+                    return
 
                 action_completed = False
                 try:
@@ -433,8 +433,8 @@ class InstagramCommentBot(Like4LikeBase):
                     self.record_page_diagnostics("instagram_comment_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
-                    if not self.wait_for_social_login():
-                        return
+                if not self.wait_for_social_login():
+                    return
                 
                 # 3. Handle Instagram Action
                 action_completed = False
