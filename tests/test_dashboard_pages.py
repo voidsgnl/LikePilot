@@ -123,7 +123,8 @@ def test_overview_update_indicator_has_a_matching_template_element():
 
     assert 'id="overview-updated"' in template
     assert "getElementById('overview-updated')" in script
-    assert "Your agents" in template
+    assert "Recent activity" in template
+    assert "Open agent workspace" in template
 
 
 def test_agent_directory_uses_one_contextual_empty_state():
@@ -156,19 +157,17 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "initializePredictionChart" not in script
     assert "Captured balance history." in template
 
-def test_login_screen_uses_responsive_flight_layout():
+def test_login_screen_uses_focused_minimal_layout():
     template = (DASHBOARD / "templates" / "login.html").read_text(encoding="utf-8")
     styles = (DASHBOARD / "static" / "auth.css").read_text(encoding="utf-8")
 
-    assert 'class="flight-panel"' in template
-    assert 'class="login-panel"' in template
+    assert 'class="auth-card"' in template
     assert 'id="password-toggle"' in template
-    assert "pilot-flight.svg" in template
-    assert "Your agents." in template
-    assert "place-items: center" in styles
-    assert "@media (max-width: 700px)" in styles
-    assert "filter: blur" not in styles
-    assert "feature-grid" not in template
+    assert "Welcome back" in template
+    assert "pilot-flight.svg" not in template
+    assert "auth-page" in styles
+    assert "auth-card" in styles
+    assert "box-shadow" not in styles
 
 
 def test_dashboard_shell_avoids_redundant_copy_and_loading_motion():
@@ -238,7 +237,7 @@ def test_provider_login_is_system_level_not_agent_level():
 
 def test_workspace_navigation_styles_are_cached_for_release():
     service_worker = (DASHBOARD / "static" / "sw.js").read_text(encoding="utf-8")
-    assert "'likepilot-static-v1.0.24'" in service_worker
+    assert "'likepilot-static-v1.0.25'" in service_worker
     assert "'/static/auth.css'" in service_worker
-    assert "'/static/pilot-flight.svg'" in service_worker
+    assert "'/static/pilot-flight.svg'" not in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
