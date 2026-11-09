@@ -214,5 +214,6 @@ def test_database_and_runtime_directory_permissions_are_private(tmp_path, monkey
 
     state.init_db()
 
-    assert os.stat(state.DB_FILE).st_mode & 0o777 == 0o600
-    assert os.stat(tmp_path).st_mode & 0o777 == 0o700
+    if os.name == "posix":
+        assert os.stat(state.DB_FILE).st_mode & 0o777 == 0o600
+        assert os.stat(tmp_path).st_mode & 0o777 == 0o700
