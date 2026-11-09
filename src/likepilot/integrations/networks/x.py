@@ -50,6 +50,8 @@ class TwitterLikeBot(Like4LikeBase):
                     self.record_page_diagnostics("twitter_follow_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
 
                 action_completed = False
                 try:
@@ -195,6 +197,8 @@ class TwitterFavoriteBot(Like4LikeBase):
                     self.record_page_diagnostics("twitter_like_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
 
                 action_completed = False
                 try:
@@ -333,6 +337,8 @@ class TwitterRetweetBot(TwitterFavoriteBot):
                     self.record_page_diagnostics("twitter_retweet_popup_missing")
                     continue
                 self.driver.switch_to.window(popup_handle)
+                    if not self.wait_for_social_login():
+                        return
 
                 action_completed = False
                 try:
