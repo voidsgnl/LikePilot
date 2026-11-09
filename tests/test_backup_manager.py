@@ -110,8 +110,9 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
 
     archive_path = manager.create_backup("test")
     assert archive_path and os.path.isfile(archive_path)
-    assert os.stat(backup_dir).st_mode & 0o777 == 0o700
-    assert os.stat(archive_path).st_mode & 0o777 == 0o600
+    if os.name == "posix":
+        assert os.stat(backup_dir).st_mode & 0o777 == 0o700
+        assert os.stat(archive_path).st_mode & 0o777 == 0o600
     with zipfile.ZipFile(archive_path) as archive:
         assert set(archive.namelist()) >= {
             ".env", "config.json", "agents.json", "stats.json",
@@ -132,7 +133,8 @@ def test_backup_archive_restores_database_config_and_logs(tmp_path, monkeypatch)
 
     assert manager.restore_backup(archive_path) is True
     assert paths[".env"].read_text(encoding="utf-8") == "TOKEN=original\n"
-    assert os.stat(paths[".env"]).st_mode & 0o777 == 0o600
+    if os.name == "posix":
+        assert os.stat(paths[".env"]).st_mode & 0o777 == 0o600
     assert json.loads(paths["config.json"].read_text(encoding="utf-8")) == {"theme": "dark"}
     assert paths["dashboard-password"].read_text(encoding="utf-8") == "dashboard-secret"
     assert paths["dashboard-session.key"].read_text(encoding="utf-8") == "session-secret"
