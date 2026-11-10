@@ -102,12 +102,14 @@ LikePilot reads environment settings from the runtime .env file and the process 
 | DASHBOARD_HOST | 127.0.0.1 | Network interface used by the web server. |
 | DASHBOARD_PORT | 5001 | Preferred local dashboard port. If unavailable, startup checks subsequent ports. |
 | DASHBOARD_USER | admin | Dashboard login username. |
-| DASHBOARD_PASS | Generated when unset | Dashboard login password. A unique password is initialized and written to the runtime password file when no password is configured. |
-| FLASK_SECRET_KEY | Generated and persisted when unset | Secret used to sign Flask sessions. Configure a stable, private value for persistent deployments. |
+| DASHBOARD_PASS | Generated when unset | Four-character password using A-Z and 0-9. A unique value is generated and written to data/config/dashboard-password when unset. |
+| FLASK_SECRET_KEY | Generated and persisted when unset | Separate high-entropy secret used to sign Flask sessions. |
 | DASHBOARD_COOKIE_SECURE | Application default | Set to true when the dashboard is served over HTTPS and secure cookies are required. |
 | LIKEPILOT_CHROME_VERSION | Auto-detected | Optional Chrome major-version override for undetected-chromedriver. Leave unset for automatic detection. |
 
-For a local installation, the default host binds the service to loopback so it is not directly reachable from other machines.
+The vault login uses the username plus a four-character combination selected from its four rings. To set your own combination, put exactly four uppercase letters or digits in DASHBOARD_PASS in .env. If it is blank, LikePilot generates a random combination on first startup and stores it in data/config/dashboard-password. Keep that file private.
+
+For a local installation, the default host binds the service to loopback so it is not directly reachable from other machines. The four-character vault is intended for this local-only setup; do not expose it to a network or the public internet.
 
 ### Social account sign-in
 
@@ -116,7 +118,7 @@ Social-network accounts are authenticated separately from LikePilot task-provide
 ### Credentials and secrets
 
 - Never commit .env, passwords, API tokens, cookies, browser profiles, or runtime databases.
-- Use unique dashboard credentials; do not retain shared or default credentials in a deployed environment.
+- Keep DASHBOARD_HOST at 127.0.0.1 for the local vault login.
 - Keep the generated credential-encryption key at data/config/credential.key protected and include it in secure backups. Losing it may make stored credentials unrecoverable.
 - Protect the runtime password file and all backup copies with restrictive filesystem permissions.
 - Rotate credentials immediately if they may have been exposed.
@@ -203,7 +205,7 @@ Before submitting a change:
 
 LikePilot automates browser workflows and can store credentials, session data, and account-related information. Treat its runtime directory and dashboard as sensitive.
 
-For local use, keep DASHBOARD_HOST=127.0.0.1. Do not bind the development server to a public interface or expose it directly to the internet.
+For local use, keep DASHBOARD_HOST=127.0.0.1. The four-character vault password is a convenience gate for the local application, not strong authentication for a shared or internet-facing service. Do not bind this setup to a public interface or expose it directly to the internet.
 
 A production deployment requires an appropriately secured hosting environment and additional operational controls, including:
 
@@ -234,13 +236,13 @@ LikePilot/
 │       └── entrypoints/          # Web-server entry point
 ├── config/                       # Sanitized configuration examples
 ├── data/                         # Local runtime data
-├── docs/                         # Additional project documentation
+├── docs/                         # Additional documentation
 ├── legacy/runtime-seed/          # First-run compatibility seed data
 ├── tests/                        # Automated tests
 ├── farm.py                       # Compatibility launcher
 ├── pyproject.toml                # Package metadata and dependencies
 ├── requirements.txt              # Editable project install
-└── .env.example                  # Environment configuration template
+└── .env.example                  # Environment configuration
 ~~~
 
 ## Troubleshooting
@@ -250,6 +252,13 @@ LikePilot/
 - Check the startup output for the actual URL and selected port.
 - If the preferred port is occupied, LikePilot may select a subsequent available port.
 - Confirm that the process is still running and that local firewall rules allow loopback traffic.
+
+### The vault does not unlock
+
+- Confirm the username matches DASHBOARD_USER (admin by default).
+- If DASHBOARD_PASS is blank, read the generated four-character password from data/config/dashboard-password.
+- If setting DASHBOARD_PASS manually, use exactly four uppercase letters or digits.
+- Older generated password files are automatically replaced with a new four-character value on first startup after this update.
 
 ### Browser automation cannot start
 
