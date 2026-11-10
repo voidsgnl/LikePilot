@@ -262,4 +262,3 @@ def test_workspace_navigation_styles_are_cached_for_release():
     assert "/favicon/brand-mark.svg" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
     assert "'/static/floating-dashboard.css'" in service_worker
-}
