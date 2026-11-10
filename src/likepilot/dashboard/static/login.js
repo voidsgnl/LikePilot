@@ -34,12 +34,13 @@
 
     rings.forEach((ring, ringIndex) => {
         alphabet.split('').forEach((character, characterIndex) => {
+            const angle = (characterIndex / alphabet.length) * Math.PI * 2 - Math.PI / 2;
             const button = document.createElement('button');
-            const angle = (characterIndex / alphabet.length) * 360;
             button.type = 'button';
             button.className = 'wheel-char';
             button.textContent = character;
-            button.style.setProperty('--angle', angle + 'deg');
+            button.style.setProperty('--char-x', (50 + Math.cos(angle) * 50) + '%');
+            button.style.setProperty('--char-y', (50 + Math.sin(angle) * 50) + '%');
             button.setAttribute('aria-label', 'Ring ' + (ringIndex + 1) + ', character ' + character);
             button.setAttribute('aria-pressed', String(character === 'A'));
             if (character === 'A') button.classList.add('selected');
