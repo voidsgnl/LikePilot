@@ -1,58 +1,82 @@
-/* ============================================================================
-   LOGIN — the standalone sign-in page. Two jobs only:
-   1. Password reveal toggle.
-   2. Theme switch (mirrors orbit.js, persists to localStorage 'theme').
-   ============================================================================ */
-
+/* Four-ring local vault login. The server remains the source of truth. */
 (function () {
     'use strict';
 
-    const root  = document.documentElement;
-    const input = document.getElementById('password');
-    const toggle = document.getElementById('password-toggle');
-    const btnDark  = document.getElementById('auth-theme-dark');
-    const btnLight = document.getElementById('auth-theme-light');
+    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const rings = Array.from(document.querySelectorAll('.character-ring'));
+    const passwordField = document.getElementById('vault-password');
+    const codeDisplay = document.getElementById('combination-code');
+    const form = document.getElementById('vault-form');
+    const darkButton = document.getElementById('theme-dark');
+    const lightButton = document.getElementById('theme-light');
+    const root = document.documentElement;
+    const selection = ['A', 'A', 'A', 'A'];
 
-    /* ---------- password reveal ---------- */
-    if (input && toggle) {
-        toggle.addEventListener('click', () => {
-            const reveal = input.type === 'password';
-            input.type = reveal ? 'text' : 'password';
-            toggle.textContent = reveal ? 'Hide' : 'Show';
-            toggle.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-            toggle.setAttribute('aria-pressed', String(reveal));
-        });
+    function updateCombination() {
+        const code = selection.join('');
+        passwordField.value = code;
+        codeDisplay.replaceChildren(...selection.map(character => {
+            const slot = document.createElement('span');
+            slot.textContent = character;
+            return slot;
+        }));
     }
 
-    /* ---------- theme switch ---------- */
+    function chooseCharacter(ringIndex, character, selectedButton) {
+        selection[ringIndex] = character;
+        rings[ringIndex].querySelectorAll('.wheel-char').forEach(button => {
+            const selected = button === selectedButton;
+            button.classList.toggle('selected', selected);
+            button.setAttribute('aria-pressed', String(selected));
+        });
+        updateCombination();
+    }
+
+    rings.forEach((ring, ringIndex) => {
+        alphabet.split('').forEach((character, characterIndex) => {
+            const button = document.createElement('button');
+            const angle = (characterIndex / alphabet.length) * 360;
+            button.type = 'button';
+            button.className = 'wheel-char';
+            button.textContent = character;
+            button.style.setProperty('--angle', angle + 'deg');
+            button.setAttribute('aria-label', 'Ring ' + (ringIndex + 1) + ', character ' + character);
+            button.setAttribute('aria-pressed', String(character === 'A'));
+            if (character === 'A') button.classList.add('selected');
+            button.addEventListener('click', () => chooseCharacter(ringIndex, character, button));
+            ring.appendChild(button);
+        });
+    });
+
     function applyTheme(theme) {
         const next = theme === 'light' ? 'light' : 'dark';
-        root.setAttribute('data-theme', next);
+        root.dataset.theme = next;
         try { localStorage.setItem('theme', next); } catch (_) {}
-
-        if (btnDark) {
-            btnDark.classList.toggle('active', next === 'dark');
-            btnDark.setAttribute('aria-pressed', String(next === 'dark'));
-        }
-        if (btnLight) {
-            btnLight.classList.toggle('active', next === 'light');
-            btnLight.setAttribute('aria-pressed', String(next === 'light'));
-        }
-
-        const meta = document.querySelector('meta[name="theme-color"]');
-        if (meta) {
-            meta.setAttribute('content', next === 'dark' ? '#070a12' : '#f4f6fb');
-        }
+        darkButton.classList.toggle('active', next === 'dark');
+        lightButton.classList.toggle('active', next === 'light');
+        darkButton.setAttribute('aria-pressed', String(next === 'dark'));
+        lightButton.setAttribute('aria-pressed', String(next === 'light'));
+        document.querySelector('meta[name="theme-color"]')
+            .setAttribute('content', next === 'dark' ? '#080d16' : '#edf2f4');
     }
 
-    if (btnDark)  btnDark.addEventListener('click',  () => applyTheme('dark'));
-    if (btnLight) btnLight.addEventListener('click', () => applyTheme('light'));
+    darkButton.addEventListener('click', () => applyTheme('dark'));
+    lightButton.addEventListener('click', () => applyTheme('light'));
 
-    /* ---------- restore saved theme ---------- */
-    let saved = 'dark';
+    let savedTheme = 'dark';
     try {
-        const stored = localStorage.getItem('theme');
-        if (stored === 'light' || stored === 'dark') saved = stored;
+        const storedTheme = localStorage.getItem('theme');
+        if (storedTheme === 'dark' || storedTheme === 'light') savedTheme = storedTheme;
     } catch (_) {}
-    applyTheme(saved);
+    applyTheme(savedTheme);
+
+    form.addEventListener('submit', event => {
+        if (!form.reportValidity()) {
+            event.preventDefault();
+            return;
+        }
+        passwordField.value = selection.join('');
+    });
+
+    updateCombination();
 })();
