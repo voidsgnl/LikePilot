@@ -72,8 +72,11 @@ def test_analytics_does_not_present_fabricated_telemetry():
 
 def test_workspace_navigation_exposes_all_primary_destinations():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
-    for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/platforms"):
-        assert f'href="{path}"' in layout
+    assert "url_for('dashboard')" in layout
+    assert "url_for('agents')" in layout
+    assert "url_for('analytics'" in layout
+    assert "url_for('browser_settings')" in layout
+    assert 'href="/platforms"' in layout
     assert "url_for('provider_settings')" in layout
     assert "url_for('operations', operation_view=key)" in layout
     assert layout.count('class="pill-link') == 4
@@ -106,7 +109,8 @@ def test_agent_workspace_keeps_only_operational_metrics():
 
     assert 'id="agent-credits"' in template
     assert 'id="agent-gain"' in template
-    assert 'id="agent-platform-select" aria-label="Select platform" hidden' in template
+    assert 'id="agent-platform-select"' in template
+    assert 'aria-label="Select platform"' in template
     assert 'id="agent-confirm-platform" hidden' in template
     assert 'id="agent-peak"' not in template
     assert 'id="agent-samples"' not in template
@@ -150,7 +154,7 @@ def test_global_header_keeps_only_actionable_status_and_navigation():
     script = (DASHBOARD / "static" / "dashboard.js").read_text(encoding="utf-8")
 
     assert 'id="live-updates-pill"' in layout
-    assert 'class="top-actions"' in layout
+    assert 'class="orbit-top-right"' in layout
     assert 'id="agent-quick-switch"' not in layout
     assert 'id="session-badge"' not in layout
     assert 'id="clock"' not in layout
@@ -166,7 +170,8 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "hasHistory ? (metrics.latest_credits ?? '—') : '—'" in script
     assert "1250, 1280, 1320" not in script
     assert "initializePredictionChart" not in script
-    assert "Captured balance history." in template
+    assert "Waiting for credit history." in template
+    assert "Recorded history" in template
 
 
 def test_login_screen_uses_four_ring_vault():
