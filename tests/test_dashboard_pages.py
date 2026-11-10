@@ -75,7 +75,7 @@ def test_workspace_navigation_exposes_all_primary_destinations():
     orbit = (DASHBOARD / "static" / "orbit.js").read_text(encoding="utf-8")
     assert "url_for('dashboard')" in layout
     for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/operations/logs"):
-        assert f'href: "{path}"' in orbit
+        assert f"href: '{path}'" in orbit
     assert 'href="/platforms"' in layout
     assert "url_for('provider_settings')" in layout
     assert "url_for('operations', operation_view=key)" in layout
