@@ -72,10 +72,10 @@ def test_analytics_does_not_present_fabricated_telemetry():
 
 def test_workspace_navigation_exposes_all_primary_destinations():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
+    orbit = (DASHBOARD / "static" / "orbit.js").read_text(encoding="utf-8")
     assert "url_for('dashboard')" in layout
-    assert "url_for('agents')" in layout
-    assert "url_for('analytics'" in layout
-    assert "url_for('browser_settings')" in layout
+    for path in ("/dashboard", "/agents", "/analytics", "/settings/browser", "/operations/logs"):
+        assert f'href: "{path}"' in orbit
     assert 'href="/platforms"' in layout
     assert "url_for('provider_settings')" in layout
     assert "url_for('operations', operation_view=key)" in layout
