@@ -99,6 +99,7 @@ def test_agent_directory_uses_compact_inventory_columns():
     assert "Last heartbeat" not in template
     assert "directory-total" not in script
 
+
 def test_agent_workspace_keeps_only_operational_metrics():
     template = (DASHBOARD / "templates" / "agent_detail.html").read_text(encoding="utf-8")
     script = (DASHBOARD / "static" / "agent-detail.js").read_text(encoding="utf-8")
@@ -143,6 +144,7 @@ def test_agent_directory_uses_one_contextual_empty_state():
     assert "No agents configured. Create an agent to get started." in script
     assert "No agents match these filters." in script
 
+
 def test_global_header_keeps_only_actionable_status_and_navigation():
     layout = (DASHBOARD / "templates" / "layout.html").read_text(encoding="utf-8")
     script = (DASHBOARD / "static" / "dashboard.js").read_text(encoding="utf-8")
@@ -166,18 +168,21 @@ def test_analytics_shows_missing_history_without_placeholder_values():
     assert "initializePredictionChart" not in script
     assert "Captured balance history." in template
 
-def test_login_screen_uses_focused_minimal_layout():
+
+def test_login_screen_uses_four_ring_vault():
     template = (DASHBOARD / "templates" / "login.html").read_text(encoding="utf-8")
     styles = (DASHBOARD / "static" / "auth.css").read_text(encoding="utf-8")
+    script = (DASHBOARD / "static" / "login.js").read_text(encoding="utf-8")
 
-    assert 'class="auth-card"' in template
-    assert 'id="password-toggle"' in template
-    assert "Welcome back" in template
+    assert 'class="vault-orbit"' in template
+    assert template.count('class="character-ring"') == 4
+    assert 'name="username"' in template
+    assert 'name="password"' in template
+    assert "character-ring" in script
+    assert "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" in script
+    assert "vault-orbit" in styles
     assert "pilot-flight.svg" not in template
     assert "brand-mark.svg" in template
-    assert "auth-page" in styles
-    assert "auth-card" in styles
-    assert "box-shadow" not in styles
 
 
 def test_dashboard_shell_avoids_redundant_copy_and_loading_motion():
@@ -227,7 +232,6 @@ def test_analytics_and_settings_pages_avoid_repeated_headings():
     assert "restart running agents" in browser
 
 
-
 def test_provider_login_is_system_level_not_agent_level():
     create_agent = (DASHBOARD / "templates" / "settings_create_agent.html").read_text(encoding="utf-8")
     manage_script = (DASHBOARD / "static" / "settings.js").read_text(encoding="utf-8")
@@ -253,7 +257,9 @@ def test_workspace_navigation_styles_are_cached_for_release():
     assert cache_version
     assert re.search(rf"\b{re.escape(cache_version.group(1))}\b", service_worker)
     assert "'/static/auth.css'" in service_worker
+    assert "'/static/login.js'" in service_worker
     assert "'/static/pilot-flight.svg'" not in service_worker
     assert "/favicon/brand-mark.svg" in service_worker
     assert "'/static/workspace-navigation.css'" in service_worker
     assert "'/static/floating-dashboard.css'" in service_worker
+}
