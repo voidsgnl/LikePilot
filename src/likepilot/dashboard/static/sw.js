@@ -1,8 +1,7 @@
 // Service Worker for LikePilot - Performance Optimization
-const STATIC_CACHE = 'likepilot-static-v1.0.32';
-const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.32';
+const STATIC_CACHE = 'likepilot-static-v1.0.33';
+const DYNAMIC_CACHE = 'likepilot-dynamic-v1.0.33';
 
-// Static assets to cache immediately
 const STATIC_ASSETS = [
     '/',
     '/dashboard',
@@ -22,9 +21,9 @@ const STATIC_ASSETS = [
     '/static/workspace-navigation.css',
     '/static/floating-dashboard.css',
     '/static/auth.css',
+    '/static/login.js',
 ];
 
-// Install event - cache static assets
 self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(STATIC_CACHE)
@@ -33,7 +32,6 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activate event - clean up old caches
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => Promise.all(
@@ -44,7 +42,6 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Fetch event - serve static assets cache-first and pages network-first.
 self.addEventListener('fetch', event => {
     const { request } = event;
     const url = new URL(request.url);
@@ -66,7 +63,6 @@ self.addEventListener('fetch', event => {
     event.respondWith(fetch(request).catch(() => caches.match(request)));
 });
 
-// Background sync for offline actions
 self.addEventListener('sync', event => {
     if (event.tag === 'background-sync') event.waitUntil(doBackgroundSync());
 });
@@ -83,7 +79,6 @@ async function doBackgroundSync() {
     }));
 }
 
-// Push notifications (if implemented)
 self.addEventListener('push', event => {
     if (!event.data) return;
     const data = event.data.json();
