@@ -11,7 +11,7 @@ def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_pat
     module._LOGIN_FAILURES.clear()
     client = module.app.test_client()
 
-    assert module.DASHBOARD_PASS == "test-strong-dashboard-password"
+    assert module.DASHBOARD_PASS == "B7Q2"
     assert module.app.config["SESSION_COOKIE_HTTPONLY"] is True
     assert module.app.config["SESSION_COOKIE_SAMESITE"] == "Lax"
 
@@ -33,7 +33,7 @@ def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_pat
 
     blocked = client.post(
         "/login",
-        data={"username": "operator", "password": "test-strong-dashboard-password"},
+        data={"username": "operator", "password": "B7Q2"},
     )
     assert blocked.status_code == 200
     assert b"Please wait a few minutes" in blocked.data
