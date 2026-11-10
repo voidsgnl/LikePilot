@@ -3,7 +3,7 @@ import importlib
 
 def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_path, monkeypatch):
     monkeypatch.setenv("LIKEPILOT_DATA_DIR", str(tmp_path))
-    monkeypatch.setenv("DASHBOARD_PASS", "test-strong-dashboard-password")
+    monkeypatch.setenv("DASHBOARD_PASS", "B7Q2")
     monkeypatch.setenv("FLASK_SECRET_KEY", "test-session-signing-secret")
     monkeypatch.setenv("DASHBOARD_USER", "operator")
 
@@ -17,8 +17,8 @@ def test_dashboard_login_uses_configured_password_and_throttles_failures(tmp_pat
 
     login_page = client.get("/login")
     assert login_page.status_code == 200
-    assert b"Welcome back" in login_page.data
-    assert b"Sign in" in login_page.data
+    assert b"The vault is" in login_page.data
+    assert b"Unlock workspace" in login_page.data
     assert b"pilot-flight.svg" not in login_page.data
     assert b"brand-mark.svg" in login_page.data
     assert b'name="username"' in login_page.data
