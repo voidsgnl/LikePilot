@@ -1,0 +1,77 @@
+/* Dedicated information architecture and per-agent workspaces */
+.nav-section-label{padding:13px 9px 5px;color:#6e7681;font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.nav-subgroup{display:grid;gap:2px;padding:2px 0 5px 39px}
+.nav-sublink{padding:5px 8px;border-left:1px solid var(--border);color:#8b949e;font-size:10px;text-decoration:none}
+.nav-sublink:hover{color:#56d364;border-color:#3fb950}
+.nav-link .nav-icon{display:inline-flex;align-items:center;justify-content:center;font-size:16px}
+.workspace-page{display:grid;gap:12px;min-width:0}
+.workspace-toolbar,.workspace-title-row,.workspace-actions,.directory-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.workspace-hero{display:grid;gap:14px}
+.workspace-title{margin:5px 0 4px;font-size:clamp(20px,2.5vw,28px);font-weight:650;letter-spacing:-.04em}
+.status-badge{display:inline-flex;align-items:center;min-height:24px;padding:0 9px;border:1px solid var(--border-strong);border-radius:5px;background:#0d1117;color:#9ca3af;font-size:10px;font-weight:650}
+.status-running,.status-available{border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.09);color:#56d364}
+.status-paused,.status-awaiting-login,.status-login-success,.status-awaiting-social-login,.status-awaiting-switch{border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08);color:#d29922}
+.status-stopped,.status-not-found{color:#8b949e}
+.workspace-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.workspace-columns{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:10px;align-items:start}
+.detail-list{display:grid;gap:0;margin:0}
+.detail-list>div{display:grid;grid-template-columns:minmax(110px,.65fr) minmax(0,1fr);gap:12px;padding:9px 0;border-bottom:1px solid var(--border)}
+.detail-list>div:last-child{border-bottom:0}
+.detail-list dt{color:#6e7681;font-size:10px}
+.detail-list dd{margin:0;color:#c9d1d9;font-size:11px;overflow-wrap:anywhere}
+.event-list{display:grid;gap:7px}
+.event-row{padding:9px 10px;border:1px solid var(--border);border-radius:5px;background:#0d1117}
+.event-row p{margin:5px 0 0;color:#c9d1d9;font-size:11px;line-height:1.5;overflow-wrap:anywhere}
+.event-row-meta{display:flex;justify-content:space-between;gap:8px;color:#6e7681;font-size:9px}
+.event-level{color:#56d364;font-weight:700;letter-spacing:.08em}
+.notice-danger{padding:10px;border:1px solid rgba(248,81,73,.35);border-radius:5px;background:rgba(248,81,73,.08);color:#ff7b72;font-size:11px}
+.directory-intro{padding:4px 2px 8px}
+.directory-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.directory-card{display:grid;align-content:start;gap:10px;min-height:160px}
+.directory-card h3{margin:0;font-size:14px}
+.directory-card p{margin:0;min-height:38px}
+.integration-mark{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--border-strong);border-radius:6px;background:#0d1117;color:#56d364;font-weight:700}
+@media(max-width:900px){.workspace-columns{grid-template-columns:1fr}.directory-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.workspace-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.directory-grid{grid-template-columns:1fr}.nav-section-label,.nav-subgroup{display:none}}
+
+.directory-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.directory-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.directory-controls input{flex:1;min-width:220px}
+.directory-controls select{min-width:170px}
+.directory-table td{vertical-align:middle}
+.directory-agent-link{font-weight:650;color:#e5e7eb;text-decoration:none}
+.directory-agent-link:hover{color:#56d364}
+
+.overview-page{display:grid;gap:12px}
+.overview-welcome{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.overview-actions{display:flex;gap:8px;flex-wrap:wrap}
+.overview-metrics{grid-template-columns:repeat(4,minmax(0,1fr))}
+.overview-columns{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.7fr);gap:10px;align-items:start}
+.overview-table{min-width:560px}
+.overview-shortcut{display:flex;align-items:center;justify-content:space-between;padding:11px 10px;border:1px solid var(--border);border-radius:5px;background:#0d1117;color:#c9d1d9;text-decoration:none;font-size:11px}
+.overview-shortcut:hover{border-color:#3fb950;color:#56d364}
+@media(max-width:900px){.overview-columns{grid-template-columns:1fr}}
+@media(max-width:700px){.overview-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Dedicated page navigation: route changes replace tab toggles, keeping each workspace focused. */
+.page-nav{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.page-nav .subnav-button{display:inline-flex;align-items:center;text-decoration:none}
+[hidden]{display:none!important}
+.analytics-export-panel{margin-bottom:10px}
+.settings-agent-panel .settings-layout,.settings-agent-panel .section-scroll{max-height:none;overflow:visible}
+@media(max-width:700px){.page-nav{overflow-x:auto;flex-wrap:nowrap;padding-bottom:7px}.page-nav .subnav-button{white-space:nowrap}}
+
+
+/* The overview now contains one primary runtime panel. */
+.overview-columns-single{grid-template-columns:minmax(0,1fr)!important}
+
+.settings-layout-single{grid-template-columns:minmax(0,1fr)!important}
+
+/* Agent detail: prioritize live credits and keep session metadata compact. */
+.page-agent-detail .workspace-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+.page-agent-detail .runtime-details{margin-bottom:4px}
+@media (max-width:720px){.page-agent-detail .workspace-metrics{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+.page-agent-detail [data-agent-action][hidden],.page-agent-detail #agent-platform-select[hidden],.page-agent-detail #agent-confirm-platform[hidden]{display:none!important}
+
+.surface-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}

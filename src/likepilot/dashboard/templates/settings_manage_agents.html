@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block body_class %}page-settings{% endblock %}
+{% block title %}Manage agents{% endblock %}
+{% block subtitle %}Edit or remove existing agent configurations. Stop an agent before editing or removing it.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='settings.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<div class="orbit-page orbit-settings">
+    <section class="orbit-card console-shell">
+        <header class="orbit-card-head">
+            <div>
+                <span class="orbit-kicker">Configuration</span>
+                <h2 class="orbit-card-title">Existing agents</h2>
+                <p class="orbit-card-sub">
+                    Stop an agent before editing or removing its configuration.
+                </p>
+            </div>
+            <a class="orbit-btn orbit-btn-primary" href="/settings/agents/new">
+                <span aria-hidden="true">+</span> Create agent
+            </a>
+        </header>
+
+        <div id="settings-feedback" class="orbit-feedback" aria-live="polite"></div>
+
+        <div class="tab-panel active" data-tab-panel="manage">
+            <div id="active-agents-list" class="orbit-manage-list"></div>
+        </div>
+    </section>
+</div>
+{% endblock %}

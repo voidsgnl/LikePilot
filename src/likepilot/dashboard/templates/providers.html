@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block body_class %}page-settings{% endblock %}
+{% block title %}Create agent{% endblock %}
+{% block subtitle %}Define a new agent's browser profile, provider, and platform behavior.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='settings.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<div class="orbit-page orbit-settings">
+    <section class="orbit-card console-shell">
+        <header class="orbit-card-head">
+            <div>
+                <span class="orbit-kicker">Configuration</span>
+                <h2 class="orbit-card-title">New agent configuration</h2>
+                <p class="orbit-card-sub">
+                    Each agent has an independent browser profile and runtime.
+                </p>
+            </div>
+        </header>
+
+        <div id="settings-feedback" class="orbit-feedback" aria-live="polite"></div>
+
+        <div class="tab-panel active" data-tab-panel="add">
+            <div class="orbit-agent-form">
+                <div class="orbit-form-grid">
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="new-agent-name">Agent name</label>
+                        <input type="text" id="new-agent-name" class="orbit-input" placeholder="Example: Agent West">
+                    </div>
+
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="new-agent-profile">Browser profile</label>
+                        <input type="text" id="new-agent-profile" class="orbit-input" placeholder="Example: Profile 5">
+                    </div>
+
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="new-agent-proxy">Proxy</label>
+                        <input type="text" id="new-agent-proxy" class="orbit-input" placeholder="Optional: http://user:pass@host:port">
+                    </div>
+
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="new-agent-site">Target site</label>
+                        <select id="new-agent-site" class="orbit-select">
+                            <option value="Like4Like" selected>Like4Like</option>
+                            <option value="KingdomLikes">KingdomLikes</option>
+                            <option value="YouLikeHits">YouLikeHits</option>
+                        </select>
+                    </div>
+
+                    <div class="orbit-field">
+                        <label class="orbit-field-label" for="new-agent-fallback">Fallback platform</label>
+                        <select id="new-agent-fallback" class="orbit-select">
+                            <option value="">Manual choice after exhaustion</option>
+                            <option value="Twitter">Twitter follows</option>
+                            <option value="Twitter Likes">Twitter likes</option>
+                            <option value="Twitter Retweets">Twitter retweets</option>
+                            <option value="Instagram">Instagram follows</option>
+                            <option value="Instagram Likes">Instagram likes</option>
+                            <option value="IG Comments">Instagram comments</option>
+                            <option value="TikTok">TikTok follows</option>
+                            <option value="TikTok Likes">TikTok likes</option>
+                            <option value="YouTube Subs">YouTube subs</option>
+                            <option value="YouTube Likes">YouTube likes</option>
+                            <option value="Facebook Subs">Facebook subs</option>
+                            <option value="Facebook Likes">Facebook likes</option>
+                            <option value="FB Comments">Facebook comments</option>
+                        </select>
+                    </div>
+
+                    <div class="orbit-field orbit-field-wide">
+                        <label class="orbit-field-label" for="new-agent-chain">Platform chain</label>
+                        <div class="orbit-chain-input">
+                            <input type="text" id="new-agent-chain" class="orbit-input" placeholder="No chain selected" readonly>
+                            <button type="button" class="orbit-btn orbit-btn-secondary" data-pick-chain="new-agent-chain">
+                                Choose
+                            </button>
+                        </div>
+                        <div class="orbit-field-hint">
+                            Pick platforms in the order you want them tried after exhaustion.
+                        </div>
+                    </div>
+
+                    <div class="orbit-field orbit-field-wide">
+                        <label class="orbit-field-label" for="new-agent-comment-templates">
+                            Instagram comment emojis
+                        </label>
+                        <textarea
+                            id="new-agent-comment-templates"
+                            class="orbit-textarea"
+                            rows="4"
+                            placeholder="One comment per line&#10;🔥🔥&#10;😍😍&#10;👏👏&#10;❤️❤️"
+                        ></textarea>
+                        <div class="orbit-field-hint">
+                            Used for IG Comments when the task does not force a specific comment text.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="orbit-actions">
+                    <button class="orbit-btn orbit-btn-primary" data-add-agent>Add agent</button>
+                    <a class="orbit-btn orbit-btn-secondary" href="/agents">Back to agents</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

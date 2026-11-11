@@ -1,0 +1,200 @@
+{% extends "layout.html" %}
+{% block body_class %}page-analytics{% endblock %}
+{% block title %}Analytics{% endblock %}
+{% block subtitle %}Credit history, platform mix, and forecasting across your workspace.{% endblock %}
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='analytics.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<section
+    class="orbit-page orbit-analytics console-shell"
+    data-tab-group
+    data-tab-group-name="analytics"
+    data-tab-default="{{ analytics_view|default('summary') }}"
+>
+
+    <!-- ── SUMMARY TILES ─────────────────────────────────── -->
+    <section class="orbit-tile-grid" aria-label="Credit summary">
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Latest credits</div>
+            <div class="orbit-tile-value" id="metric-latest">0</div>
+            <div class="orbit-tile-sub">Most recent snapshot</div>
+        </div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Session gain</div>
+            <div class="orbit-tile-value" id="metric-gain">+0</div>
+            <div class="orbit-tile-sub">Net movement</div>
+        </div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Session peak</div>
+            <div class="orbit-tile-value" id="metric-peak">0</div>
+            <div class="orbit-tile-sub">Highest observed</div>
+        </div>
+        <div class="orbit-tile">
+            <div class="orbit-tile-label">Samples</div>
+            <div class="orbit-tile-value" id="metric-samples">0</div>
+            <div class="orbit-tile-sub">Recorded snapshots</div>
+        </div>
+    </section>
+
+    <div id="analytics-feedback" class="orbit-feedback" aria-live="polite"></div>
+
+    <!-- ── SUMMARY PANEL ─────────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'summary' %}active{% endif %}"
+         data-tab-panel="summary"
+         {% if analytics_view != 'summary' %}hidden{% endif %}>
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Interpretation</span>
+                    <h2 class="orbit-card-title">Session summary</h2>
+                </div>
+            </header>
+            <div id="session-summary" class="orbit-card-sub" style="line-height:1.7;">
+                Waiting for credit history.
+            </div>
+        </section>
+    </div>
+
+    <!-- ── TRENDS PANEL ──────────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'trends' %}active{% endif %}"
+         data-tab-panel="trends"
+         {% if analytics_view != 'trends' %}hidden{% endif %}>
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">History</span>
+                    <h2 class="orbit-card-title">Credit trend</h2>
+                </div>
+                <span class="orbit-chip">Recorded history</span>
+            </header>
+            <div style="position:relative; min-height:280px; height:320px;">
+                <canvas id="mainEarningsChart"></canvas>
+            </div>
+        </section>
+    </div>
+
+    <!-- ── PLATFORMS PANEL ───────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'platforms' %}active{% endif %}"
+         data-tab-panel="platforms"
+         {% if analytics_view != 'platforms' %}hidden{% endif %}>
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Distribution</span>
+                    <h2 class="orbit-card-title">Platform breakdown</h2>
+                </div>
+            </header>
+            <div id="platform-breakdown" class="orbit-platform-breakdown"></div>
+        </section>
+    </div>
+
+    <!-- ── HEATMAP PANEL ─────────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'heatmap' %}active{% endif %}"
+         data-tab-panel="heatmap"
+         {% if analytics_view != 'heatmap' %}hidden{% endif %}>
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Patterns</span>
+                    <h2 class="orbit-card-title">Activity heatmap</h2>
+                </div>
+                <span class="orbit-chip">Last 30 days</span>
+            </header>
+            <div class="orbit-heatmap">
+                <div class="orbit-heatmap-grid" id="activity-heatmap"></div>
+                <p class="orbit-card-sub">
+                    Hourly activity is not currently recorded, so this view will remain empty
+                    until that telemetry is available.
+                </p>
+                <div class="orbit-heatmap-legend">
+                    <span>Less</span>
+                    <div class="orbit-heatmap-scale">
+                        <span style="background:color-mix(in oklab, var(--spark) 18%, transparent)"></span>
+                        <span style="background:color-mix(in oklab, var(--spark) 38%, transparent)"></span>
+                        <span style="background:color-mix(in oklab, var(--spark) 58%, transparent)"></span>
+                        <span style="background:color-mix(in oklab, var(--spark) 78%, transparent)"></span>
+                        <span style="background:var(--spark)"></span>
+                    </div>
+                    <span>More</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ── INSIGHTS PANEL ────────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'insights' %}active{% endif %}"
+         data-tab-panel="insights"
+         {% if analytics_view != 'insights' %}hidden{% endif %}>
+        <div class="orbit-insights-grid">
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Insights</span>
+                        <h2 class="orbit-card-title">Performance insights</h2>
+                    </div>
+                </header>
+                <div class="orbit-empty-state" id="performance-insights">
+                    Insights will appear here when LikePilot has enough recorded runtime history
+                    to calculate them.
+                </div>
+            </section>
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Projections</span>
+                        <h2 class="orbit-card-title">Forecasting</h2>
+                    </div>
+                </header>
+                <div class="orbit-empty-state">
+                    Forecasting is not enabled yet. It will require a sufficiently large,
+                    representative history of actual credit samples before projections
+                    can be calculated.
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- ── EXPORT PANEL ──────────────────────────────────── -->
+    <div class="tab-panel {% if analytics_view == 'export' %}active{% endif %}"
+         data-tab-panel="export"
+         {% if analytics_view != 'export' %}hidden{% endif %}>
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Export</span>
+                    <h2 class="orbit-card-title">Download controls</h2>
+                </div>
+            </header>
+            <p class="orbit-card-sub">
+                Download logs and credit history for a custom date range.
+            </p>
+            <div class="orbit-export-grid">
+                <div class="orbit-field">
+                    <label class="orbit-field-label" for="export-start-date">Start date</label>
+                    <input type="date" id="export-start-date" class="orbit-input">
+                </div>
+                <div class="orbit-field">
+                    <label class="orbit-field-label" for="export-end-date">End date</label>
+                    <input type="date" id="export-end-date" class="orbit-input">
+                </div>
+                <div class="orbit-field">
+                    <label class="orbit-field-label" for="export-format">Format</label>
+                    <select id="export-format" class="orbit-select">
+                        <option value="csv" selected>CSV</option>
+                        <option value="json">JSON</option>
+                    </select>
+                </div>
+                <div class="orbit-field orbit-field-actions">
+                    <label class="orbit-field-label" aria-hidden="true">&nbsp;</label>
+                    <button class="orbit-btn orbit-btn-primary" id="export-activity-btn" type="button">
+                        Download activity
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</section>
+{% endblock %}

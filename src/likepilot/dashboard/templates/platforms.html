@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block body_class %}page-directory{% endblock %}
+{% block title %}Platforms{% endblock %}
+{% block subtitle %}Social-network task families available to agent configurations.{% endblock %}
+{% block content %}
+<div class="orbit-page orbit-platforms">
+
+    <section class="orbit-directory-intro">
+        <span class="orbit-kicker">Network integrations</span>
+        <h2 class="orbit-section-title">Platform catalog</h2>
+        <p class="orbit-section-sub">
+            Platform actions are selected per agent. Use this catalog to navigate the
+            supported network families without crowding the runtime overview.
+        </p>
+    </section>
+
+    <section class="orbit-directory-grid">
+        {% for name, actions in [
+            ('Instagram', 'Likes · Comments'),
+            ('TikTok', 'Likes'),
+            ('YouTube', 'Likes · Subscribers'),
+            ('Facebook', 'Likes · Subscribers · Comments'),
+            ('X / Twitter', 'Likes · Retweets')
+        ] %}
+        <article class="orbit-card orbit-directory-card">
+            <div class="orbit-directory-card-top">
+                <span class="orbit-integration-mark">{{ name[:1] }}</span>
+                <span class="orbit-chip">Network</span>
+            </div>
+            <h3 class="orbit-directory-card-title">{{ name }}</h3>
+            <p class="orbit-directory-card-sub">{{ actions }}</p>
+            <a class="orbit-btn orbit-btn-secondary" href="{{ url_for('settings') }}">
+                Configure an agent
+            </a>
+        </article>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

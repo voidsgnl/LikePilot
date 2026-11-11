@@ -1,0 +1,49 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyd
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment and secrets
+.env
+.env.local
+*.env.*
+
+# Runtime data (preserve existing tracked files; ignore new generated data)
+data/*
+!data/.gitkeep
+logs/
+diagnostics/
+profiles/
+backups/
+*.db
+*.sqlite
+*.sqlite3
+
+# Runtime-generated files
+*.log
+*.tmp
+*.temp
+runtime_port.txt
+
+# Build and package artifacts
+build/
+dist/
+*.egg-info/
+*.egg
+*.whl
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini

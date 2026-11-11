@@ -1,0 +1,122 @@
+{% extends "layout.html" %}
+{% block body_class %}page-operations{% endblock %}
+{% block title %}{{ {'database':'Database','logs':'Runtime logs','diagnostics':'Diagnostics'}.get(operation_view, 'Operations') }}{% endblock %}
+{% block subtitle %}Inspect the runtime database, log files, and diagnostic captures.{% endblock %}
+{% block head %}
+<script src="{{ url_for('static', filename='operations.js') }}" defer></script>
+{% endblock %}
+{% block content %}
+<section class="orbit-page orbit-operations console-shell"
+         data-operation-view="{{ operation_view|default('database') }}">
+
+    <div id="operations-feedback" class="orbit-feedback" aria-live="polite"></div>
+
+    {% if operation_view == 'database' %}
+    <!-- ═══════ DATABASE ═══════ -->
+    <div class="tab-panel active" data-tab-panel="database">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Tables</span>
+                        <h3 class="orbit-card-title">Database structure</h3>
+                    </div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-db">Refresh</button>
+                </header>
+                <div id="ops-db-summary" class="orbit-card-sub">Loading schema.</div>
+                <div id="ops-db-list" class="orbit-ops-list"></div>
+            </aside>
+
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Schema</span>
+                        <h3 class="orbit-card-title">Columns, keys &amp; relationships</h3>
+                    </div>
+                    <span class="orbit-chip">Read only</span>
+                </header>
+                <div id="ops-db-table-meta" class="orbit-card-sub">Select a table or view the full schema.</div>
+                <div class="orbit-ops-schema-shell">
+                    <div class="orbit-ops-schema-header">
+                        <div class="orbit-card-sub" id="ops-db-schema-meta">Loading schema map.</div>
+                    </div>
+                    <div class="orbit-ops-schema-stage" id="ops-schema-stage">
+                        <svg class="orbit-ops-schema-lines" id="ops-schema-lines" aria-hidden="true"></svg>
+                        <div class="orbit-ops-schema-grid" id="ops-schema-grid"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    {% elif operation_view == 'logs' %}
+    <!-- ═══════ LOGS ═══════ -->
+    <div class="tab-panel active" data-tab-panel="logs">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Log files</span>
+                        <h3 class="orbit-card-title">Captured in <span class="mono">logs/</span></h3>
+                    </div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-logs">Refresh</button>
+                </header>
+                <div id="ops-log-list" class="orbit-ops-list"></div>
+            </aside>
+
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Viewer</span>
+                        <h3 class="orbit-card-title">Log content</h3>
+                        <div id="ops-log-meta" class="orbit-card-sub">Select a log file to view its latest lines.</div>
+                    </div>
+                    <div class="orbit-ops-actions">
+                        <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-clear-log" disabled>Clear</button>
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-delete-log" disabled>Delete</button>
+                    </div>
+                </header>
+                <pre id="ops-log-content" class="orbit-ops-log-view">Select a log file to view its latest lines.</pre>
+            </section>
+        </div>
+    </div>
+
+    {% elif operation_view == 'diagnostics' %}
+    <!-- ═══════ DIAGNOSTICS ═══════ -->
+    <div class="tab-panel active" data-tab-panel="diagnostics">
+        <div class="orbit-ops-grid">
+            <aside class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Captures</span>
+                        <h3 class="orbit-card-title">Diagnostic snapshots</h3>
+                        <div class="orbit-card-sub">
+                            Grouped HTML and PNG snapshots from <span class="mono">diagnostics/</span>.
+                        </div>
+                    </div>
+                    <button type="button" class="orbit-btn orbit-btn-secondary" id="ops-refresh-diagnostics">Refresh</button>
+                </header>
+                <div id="ops-diagnostic-list" class="orbit-ops-list"></div>
+            </aside>
+
+            <section class="orbit-card">
+                <header class="orbit-card-head">
+                    <div>
+                        <span class="orbit-kicker">Preview</span>
+                        <h3 class="orbit-card-title">Capture viewer</h3>
+                        <div id="ops-diagnostic-meta" class="orbit-card-sub">Select a capture to preview its contents.</div>
+                    </div>
+                    <div class="orbit-ops-actions">
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-delete-diagnostic" disabled>Delete</button>
+                        <button type="button" class="orbit-btn orbit-btn-danger" id="ops-clear-diagnostics">Clear all</button>
+                    </div>
+                </header>
+                <div id="ops-diagnostic-preview" class="orbit-ops-viewer orbit-empty-state">
+                    Select a capture to preview its contents.
+                </div>
+            </section>
+        </div>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}

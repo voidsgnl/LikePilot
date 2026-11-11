@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d16">
+    <meta name="description" content="Unlock your LikePilot workspace.">
+    <title>LikePilot · Vault access</title>
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('brand_asset', filename='brand-mark.svg') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('theme');
+                if (theme === 'light' || theme === 'dark') document.documentElement.dataset.theme = theme;
+            } catch (_) {}
+        })();
+    </script>
+</head>
+<body class="vault-body">
+    <div class="vault-shell">
+        <header class="vault-topbar">
+            <a class="vault-brand" href="/login" aria-label="LikePilot vault">
+                <span class="vault-brand-mark">L</span>
+                <span>LikePilot</span>
+            </a>
+            <div class="vault-topbar-right">
+                <span class="local-indicator"><i></i> LOCAL SESSION</span>
+                <div class="theme-switch" role="group" aria-label="Choose appearance">
+                    <button type="button" id="theme-dark" aria-label="Dark theme" aria-pressed="true">◐</button>
+                    <button type="button" id="theme-light" aria-label="Light theme" aria-pressed="false">☼</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="vault-main">
+            <section class="vault-intro" aria-labelledby="vault-title">
+                <div class="eyebrow"><span></span> PRIVATE WORKSPACE</div>
+                <h1 id="vault-title">The vault is <em>locked.</em></h1>
+                <p>Enter your combination to access your LikePilot workspace.</p>
+            </section>
+
+            {% if error %}
+            <div class="vault-error" role="alert">
+                <span aria-hidden="true">!</span>
+                {% if error == 'TOO_MANY_ATTEMPTS' %}
+                    Too many attempts. Please wait a few minutes before trying again.
+                {% else %}
+                    That combination didn't unlock the vault. Check your details and try again.
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <form id="vault-form" class="vault-form" method="POST" autocomplete="on">
+                <div class="username-field">
+                    <label for="username">OPERATOR</label>
+                    <input id="username" name="username" type="text" autocomplete="username"
+                           placeholder="Enter your username" required autofocus>
+                </div>
+
+                <div class="vault-instruction">
+                    <span>01</span>
+                    <div>
+                        <strong>Build your combination</strong>
+                        <small>Rotate the dial, then press its centre to add a digit</small>
+                    </div>
+                </div>
+
+                <section class="dial-panel" aria-label="Numeric password selector">
+                    <div class="dial-shell">
+                        <div class="dial" id="vault-dial" role="slider" tabindex="0"
+                             aria-label="Rotate to select a digit" aria-valuemin="0"
+                             aria-valuemax="9" aria-valuenow="0" aria-valuetext="0 selected">
+                            <div class="dial-number-track" id="dial-number-track" aria-hidden="true">
+                                <span class="dial-digit" data-digit="0" style="--digit-angle: 0deg">0</span>
+                                <span class="dial-digit" data-digit="1" style="--digit-angle: 36deg">1</span>
+                                <span class="dial-digit" data-digit="2" style="--digit-angle: 72deg">2</span>
+                                <span class="dial-digit" data-digit="3" style="--digit-angle: 108deg">3</span>
+                                <span class="dial-digit" data-digit="4" style="--digit-angle: 144deg">4</span>
+                                <span class="dial-digit" data-digit="5" style="--digit-angle: 180deg">5</span>
+                                <span class="dial-digit" data-digit="6" style="--digit-angle: 216deg">6</span>
+                                <span class="dial-digit" data-digit="7" style="--digit-angle: 252deg">7</span>
+                                <span class="dial-digit" data-digit="8" style="--digit-angle: 288deg">8</span>
+                                <span class="dial-digit" data-digit="9" style="--digit-angle: 324deg">9</span>
+                            </div>
+                            <div class="dial-pointer" aria-hidden="true"></div>
+                            <div class="dial-center">
+                                <span class="dial-center-label">SELECTED</span>
+                                <strong id="dial-current">0</strong>
+                                <button type="button" id="confirm-digit" aria-label="Confirm selected digit 0">
+                                    <span>Add digit</span><b aria-hidden="true">+</b>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="dial-help">
+                        <span>DRAG TO ROTATE</span>
+                        <span>SCROLL OR USE ← →</span>
+                    </div>
+                </section>
+
+                <section class="combination-panel" aria-label="Password combination">
+                    <div class="combination-heading">
+                        <span class="combination-label">YOUR COMBINATION</span>
+                        <span class="combination-count" id="combination-count">0 / 64</span>
+                    </div>
+                    <div class="combination-code" id="combination-code" aria-live="polite">
+                        <span class="combination-empty">Your digits will appear here</span>
+                    </div>
+                    <div class="combination-actions">
+                        <button type="button" id="remove-digit" disabled>Remove last</button>
+                        <button type="button" id="clear-combination" disabled>Clear all</button>
+                    </div>
+                </section>
+
+                <input type="hidden" name="password" id="vault-password" value="" maxlength="64">
+
+                <button class="unlock-button" type="submit">
+                    <span>Unlock workspace</span>
+                    <span class="unlock-arrow" aria-hidden="true">↗</span>
+                </button>
+                <p class="vault-submit-hint" id="vault-submit-hint">Add at least one digit to continue.</p>
+            </form>
+
+            <footer class="vault-footer">
+                <span><i></i> RUNNING ON THIS DEVICE</span>
+                <span>LIKEPILOT <b>·</b> VAULT ACCESS</span>
+            </footer>
+        </main>
+    </div>
+    <script src="{{ url_for('static', filename='login.js') }}" defer></script>
+</body>
+</html>

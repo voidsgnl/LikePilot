@@ -1,0 +1,71 @@
+{
+  "stealth": {
+    "randomize_fingerprint": true,
+    "randomize_user_agent": true,
+    "randomize_viewport": true,
+    "human_behavior": true,
+    "bezier_mouse": true,
+    "random_scroll": true,
+    "min_delay_between_actions": 2,
+    "max_delay_between_actions": 8
+  },
+  "proxy": {
+    "enabled": false,
+    "rotation_enabled": false,
+    "rotation_threshold": 5,
+    "proxy_list": []
+  },
+  "captcha": {
+    "enabled": false,
+    "service": "2captcha",
+    "api_key": "",
+    "max_retries": 3
+  },
+  "dashboard": {
+    "refresh_interval_seconds": 2,
+    "chart_history_points": 200
+  },
+  "security": {
+    "encrypt_credentials": false,
+    "auto_lock_on_idle": false,
+    "idle_timeout_minutes": 30
+  },
+  "automation": {
+    "auto_switch_platform": true,
+    "max_consecutive_failures": 10,
+    "cooldown_on_failure_seconds": 60,
+    "credit_verification_timeout": 12,
+    "rate_limit_detection": true,
+    "rate_limit_window_minutes": 5,
+    "rate_limit_failure_threshold": 3,
+    "rate_limit_backoff_minutes": 15
+  },
+  "notifications": {
+    "enabled": false,
+    "discord_webhook": "",
+    "telegram_bot_token": "",
+    "telegram_chat_id": "",
+    "email_enabled": false,
+    "email_smtp": "",
+    "email_from": "",
+    "email_to": "",
+    "high_credits_earned": true,
+    "rate_limiting_detected": true,
+    "agent_crashed": true,
+    "daily_summary": true,
+    "system_errors": true,
+    "milestones": true
+  },
+  "updater": {
+    "enabled": false,
+    "check_interval_hours": 24,
+    "auto_install": false,
+    "github_repo": "yourusername/likepilot"
+  },
+  "backup": {
+    "enabled": true,
+    "interval_hours": 24,
+    "max_backups": 7,
+    "path": "backups"
+  }
+}

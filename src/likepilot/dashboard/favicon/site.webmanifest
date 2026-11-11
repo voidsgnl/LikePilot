@@ -1,0 +1,17 @@
+{
+  "name": "LikePilot",
+  "short_name": "LikePilot",
+  "description": "LikePilot browser dashboard",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080d16",
+  "theme_color": "#080d16",
+  "icons": [
+    {
+      "src": "/favicon/brand-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+{% block body_class %}page-agent-detail{% endblock %}
+{% block title %}{{ agent_name }}{% endblock %}
+{% block subtitle %}Session controls, live credits, and full configuration for one agent.{% endblock %}
+{% block head %}<script src="{{ url_for('static', filename='agent-detail.js') }}" defer></script>{% endblock %}
+{% block content %}
+<div class="workspace-page orbit-agent-detail" id="agent-detail" data-agent-name="{{ agent_name }}">
+
+    <!-- ── TOOLBAR ───────────────────────────────────────── -->
+    <div class="orbit-detail-toolbar">
+        <a class="orbit-btn orbit-btn-ghost" href="{{ url_for('agents') }}">
+            ← All agents
+        </a>
+        <span class="orbit-detail-path mono">
+            AGENT / {{ agent_name }}
+        </span>
+    </div>
+
+    <!-- ── HERO ─────────────────────────────────────────── -->
+    <section class="orbit-detail-hero">
+        <div class="orbit-detail-hero-copy">
+            <span class="orbit-kicker">Agent identity</span>
+            <h2 class="orbit-detail-title" id="agent-name">{{ agent_name }}</h2>
+            <p class="orbit-detail-summary" id="agent-summary">Loading agent state…</p>
+        </div>
+        <div class="orbit-detail-hero-status">
+            <span class="orbit-status-pill" id="agent-status">Loading</span>
+        </div>
+    </section>
+
+    <!-- ── ACTIONS ──────────────────────────────────────── -->
+    <section class="orbit-detail-actions">
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="start" hidden>Start</button>
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="ready" hidden>Ready</button>
+        <button class="orbit-btn orbit-btn-primary" type="button" data-agent-action="initialize" hidden>Initialize</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="pause" hidden>Pause</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="resume" hidden>Resume</button>
+        <button class="orbit-btn orbit-btn-secondary" type="button" data-agent-action="restart" hidden>Restart</button>
+        <button class="orbit-btn orbit-btn-danger" type="button" data-agent-action="stop" hidden>Stop</button>
+        <select id="agent-platform-select" class="orbit-select" aria-label="Select platform" hidden>
+            <option value="Twitter">Twitter</option>
+            <option value="Twitter Likes">Twitter Likes</option>
+            <option value="Twitter Retweets">Twitter Retweets</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Instagram Likes">Instagram Likes</option>
+            <option value="IG Comments">IG Comments</option>
+            <option value="TikTok">TikTok</option>
+            <option value="TikTok Likes">TikTok Likes</option>
+            <option value="YouTube Subs">YouTube Subs</option>
+            <option value="YouTube Likes">YouTube Likes</option>
+            <option value="Facebook Subs">Facebook Subs</option>
+            <option value="Facebook Likes">Facebook Likes</option>
+            <option value="FB Comments">FB Comments</option>
+        </select>
+        <button class="orbit-btn orbit-btn-secondary" type="button" id="agent-confirm-platform" hidden>Confirm platform</button>
+    </section>
+
+    <!-- ── METRICS ──────────────────────────────────────── -->
+    <section class="orbit-detail-metrics">
+        <article class="orbit-tile orbit-tile-lg">
+            <div class="orbit-tile-label">Credits</div>
+            <div class="orbit-tile-value" id="agent-credits">—</div>
+            <div class="orbit-tile-sub">Current balance</div>
+        </article>
+        <article class="orbit-tile orbit-tile-lg">
+            <div class="orbit-tile-label">Session gain</div>
+            <div class="orbit-tile-value" id="agent-gain">—</div>
+            <div class="orbit-tile-sub">Since session start</div>
+        </article>
+    </section>
+
+    <!-- ── DETAIL GRID ──────────────────────────────────── -->
+    <div class="orbit-detail-grid">
+
+        <!-- Configuration -->
+        <section class="orbit-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Configuration</span>
+                    <h3 class="orbit-card-title">Agent profile</h3>
+                </div>
+            </header>
+            <dl class="orbit-detail-list">
+                <div><dt>Provider</dt><dd id="agent-provider">—</dd></div>
+                <div><dt>Platform action</dt><dd id="agent-platform">—</dd></div>
+                <div><dt>Browser profile</dt><dd id="agent-profile">—</dd></div>
+                <div><dt>Proxy</dt><dd id="agent-proxy">—</dd></div>
+                <div><dt>Fallback</dt><dd id="agent-fallback">—</dd></div>
+            </dl>
+            <a class="orbit-btn orbit-btn-secondary orbit-btn-block" href="/settings/agents/manage">
+                Manage saved agents
+            </a>
+        </section>
+
+        <!-- Runtime · Pulse -->
+        <section class="orbit-card orbit-runtime-card">
+            <header class="orbit-card-head">
+                <div>
+                    <span class="orbit-kicker">Runtime</span>
+                    <h3 class="orbit-card-title">Session pulse</h3>
+                </div>
+                <span class="orbit-chip orbit-runtime-chip" id="agent-runtime-chip">—</span>
+            </header>
+
+            <!-- Band 1 · heartbeat -->
+            <div class="orbit-runtime-band orbit-runtime-heartbeat">
+                <div class="orbit-pulse" id="agent-pulse" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
+                <div class="orbit-runtime-band-copy">
+                    <div class="orbit-runtime-band-label">Heartbeat</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-utc mono" id="agent-heartbeat-utc">—</span>
+                        <span class="orbit-runtime-relative" id="agent-heartbeat-rel">—</span>
+                    </div>
+                </div>
+                <span id="agent-heartbeat" hidden></span>
+            </div>
+
+            <!-- Band 2 · session start + uptime -->
+            <div class="orbit-runtime-band orbit-runtime-session">
+                <div class="orbit-runtime-mini">
+                    <div class="orbit-runtime-band-label">Started</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-utc mono" id="agent-session-start-utc">—</span>
+                        <span class="orbit-runtime-relative" id="agent-session-start-rel">—</span>
+                    </div>
+                </div>
+                <div class="orbit-runtime-mini">
+                    <div class="orbit-runtime-band-label">Uptime</div>
+                    <div class="orbit-runtime-band-value">
+                        <span class="orbit-runtime-uptime mono" id="agent-uptime">—</span>
+                    </div>
+                </div>
+                <span id="agent-session-start" hidden></span>
+            </div>
+
+            <!-- Band 3 · activity timeline -->
+            <div class="orbit-runtime-band orbit-runtime-activity">
+                <div class="orbit-runtime-activity-head">
+                    <div class="orbit-runtime-band-label" style="margin:0">Activity</div>
+                    <span class="orbit-chip">Latest 5</span>
+                </div>
+                <div id="agent-event-list" class="orbit-event-timeline">
+                    <div class="orbit-event-empty">Loading events…</div>
+                </div>
+                <div id="agent-error" class="orbit-notice orbit-notice-danger" hidden></div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

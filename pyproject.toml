@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "likepilot"
+version = "0.1.0"
+description = "Multi-provider automation and agent management through a local web dashboard"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "selenium>=4.20",
+    "setuptools>=68",
+    "python-dotenv",
+    "undetected-chromedriver",
+    "flask",
+    "requests",
+    "cryptography>=42",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.11",
+]
+
+[project.scripts]
+likepilot = "likepilot.entrypoints.server:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"likepilot.dashboard" = [
+    "templates/*.html",
+    "static/*",
+    "favicon/*",
+]
